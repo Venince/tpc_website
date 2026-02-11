@@ -1,0 +1,349 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Public pages: justify sentences (paragraphs + list items) */
+  .tpc-prose :where(p, li) {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    overflow-wrap: anywhere;
+  }
+
+  /* IMPORTANT: keep intentionally centered/right text aligned */
+  .tpc-prose :where(.text-center p, .text-center li) {
+    text-align: center;
+    text-justify: auto;
+    hyphens: manual;
+    -webkit-hyphens: manual;
+  }
+
+  .tpc-prose :where(.text-right p, .text-right li) {
+    text-align: right;
+    text-justify: auto;
+    hyphens: manual;
+    -webkit-hyphens: manual;
+  }
+}
+
+/* ------- Nav link underline + active ------- */
+.tpc-navlink{
+  position: relative;
+  font-weight: 600;
+  color: rgba(0,128,0,0.90);
+  transition: color 220ms ease;
+}
+.tpc-navlink:hover{
+  color: rgba(0,100,0,1);
+}
+.tpc-navlink::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-6px;
+  height:2px;
+  width:0%;
+  background: rgba(0,128,0,1);
+  transition: width 280ms cubic-bezier(0.22,1,0.36,1);
+}
+.tpc-navlink:hover::after{ width: 100%; }
+.tpc-navlink.tpc-active{
+  color: rgba(0,100,0,1);
+}
+.tpc-navlink.tpc-active::after{
+  width: 100%;
+}
+
+/* ------- Page crossfade (content + footer) ------- */
+:root{
+  --tpc-page-dur: 400ms; /* smoother */
+  --tpc-page-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.tpc-init #tpc-content{
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(1px);
+}
+
+#tpc-content{
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity var(--tpc-page-dur) var(--tpc-page-ease),
+    transform var(--tpc-page-dur) var(--tpc-page-ease),
+    filter var(--tpc-page-dur) var(--tpc-page-ease);
+  will-change: opacity, transform, filter;
+}
+
+#tpc-content.tpc-leave,
+#tpc-content.tpc-enter{
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(1px);
+}
+
+/* ------- Admin page transition ------- */
+:root{
+  --tpc-admin-dur: 220ms;
+  --tpc-admin-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.tpc-admin-init #tpc-admin-content{
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(1px);
+}
+
+/* About highlight pulse */
+.tpc-highlight {
+  animation: tpcFlash 0.9s ease-out;
+}
+@keyframes tpcFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 128, 0, 0.35); }
+  35%  { box-shadow: 0 0 0 10px rgba(0, 128, 0, 0.18); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 128, 0, 0); }
+}
+
+/* Respect accessibility */
+@media (prefers-reduced-motion: reduce) {
+  #tpc-content{
+    transition: none !important;
+  }
+  #tpc-content.tpc-leave,
+  #tpc-content.tpc-enter{
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* Learn more arrow animation */
+.tpc-learnmore{
+  animation: tpcArrowFloat 1.35s cubic-bezier(0.22,1,0.36,1) infinite;
+}
+
+.tpc-learnmore:hover{
+  animation-play-state: paused; /* pause when hovering (feels premium) */
+}
+
+@keyframes tpcArrowFloat{
+  0%, 100% { transform: translateY(0); }
+  45% { transform: translateY(6px); }
+}
+
+/* ------- Unread badge (Messages) ------- */
+.tpc-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(0,128,0,0.95), rgba(0,100,0,0.95));
+  box-shadow: 0 6px 18px rgba(0, 128, 0, 0.10);
+  border: 1px solid rgba(0, 128, 0, 0.22);
+  transform: translateY(-1px);
+}
+
+.tpc-badge-pulse {
+  animation: tpcBadgePulse 1.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes tpcBadgePulse {
+  0%, 100% {
+    transform: translateY(-1px) scale(1);
+    box-shadow: 0 6px 18px rgba(0, 128, 0, 0.10), 0 0 0 0 rgba(0, 128, 0, 0.18);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.08);
+    box-shadow: 0 10px 24px rgba(0, 128, 0, 0.14), 0 0 0 6px rgba(0, 128, 0, 0.07);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tpc-badge-pulse { animation: none !important; }
+}
+
+[x-cloak] { display: none !important; }
+
+.tpc-admin-bg {
+  background-color: #fff;
+  background-image:
+    radial-gradient(900px circle at 12% 10%, rgba(0,128,0,0.14), transparent 55%),
+    radial-gradient(800px circle at 90% 0%, rgba(16,185,129,0.12), transparent 50%),
+    radial-gradient(900px circle at 50% 100%, rgba(0,128,0,0.10), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ---- Admin MAIN content transition (header excluded) ---- */
+:root{
+  --tpc-admin-dur: 220ms;
+  --tpc-admin-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* initial load state */
+html.tpc-admin-init #tpc-admin-main{
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(1px);
+}
+
+#tpc-admin-main{
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity var(--tpc-admin-dur) var(--tpc-admin-ease),
+    transform var(--tpc-admin-dur) var(--tpc-admin-ease),
+    filter var(--tpc-admin-dur) var(--tpc-admin-ease);
+  will-change: opacity, transform, filter;
+}
+
+#tpc-admin-main.tpc-admin-leave{
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(1px);
+}
+
+@media (prefers-reduced-motion: reduce){
+  html.tpc-admin-init #tpc-admin-main,
+  #tpc-admin-main,
+  #tpc-admin-main.tpc-admin-leave{
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ---------------------------
+   Modern page transitions (Admin)
+   Animate ONLY #tpc-admin-main
+---------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* Keep View Transitions enabled */
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* IMPORTANT: stop the default root (whole-page) animation */
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(root) {
+    animation: none !important;
+  }
+
+  /* ONLY the content area participates */
+  #tpc-admin-main { view-transition-name: admin-main; }
+
+  /* explicitly exclude stable UI */
+  header, aside { view-transition-name: none !important; }
+
+  ::view-transition-old(admin-main) {
+    animation: tpc-admin-out 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  ::view-transition-new(admin-main) {
+    animation: tpc-admin-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes tpc-admin-out {
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: blur(6px);
+    }
+  }
+
+  @keyframes tpc-admin-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+/* ---------------------------
+   Modern page transitions (Admin)
+   Animate ONLY #tpc-admin-main
+   Keep header + sidebar stable (no animation)
+---------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* 1) Turn OFF default whole-page (root) animation */
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(root) {
+    animation: none !important;
+  }
+
+  /* 2) Give stable UI their OWN snapshots (so they are removed from root) */
+  header { view-transition-name: admin-header; }
+  aside  { view-transition-name: admin-sidebar; }
+
+  /* Keep them perfectly still */
+  ::view-transition-old(admin-header),
+  ::view-transition-new(admin-header),
+  ::view-transition-old(admin-sidebar),
+  ::view-transition-new(admin-sidebar),
+  ::view-transition-group(admin-header),
+  ::view-transition-group(admin-sidebar) {
+    animation: none !important;
+  }
+
+  /* 3) Animate ONLY the admin main content */
+  #tpc-admin-main { view-transition-name: admin-main; }
+
+  ::view-transition-old(admin-main) {
+    animation: tpc-admin-out 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  ::view-transition-new(admin-main) {
+    animation: tpc-admin-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes tpc-admin-out {
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: blur(6px);
+    }
+  }
+
+  @keyframes tpc-admin-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
