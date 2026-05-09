@@ -4,118 +4,111 @@
 @section('title', 'Academics')
 
 @section('content')
-    {{-- PAGE HEADER --}}
-    <section class="bg-transparent">
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p class="text-xs font-medium tracking-wide text-tpc-primary uppercase">Academics</p>
-                    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-tpc-ink sm:text-4xl">
-                        Academic Programs
-                    </h1>
-                    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-tpc-ink/70">
-                        Explore our academic offerings designed to build competence, confidence, and career readiness.
-                    </p>
-                </div>
 
+    {{-- PAGE HEADER --}}
+    <section class="bg-tpc-primary">
+        <div class="max-w-7xl mx-auto px-4 py-10">
+            <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Talibon Polytechnic College</p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-white leading-tight">Academic Programs</h1>
+            <p class="mt-2 max-w-2xl text-sm text-white/75 leading-relaxed">
+                Explore our academic offerings designed to build competence, confidence, and career readiness.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
                 <a href="{{ route('admission') }}"
-                   class="inline-flex items-center justify-center rounded-lg border border-tpc-primary/30 bg-white px-4 py-2 text-sm font-medium text-tpc-primary transition hover:bg-tpc-primary/5">
-                    Admission Guide →
+                   class="inline-flex items-center border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                    Admission Guide
+                </a>
+                <a href="{{ route('contact') }}"
+                   class="inline-flex items-center border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                    Contact Us
                 </a>
             </div>
         </div>
     </section>
 
-    {{-- PROGRAMS GRID --}}
-    <section class="bg-transparent">
-        <div class="max-w-7xl mx-auto px-4 pb-20">
+    {{-- PROGRAMS --}}
+    <section class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-12">
 
-            <div class="flex flex-wrap justify-center gap-6">
+            <div class="flex items-center gap-4 mb-8">
+                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
+                <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">All Programs</h2>
+                <div class="flex-1 h-px bg-gray-200"></div>
+            </div>
+
+            @php
+                $programCount = $programs->count();
+                $remainder    = $programCount % 3;
+            @endphp
+
+            <div class="grid gap-px bg-gray-200 border border-gray-200 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($programs as $program)
-                    <article
-                        class="group flex-none basis-full sm:basis-[calc(50%-0.75rem)] lg:basis-[calc(33.333%-1rem)]
-                            rounded-2xl border border-tpc-primary/10 bg-white p-6 shadow-sm transition
-                            hover:-translate-y-0.5 hover:border-tpc-primary/30 hover:shadow-md"
-                    >
-                        <div class="flex flex-col items-center text-center">
-                            {{-- Logo --}}
-                            @if ($program->logo_path)
-                                <img
-                                    src="{{ asset('storage/' . $program->logo_path) }}"
-                                    alt="{{ $program->code }} logo"
-                                    class="h-20 w-20 object-contain"
-                                    loading="lazy"
-                                />
-                            @else
-                                <span class="inline-flex h-20 w-20 items-center justify-center text-tpc-secondary text-3xl">
-                                    🎓
-                                </span>
-                            @endif
+                    @php
+                        $isLast     = $loop->last;
+                        $lgColStart = ($isLast && $remainder === 1) ? 'lg:col-start-2' : '';
+                    @endphp
 
-                            {{-- Code --}}
-                            <p class="mt-3 inline-flex items-center rounded-full bg-tpc-primary/10 px-3 py-1 text-xs font-medium text-tpc-secondary">
-                                {{ $program->code }}
+                    <a href="{{ route('academics.show', $program) }}"
+                       class="group bg-white p-6 flex items-center gap-4 hover:bg-tpc-primary/5 transition {{ $lgColStart }}">
+
+                        @if ($program->logo_path)
+                            <img src="{{ asset('storage/' . $program->logo_path) }}"
+                                 alt="{{ $program->code }} logo"
+                                 class="h-16 w-16 object-contain shrink-0" loading="lazy">
+                        @else
+                            <div class="h-16 w-16 shrink-0 flex items-center justify-center bg-tpc-primary/10 text-2xl">🎓</div>
+                        @endif
+
+                        <div class="min-w-0">
+                            <p class="text-[10px] font-bold text-tpc-primary uppercase tracking-wider">
+                                {{ $program->code ?? 'Program' }}
                             </p>
-
-                            {{-- Name --}}
-                            <h2 class="mt-3 text-lg font-semibold text-tpc-ink group-hover:text-tpc-primary transition">
+                            <h3 class="mt-0.5 text-sm font-bold text-tpc-ink group-hover:text-tpc-primary transition leading-snug">
                                 {{ $program->name }}
-                            </h2>
-
-                            {{-- Department (optional) --}}
+                            </h3>
                             @if ($program->department)
-                                <p class="mt-2 text-xs font-medium text-tpc-ink/60">
-                                    Department: <span class="text-tpc-ink/80">{{ $program->department }}</span>
+                                <p class="mt-1 text-xs text-gray-400">{{ $program->department }}</p>
+                            @endif
+                            @if ($program->description)
+                                <p class="mt-2 text-xs text-gray-500 leading-relaxed line-clamp-2">
+                                    {{ $program->description }}
                                 </p>
                             @endif
+                            <span class="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-tpc-primary group-hover:gap-2 transition-all">
+                                Learn more →
+                            </span>
                         </div>
-
-                        {{-- Description --}}
-                        <p class="mt-4 text-sm leading-relaxed text-tpc-ink/70 text-justify">
-                            {{ $program->description ?: 'Short program description will appear here.' }}
-                        </p>
-
-                        <div class="mt-5 flex items-center justify-between">
-                            <span class="text-xs text-tpc-ink/50">Slug: {{ $program->slug }}</span>
-
-                            @if($program->is_active)
-                                <span class="rounded-full bg-tpc-accent/30 px-2 py-1 text-xs font-medium text-tpc-secondary">Active</span>
-                            @else
-                                <span class="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">Inactive</span>
-                            @endif
-                        </div>
-                    </article>
+                    </a>
                 @empty
-                    <div class="w-full rounded-2xl border border-dashed border-tpc-primary/30 p-10 text-center text-tpc-ink/70">
+                    <div class="bg-white col-span-3 py-16 text-center text-gray-400 text-sm border border-dashed border-gray-300">
                         No programs found.
                     </div>
                 @endforelse
             </div>
-
         </div>
     </section>
 
     {{-- CTA --}}
-    <section class="bg-tpc-primary/5">
-        <div class="max-w-7xl mx-auto px-4 py-14">
-            <div class="rounded-2xl border border-tpc-primary/10 bg-white p-8 shadow-sm lg:flex lg:items-center lg:justify-between">
-                <div>
-                    <h2 class="text-2xl font-semibold text-tpc-ink">Need help choosing a program?</h2>
-                    <p class="mt-2 text-sm text-tpc-ink/70">
-                        Contact us for guidance on requirements, enrollment, and academic support.
-                    </p>
-                </div>
-                <div class="mt-6 flex flex-col gap-3 sm:flex-row lg:mt-0">
-                    <a href="{{ route('contact') }}"
-                       class="inline-flex items-center justify-center rounded-lg bg-tpc-primary px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-tpc-secondary">
-                        Contact Us
-                    </a>
-                    <a href="{{ route('news.index') }}"
-                       class="inline-flex items-center justify-center rounded-lg border border-tpc-primary/30 bg-white px-5 py-3 text-sm font-medium text-tpc-primary shadow-sm transition hover:bg-tpc-primary/5">
-                        Latest Updates →
-                    </a>
-                </div>
+    <section class="bg-tpc-primary">
+        <div class="max-w-7xl mx-auto px-4 py-10 lg:flex lg:items-center lg:justify-between gap-8">
+            <div>
+                <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Need Help?</p>
+                <h2 class="text-2xl font-bold text-white">Not sure which program to choose?</h2>
+                <p class="mt-1 text-sm text-white/75">
+                    Contact us for guidance on requirements, enrollment, and academic support.
+                </p>
+            </div>
+            <div class="mt-6 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
+                <a href="{{ route('contact') }}"
+                   class="inline-flex items-center border-2 border-white bg-white px-6 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                    Contact Us
+                </a>
+                <a href="{{ route('news.index') }}"
+                   class="inline-flex items-center border-2 border-white/60 px-6 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                    Latest Updates →
+                </a>
             </div>
         </div>
     </section>
+
 @endsection

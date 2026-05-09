@@ -1,4 +1,3 @@
-{{-- resources/views/partials/footer.blade.php --}}
 @php
     $siteName = \App\Support\Settings::get('site_name', 'Talibon Polytechnic College');
     $address  = \App\Support\Settings::get('address', 'Talibon, Bohol, Philippines');
@@ -6,84 +5,73 @@
     $phone    = \App\Support\Settings::get('phone', '+63 000 000 0000');
 @endphp
 
-<footer id="tpc-footer" class="border-t bg-white">
-    <div class="max-w-7xl mx-auto px-4 py-10">
-        <div class="grid gap-10 lg:grid-cols-3">
-            {{-- Brand --}}
-            <div class="lg:col-span-2">
-                <div class="grid gap-6 md:grid-cols-2 md:items-start">
-                    {{-- Left: Logo + Description --}}
-                    <div class="flex items-start gap-3">
-                        <img
-                            src="{{ asset('images/TPC-Logo.png') }}"
-                            alt="TPC Logo"
-                            class="h-11 w-11 bg-white p-1"
-                        />
+<footer id="tpc-footer">
 
+    {{-- Main footer body --}}
+    <div class="bg-tpc-secondary text-white">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+
+                {{-- Brand --}}
+                <div class="lg:col-span-2">
+                    <div class="flex items-start gap-3">
+                        <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo"
+                             class="h-12 w-12 rounded bg-white p-1.5 shrink-0">
                         <div>
-                            <p class="text-lg font-semibold text-tpc-ink">{{ $siteName }}</p>
-                            <p class="mt-1 text-sm text-tpc-ink/70">
-                                Quality educational opportunities that empower students to become competitive
-                                and responsive to community needs.
+                            <p class="text-lg font-bold text-white leading-tight">{{ $siteName }}</p>
+                            <p class="mt-1.5 text-sm text-white/70 leading-relaxed max-w-sm">
+                                Committed to providing accessible, high-quality education through academic
+                                excellence, innovation, and service to the community.
                             </p>
                         </div>
                     </div>
+                </div>
 
-                    {{-- Right: Contact card --}}
-                    <div class="rounded-2xl border border-tpc-primary/15 bg-white/80 p-5 shadow-sm">
-                        <p class="text-sm font-semibold text-tpc-ink">Contact</p>
+                {{-- Contact --}}
+                <div>
+                    <p class="text-xs font-bold text-tpc-accent uppercase tracking-widest mb-4">Contact</p>
+                    <ul class="space-y-3 text-sm text-white/75">
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 shrink-0 text-tpc-accent">📍</span>
+                            <span>{{ $address }}</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="shrink-0 text-tpc-accent">☎</span>
+                            <span>{{ $phone }}</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="shrink-0 text-tpc-accent">✉</span>
+                            <a href="mailto:{{ $email }}"
+                               class="text-tpc-accent hover:text-white transition font-medium">
+                                {{ $email }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
-                        <div class="mt-4 space-y-3 text-sm text-tpc-ink/80">
-                            <div class="flex items-start gap-3">
-                                <span class="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-tpc-primary/10 text-tpc-primary leading-none">
-                                    📍
-                                </span>
-                                <span class="leading-relaxed">{{ $address }}</span>
-                            </div>
-
-                            <div class="flex items-center gap-3">
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-tpc-primary/10 text-tpc-primary leading-none">
-                                    ☎️
-                                </span>
-                                <span>{{ $phone }}</span>
-                            </div>
-
-                            <div class="flex items-center gap-3">
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-tpc-primary/10 text-tpc-primary leading-none">
-                                    ✉️
-                                </span>
-                                <a class="font-medium text-tpc-primary hover:text-tpc-secondary"
-                                href="mailto:{{ $email }}">
-                                    {{ $email }}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                {{-- Quick links --}}
+                <div>
+                    <p class="text-xs font-bold text-tpc-accent uppercase tracking-widest mb-4">Quick Links</p>
+                    <ul class="space-y-2 text-sm">
+                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('home') }}">Home</a></li>
+                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('home') }}#about">About</a></li>
+                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('academics') }}">Academics</a></li>
+                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('admission') }}">Admission</a></li>
+                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('news.index') }}">News</a></li>
+                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('contact') }}">Contact</a></li>
+                    </ul>
                 </div>
             </div>
-
-            {{-- Quick links --}}
-            <div class="lg:justify-self-end">
-                <p class="text-sm font-semibold text-tpc-ink">Quick Links</p>
-
-                <ul class="mt-4 grid grid-cols-2 gap-x-10 gap-y-3 text-sm">
-                    <li><a class="text-tpc-ink/70 hover:text-tpc-primary" href="{{ route('home') }}">Home</a></li>
-                    <li><a class="text-tpc-ink/70 hover:text-tpc-primary" href="{{ route('home') }}#about">About</a></li>
-                    <li><a class="text-tpc-ink/70 hover:text-tpc-primary" href="{{ route('academics') }}">Academics</a></li>
-                    <li><a class="text-tpc-ink/70 hover:text-tpc-primary" href="{{ route('admission') }}">Admission</a></li>
-                    <li><a class="text-tpc-ink/70 hover:text-tpc-primary" href="{{ route('news.index') }}">News</a></li>
-                    <li><a class="text-tpc-ink/70 hover:text-tpc-primary" href="{{ route('contact') }}">Contact</a></li>
-                </ul>
-            </div>
         </div>
+    </div>
 
-        <div class="mt-10 flex flex-col gap-3 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-xs text-tpc-ink/60">
+    {{-- Copyright strip --}}
+    <div class="bg-tpc-primary">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-xs text-white/80">
                 © {{ now()->year }} {{ $siteName }}. All rights reserved.
             </p>
-            <p class="text-xs text-tpc-ink/60">
-                SecrIT Solutions
-            </p>
+            <p class="text-xs text-white/60">SecrIT Solutions</p>
         </div>
     </div>
 </footer>

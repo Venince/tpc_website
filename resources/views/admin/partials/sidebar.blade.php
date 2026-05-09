@@ -4,8 +4,9 @@
     $dashActive  = $isActive('admin.dashboard');
     $progActive  = $isActive('admin.programs.*');
     $newsActive  = $isActive('admin.news-posts.*');
+    $admActive   = $isActive('admin.admission.*');
     $setActive   = $isActive('admin.settings.*');
-    $usersActive = $isActive('admin.users.*'); // ✅ added
+    $usersActive = $isActive('admin.users.*');
 
     $itemBase   = "group relative flex items-center rounded-2xl py-2.5 text-sm transition duration-200 ease-out active:scale-[0.98]
                    focus:outline-none focus:ring-2 focus:ring-tpc-primary/20";
@@ -58,7 +59,6 @@
                 <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo" class="relative h-9 w-auto">
             </div>
 
-            {{-- Text: always visible on mobile, hidden on desktop-collapsed --}}
             <div
                 class="min-w-0 overflow-hidden transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]
                        opacity-100 max-w-[220px] translate-x-0"
@@ -153,7 +153,29 @@
             <span class="{{ $labelBase }}" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">News Posts</span>
         </a>
 
-        {{-- ✅ Users (Super Admin only) --}}
+        {{-- Admission --}}
+        <a
+            href="{{ route('admin.admission.index') }}"
+            @click="closeMobileSidebar()"
+            title="Admission"
+            class="{{ $itemBase }} {{ $admActive ? $itemActive : $itemIdle }} px-3 gap-3 justify-start
+                   sm:px-3 sm:gap-3 sm:justify-start"
+            :class="sidebarCollapsed ? 'sm:px-2 sm:gap-0 sm:justify-center' : ''"
+        >
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-tpc-primary transition-opacity duration-200 {{ $admActive ? 'opacity-100' : 'opacity-0' }}"></span>
+            <span class="absolute inset-0 rounded-2xl ring-1 transition duration-200 {{ $admActive ? 'ring-tpc-primary/10' : 'ring-transparent group-hover:ring-tpc-primary/10' }}"></span>
+
+            <span class="relative grid h-9 w-9 place-items-center rounded-xl border border-tpc-primary/12 bg-white/70 text-tpc-primary
+                         transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/>
+                </svg>
+            </span>
+
+            <span class="{{ $labelBase }}" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">Admission</span>
+        </a>
+
+        {{-- Users (Super Admin only) --}}
         @if (
             auth()->check()
             && (auth()->user()->is_super_admin ?? false)

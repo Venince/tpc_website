@@ -120,8 +120,14 @@ function setNavActiveByUrl(urlStr = window.location.href) {
   links.forEach((l) => l.classList.remove('tpc-active'));
 
   if (path === '/') {
-    const home = document.getElementById('nav-home');
-    if (home) home.classList.add('tpc-active');
+    // If hash is #about, activate About; otherwise activate Home
+    if (url.hash === '#about') {
+      const about = document.getElementById('nav-about');
+      if (about) about.classList.add('tpc-active');
+    } else {
+      const home = document.getElementById('nav-home');
+      if (home) home.classList.add('tpc-active');
+    }
     return;
   }
 

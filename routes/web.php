@@ -14,6 +14,10 @@ use App\Http\Controllers\Admin\NewsPostController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdmissionController as AdminAdmissionController;
+use App\Http\Controllers\Admin\ProgramDetailController;
+use App\Http\Controllers\Admin\ProgramPersonController;
+use App\Http\Controllers\Admin\ProgramAchievementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +27,8 @@ use App\Http\Controllers\Admin\UserController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/academics', [AcademicsController::class, 'index'])->name('academics');
+Route::get('/academics/{program:slug}', [AcademicsController::class, 'show'])->name('academics.show');
+
 Route::get('/admission', [AdmissionController::class, 'index'])->name('admission');
 
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
@@ -87,6 +93,60 @@ Route::middleware(['auth', 'admin'])
 
         Route::patch('messages/{message}/read', [ContactMessageController::class, 'markRead'])->name('messages.read');
         Route::patch('messages/{message}/unread', [ContactMessageController::class, 'markUnread'])->name('messages.unread');
+
+        Route::get('admission', [AdminAdmissionController::class, 'index'])
+            ->name('admission.index');
+
+        Route::prefix('programs/{program}/details')->name('programs.details.')->group(function () {
+        Route::get('/',                        [ProgramDetailController::class, 'index'])   ->name('index');
+        Route::get('/create',                  [ProgramDetailController::class, 'create'])  ->name('create');
+        Route::post('/',                       [ProgramDetailController::class, 'store'])   ->name('store');
+        Route::get('/{detail}/edit',           [ProgramDetailController::class, 'edit'])    ->name('edit');
+        Route::patch('/{detail}',              [ProgramDetailController::class, 'update'])  ->name('update');
+        Route::delete('/{detail}',             [ProgramDetailController::class, 'destroy']) ->name('destroy');
+        Route::post('/reorder',                [ProgramDetailController::class, 'reorder']) ->name('reorder');
+    });
+
+        Route::prefix('programs/{program}/people')->name('programs.people.')->group(function () {
+        Route::get('/create',        [ProgramPersonController::class, 'create'])  ->name('create');
+        Route::post('/',             [ProgramPersonController::class, 'store'])   ->name('store');
+        Route::get('/{person}/edit', [ProgramPersonController::class, 'edit'])    ->name('edit');
+        Route::patch('/{person}',    [ProgramPersonController::class, 'update'])  ->name('update');
+        Route::delete('/{person}',   [ProgramPersonController::class, 'destroy']) ->name('destroy');
+        Route::post('/reorder',      [ProgramPersonController::class, 'reorder']) ->name('reorder');
+    });
+
+    // ── Program Achievements ────────────────────────────────────────
+    Route::prefix('programs/{program}/achievements')->name('programs.achievements.')->group(function () {
+        Route::get('/create',             [ProgramAchievementController::class, 'create'])  ->name('create');
+        Route::post('/',                  [ProgramAchievementController::class, 'store'])   ->name('store');
+        Route::get('/{achievement}/edit', [ProgramAchievementController::class, 'edit'])    ->name('edit');
+        Route::patch('/{achievement}',    [ProgramAchievementController::class, 'update'])  ->name('update');
+        Route::delete('/{achievement}',   [ProgramAchievementController::class, 'destroy']) ->name('destroy');
+        Route::post('/reorder',           [ProgramAchievementController::class, 'reorder']) ->name('reorder');
+    });
+
+        // Section edit
+        Route::get('admission/sections/{section}/edit', [AdminAdmissionController::class, 'editSection'])
+            ->name('admission.sections.edit');
+        Route::patch('admission/sections/{section}', [AdminAdmissionController::class, 'updateSection'])
+            ->name('admission.sections.update');
+
+        // Section items
+        Route::get('admission/sections/{section}/items/create', [AdminAdmissionController::class, 'createItem'])
+            ->name('admission.sections.items.create');
+        Route::post('admission/sections/{section}/items', [AdminAdmissionController::class, 'storeItem'])
+            ->name('admission.sections.items.store');
+        Route::get('admission/sections/{section}/items/{item}/edit', [AdminAdmissionController::class, 'editItem'])
+            ->name('admission.sections.items.edit');
+        Route::patch('admission/sections/{section}/items/{item}', [AdminAdmissionController::class, 'updateItem'])
+            ->name('admission.sections.items.update');
+        Route::delete('admission/sections/{section}/items/{item}', [AdminAdmissionController::class, 'destroyItem'])
+            ->name('admission.sections.items.destroy');
+
+        // Drag-to-reorder (AJAX)
+        Route::post('admission/sections/{section}/reorder', [AdminAdmissionController::class, 'reorderItems'])
+            ->name('admission.sections.reorder');
 
         /*
         |----------------------------------------------------------------------

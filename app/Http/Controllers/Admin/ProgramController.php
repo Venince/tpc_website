@@ -115,4 +115,10 @@ class ProgramController extends Controller
 
         return $slug;
     }
+
+    public function show(Program $program)
+    {
+        $program->load(['people', 'achievements']);
+        return view('admin.programs.show', compact('program'));
+    }
 }
