@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdmissionController as AdminAdmissionController;
 use App\Http\Controllers\Admin\ProgramDetailController;
 use App\Http\Controllers\Admin\ProgramPersonController;
 use App\Http\Controllers\Admin\ProgramAchievementController;
+use App\Http\Controllers\Admin\AboutSlideController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +49,6 @@ Route::match(['get', 'post'], '/register', fn () => abort(404));
 |----------------------------------------------------------------------
 | BLOCK OLD URLS
 |----------------------------------------------------------------------
-| Completely remove these URLs (always 404).
 */
 Route::any('/admin/{any?}', fn () => abort(404))->where('any', '.*');
 Route::any('/login/{any?}', fn () => abort(404))->where('any', '.*');
@@ -58,7 +58,6 @@ Route::any('/dashboard/{any?}', fn () => abort(404))->where('any', '.*');
 |----------------------------------------------------------------------
 | ADMIN LOGIN URL (alias)
 |----------------------------------------------------------------------
-| Friendly URL for admins: /tpc_admin/login -> goes to route('login') = /tpc_login
 */
 Route::get('/tpc_admin/login', function () {
     abort_unless(Route::has('login'), 404);
@@ -69,8 +68,6 @@ Route::get('/tpc_admin/login', function () {
 |----------------------------------------------------------------------
 | ADMIN PANEL
 |----------------------------------------------------------------------
-| Admin + Super Admin can access this group.
-| URL is /tpc_admin
 */
 Route::middleware(['auth', 'admin'])
     ->prefix('tpc_admin')
@@ -90,7 +87,6 @@ Route::middleware(['auth', 'admin'])
         Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
         Route::get('messages/unread-count', [ContactMessageController::class, 'unreadCount'])->name('messages.unreadCount');
         Route::get('messages/{message}', [ContactMessageController::class, 'show'])->name('messages.show');
-
         Route::patch('messages/{message}/read', [ContactMessageController::class, 'markRead'])->name('messages.read');
         Route::patch('messages/{message}/unread', [ContactMessageController::class, 'markUnread'])->name('messages.unread');
 
@@ -98,33 +94,32 @@ Route::middleware(['auth', 'admin'])
             ->name('admission.index');
 
         Route::prefix('programs/{program}/details')->name('programs.details.')->group(function () {
-        Route::get('/',                        [ProgramDetailController::class, 'index'])   ->name('index');
-        Route::get('/create',                  [ProgramDetailController::class, 'create'])  ->name('create');
-        Route::post('/',                       [ProgramDetailController::class, 'store'])   ->name('store');
-        Route::get('/{detail}/edit',           [ProgramDetailController::class, 'edit'])    ->name('edit');
-        Route::patch('/{detail}',              [ProgramDetailController::class, 'update'])  ->name('update');
-        Route::delete('/{detail}',             [ProgramDetailController::class, 'destroy']) ->name('destroy');
-        Route::post('/reorder',                [ProgramDetailController::class, 'reorder']) ->name('reorder');
-    });
+            Route::get('/',               [ProgramDetailController::class, 'index'])   ->name('index');
+            Route::get('/create',         [ProgramDetailController::class, 'create'])  ->name('create');
+            Route::post('/',              [ProgramDetailController::class, 'store'])   ->name('store');
+            Route::get('/{detail}/edit',  [ProgramDetailController::class, 'edit'])    ->name('edit');
+            Route::patch('/{detail}',     [ProgramDetailController::class, 'update'])  ->name('update');
+            Route::delete('/{detail}',    [ProgramDetailController::class, 'destroy']) ->name('destroy');
+            Route::post('/reorder',       [ProgramDetailController::class, 'reorder']) ->name('reorder');
+        });
 
         Route::prefix('programs/{program}/people')->name('programs.people.')->group(function () {
-        Route::get('/create',        [ProgramPersonController::class, 'create'])  ->name('create');
-        Route::post('/',             [ProgramPersonController::class, 'store'])   ->name('store');
-        Route::get('/{person}/edit', [ProgramPersonController::class, 'edit'])    ->name('edit');
-        Route::patch('/{person}',    [ProgramPersonController::class, 'update'])  ->name('update');
-        Route::delete('/{person}',   [ProgramPersonController::class, 'destroy']) ->name('destroy');
-        Route::post('/reorder',      [ProgramPersonController::class, 'reorder']) ->name('reorder');
-    });
+            Route::get('/create',         [ProgramPersonController::class, 'create'])  ->name('create');
+            Route::post('/',              [ProgramPersonController::class, 'store'])   ->name('store');
+            Route::get('/{person}/edit',  [ProgramPersonController::class, 'edit'])    ->name('edit');
+            Route::patch('/{person}',     [ProgramPersonController::class, 'update'])  ->name('update');
+            Route::delete('/{person}',    [ProgramPersonController::class, 'destroy']) ->name('destroy');
+            Route::post('/reorder',       [ProgramPersonController::class, 'reorder']) ->name('reorder');
+        });
 
-    // ── Program Achievements ────────────────────────────────────────
-    Route::prefix('programs/{program}/achievements')->name('programs.achievements.')->group(function () {
-        Route::get('/create',             [ProgramAchievementController::class, 'create'])  ->name('create');
-        Route::post('/',                  [ProgramAchievementController::class, 'store'])   ->name('store');
-        Route::get('/{achievement}/edit', [ProgramAchievementController::class, 'edit'])    ->name('edit');
-        Route::patch('/{achievement}',    [ProgramAchievementController::class, 'update'])  ->name('update');
-        Route::delete('/{achievement}',   [ProgramAchievementController::class, 'destroy']) ->name('destroy');
-        Route::post('/reorder',           [ProgramAchievementController::class, 'reorder']) ->name('reorder');
-    });
+        Route::prefix('programs/{program}/achievements')->name('programs.achievements.')->group(function () {
+            Route::get('/create',                [ProgramAchievementController::class, 'create'])  ->name('create');
+            Route::post('/',                     [ProgramAchievementController::class, 'store'])   ->name('store');
+            Route::get('/{achievement}/edit',    [ProgramAchievementController::class, 'edit'])    ->name('edit');
+            Route::patch('/{achievement}',       [ProgramAchievementController::class, 'update'])  ->name('update');
+            Route::delete('/{achievement}',      [ProgramAchievementController::class, 'destroy']) ->name('destroy');
+            Route::post('/reorder',              [ProgramAchievementController::class, 'reorder']) ->name('reorder');
+        });
 
         // Section edit
         Route::get('admission/sections/{section}/edit', [AdminAdmissionController::class, 'editSection'])
@@ -143,14 +138,17 @@ Route::middleware(['auth', 'admin'])
             ->name('admission.sections.items.update');
         Route::delete('admission/sections/{section}/items/{item}', [AdminAdmissionController::class, 'destroyItem'])
             ->name('admission.sections.items.destroy');
-
-        // Drag-to-reorder (AJAX)
         Route::post('admission/sections/{section}/reorder', [AdminAdmissionController::class, 'reorderItems'])
             ->name('admission.sections.reorder');
 
+        // ── About Slides ────────────────────────────────────────────
+        Route::resource('about-slides', AboutSlideController::class)
+            ->parameters(['about-slides' => 'aboutSlide'])
+            ->except(['show']);
+
         /*
         |----------------------------------------------------------------------
-        | SUPER ADMIN ONLY: Manage Admin/Staff accounts
+        | SUPER ADMIN ONLY
         |----------------------------------------------------------------------
         */
         Route::middleware('super_admin')->group(function () {

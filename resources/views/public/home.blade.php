@@ -9,203 +9,328 @@
          MASTHEAD BANNER
     ══════════════════════════════════════ --}}
     <section class="relative overflow-hidden bg-tpc-primary">
-        {{-- Background photo with dark overlay --}}
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/school-bg.jpg') }}" alt="" aria-hidden="true"
                  class="h-full w-full object-cover object-center opacity-40">
         </div>
 
-        <div class="relative z-10 max-w-7xl mx-auto px-4 py-12 lg:py-16">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 lg:py-24">
             <div class="max-w-3xl">
-                <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-3">
-                    Official College Publication
-                </p>
+                <span class="inline-block bg-white/15 backdrop-blur-sm text-tpc-accent text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-4">
+                    Official College Website
+                </span>
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
                     Talibon Polytechnic College
                 </h1>
-                <p class="mt-3 text-base text-white/80 max-w-xl leading-relaxed">
+                <p class="mt-4 text-base text-white/80 max-w-xl leading-relaxed">
                     A student-centered institution committed to quality education, research, and community development in Talibon, Bohol.
                 </p>
-                <div class="mt-6 flex flex-wrap gap-3">
+                <div class="mt-8 flex flex-wrap gap-3">
                     <a href="{{ route('academics') }}"
-                       class="inline-flex items-center rounded border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary transition hover:bg-tpc-accent hover:border-tpc-accent">
+                       class="inline-flex items-center gap-2 rounded-lg border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary transition hover:bg-tpc-accent hover:border-tpc-accent">
                         Explore Programs
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
                     </a>
                     <a href="{{ route('admission') }}"
-                       class="inline-flex items-center rounded border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white hover:text-tpc-primary">
+                       class="inline-flex items-center rounded-lg border-2 border-white/60 px-6 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-tpc-primary">
                         Admission Guide
                     </a>
+                </div>
+            </div>
+        </div>
+
+        {{-- Wave divider --}}
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-10">
+                <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    {{-- ══════════════════════════════════════
+         ABOUT – CAROUSEL
+    ══════════════════════════════════════ --}}
+    <section id="about" class="scroll-mt-20 bg-white overflow-hidden border-b border-gray-200">
+
+        <div class="max-w-7xl mx-auto px-4 pt-10 pb-2 flex items-center gap-4">
+            <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
+            <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">About the College</h2>
+            <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        @if($aboutSlides->isNotEmpty())
+        <div class="relative select-none py-8" id="about-carousel">
+
+            <div id="about-track"
+                 class="relative mx-auto flex items-center justify-center overflow-visible"
+                 style="height: 320px; max-width: 900px;">
+
+                @foreach($aboutSlides as $i => $slide)
+                <div class="about-slide absolute rounded-2xl overflow-hidden shadow-lg cursor-pointer"
+                     data-index="{{ $i }}"
+                     style="width: 560px; max-width: 78vw; will-change: transform, opacity;">
+                    <img src="{{ asset('storage/' . $slide->image_path) }}"
+                         alt="About TPC"
+                         class="w-full object-contain block pointer-events-none bg-gray-100"
+                         style="height: 280px;"
+                         loading="lazy"
+                         draggable="false">
+                </div>
+                @endforeach
+            </div>
+
+            <button id="about-prev"
+                    class="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 z-30
+                           h-10 w-10 rounded-full bg-white border border-gray-200 shadow
+                           text-gray-600 hover:text-tpc-primary hover:border-tpc-primary
+                           flex items-center justify-center transition"
+                    aria-label="Previous slide">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button id="about-next"
+                    class="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 z-30
+                           h-10 w-10 rounded-full bg-white border border-gray-200 shadow
+                           text-gray-600 hover:text-tpc-primary hover:border-tpc-primary
+                           flex items-center justify-center transition"
+                    aria-label="Next slide">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+
+            <div class="flex justify-center gap-2 pt-2" id="about-dots">
+                @foreach($aboutSlides as $i => $slide)
+                    <button class="about-dot transition-all duration-300 rounded-full h-2"
+                            data-index="{{ $i }}"
+                            aria-label="Slide {{ $i + 1 }}"></button>
+                @endforeach
+            </div>
+        </div>
+
+        <style>
+            .about-slide {
+                transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            opacity  0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            z-index  0s;
+            }
+            .about-slide[data-pos="0"]  { transform: translateX(0) scale(1) rotateY(0deg); opacity: 1; z-index: 20; }
+            .about-slide[data-pos="-1"] { transform: translateX(-62%) scale(0.78) rotateY(18deg); opacity: 0.55; z-index: 10; }
+            .about-slide[data-pos="1"]  { transform: translateX(62%) scale(0.78) rotateY(-18deg); opacity: 0.55; z-index: 10; }
+            .about-slide[data-pos="-2"] { transform: translateX(-100%) scale(0.6) rotateY(28deg); opacity: 0.25; z-index: 5; }
+            .about-slide[data-pos="2"]  { transform: translateX(100%) scale(0.6) rotateY(-28deg); opacity: 0.25; z-index: 5; }
+            .about-slide[data-pos="hidden"] { transform: translateX(0) scale(0.5); opacity: 0; z-index: 0; pointer-events: none; }
+            .about-dot { background-color: #d1d5db; width: 0.5rem; }
+            .about-dot.is-active { background-color: #166534; width: 1.5rem; }
+            #about-track { perspective: 1200px; }
+        </style>
+
+        <script>
+        function initAboutCarousel() {
+            const slides = Array.from(document.querySelectorAll('.about-slide'));
+            const dots   = Array.from(document.querySelectorAll('.about-dot'));
+            const total  = slides.length;
+            if (total === 0) return;
+
+            if (window._aboutCarouselTimer) {
+                clearInterval(window._aboutCarouselTimer);
+                window._aboutCarouselTimer = null;
+            }
+
+            let current = 0;
+
+            function posFor(slideIdx, active) {
+                let diff = slideIdx - active;
+                if (diff > Math.floor(total / 2))  diff -= total;
+                if (diff < -Math.floor(total / 2)) diff += total;
+                if (diff < -2 || diff > 2) return 'hidden';
+                return String(diff);
+            }
+
+            function render() {
+                slides.forEach((el, i) => { el.dataset.pos = posFor(i, current); });
+                dots.forEach((d, i) => { d.classList.toggle('is-active', i === current); });
+            }
+
+            function goTo(idx) { current = ((idx % total) + total) % total; render(); }
+            function next() { goTo(current + 1); }
+            function prev() { goTo(current - 1); }
+
+            function startAutoplay() {
+                if (window._aboutCarouselTimer) clearInterval(window._aboutCarouselTimer);
+                window._aboutCarouselTimer = setInterval(next, 4000);
+            }
+
+            document.getElementById('about-next')?.addEventListener('click', () => { next(); startAutoplay(); });
+            document.getElementById('about-prev')?.addEventListener('click', () => { prev(); startAutoplay(); });
+            dots.forEach(d => { d.addEventListener('click', () => { goTo(+d.dataset.index); startAutoplay(); }); });
+            slides.forEach((el, i) => { el.addEventListener('click', () => { if (el.dataset.pos !== '0') { goTo(i); startAutoplay(); } }); });
+
+            let touchStartX = 0;
+            const track = document.getElementById('about-track');
+            track?.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+            track?.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); startAutoplay(); }
+            }, { passive: true });
+
+            render();
+            startAutoplay();
+        }
+
+        window.initAboutCarousel = initAboutCarousel;
+        initAboutCarousel();
+        </script>
+
+        @endif
+
+        {{-- Vision / Mission --}}
+        <div class="max-w-7xl mx-auto px-4 pb-12">
+            <div class="grid gap-5 sm:grid-cols-2">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="h-1.5 bg-tpc-primary"></div>
+                    <div class="p-7">
+                        <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Vision</p>
+                        <p class="text-base leading-relaxed text-gray-700">
+                            An institution committed to provide quality educational opportunities and academic programs
+                            that empower students to become competitive and responsive to the needs of the community.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="h-1.5 bg-tpc-accent"></div>
+                    <div class="p-7">
+                        <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Mission</p>
+                        <p class="text-base leading-relaxed text-gray-700">
+                            To provide quality educational opportunities and support services, strengthen innovative
+                            research and extension, and produce competent individuals in technological and professional
+                            fields for community transformation and development.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     {{-- ══════════════════════════════════════
-         NEWSPAPER BODY
+         NEWS
     ══════════════════════════════════════ --}}
-    <div class="max-w-7xl mx-auto px-4 py-10">
+    <section class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-14">
 
-        {{-- Section label --}}
-        <div class="flex items-center gap-4 mb-6">
-            <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
-            <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Latest News & Announcements</h2>
-            <div class="flex-1 h-px bg-gray-200"></div>
-            <a href="{{ route('news.index') }}"
-               class="text-xs font-bold text-tpc-primary hover:text-tpc-secondary uppercase tracking-wide transition">
-                View All →
-            </a>
-        </div>
+            <div class="flex items-center gap-4 mb-10">
+                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
+                <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Latest News & Announcements</h2>
+                <div class="flex-1 h-px bg-gray-200"></div>
+                <a href="{{ route('news.index') }}"
+                   class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary hover:text-tpc-secondary uppercase tracking-wide transition">
+                    View All
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
 
-        @if($latestNews->isNotEmpty())
-        <div class="grid gap-6 lg:grid-cols-3">
+            @if($latestNews->isNotEmpty())
 
-            {{-- ── Featured article (left, large) ── --}}
-            @php $featured = $latestNews->first(); @endphp
-            <article class="lg:col-span-2 group border border-gray-200 hover:border-tpc-primary transition bg-white">
-                @if($featured->image_path)
-                    <a href="{{ route('news.show', $featured) }}" class="block overflow-hidden">
-                        <img src="{{ asset('storage/' . $featured->image_path) }}"
-                            alt="{{ $featured->title }}"
-                            class="w-full object-contain group-hover:scale-[1.02] transition duration-300">
-                    </a>
-                @else
-                    <div class="w-full h-3 bg-tpc-primary"></div>
+                {{-- Featured --}}
+                @php $featured = $latestNews->first(); @endphp
+                <a href="{{ route('news.show', $featured) }}"
+                   class="group block bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden mb-6">
+                    <div class="sm:flex">
+                        @if($featured->image_path)
+                            <div class="sm:w-2/5 bg-gray-100 flex items-center justify-center overflow-hidden">
+                                <img src="{{ asset('storage/' . $featured->image_path) }}"
+                                     alt="{{ $featured->title }}"
+                                     class="w-full h-52 sm:h-full object-contain group-hover:scale-[1.02] transition duration-300"
+                                     loading="lazy" />
+                            </div>
+                        @endif
+                        <div class="flex-1 p-7 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="inline-block bg-tpc-primary text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                                        {{ $featured->category ?? 'Announcement' }}
+                                    </span>
+                                    <span class="inline-block bg-tpc-accent/20 text-tpc-primary text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                                        Latest
+                                    </span>
+                                    @if($featured->published_at)
+                                        <time class="text-xs text-gray-400 ml-auto" datetime="{{ $featured->published_at->toDateString() }}">
+                                            {{ $featured->published_at->format('F d, Y') }}
+                                        </time>
+                                    @endif
+                                </div>
+                                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 group-hover:text-tpc-primary transition leading-snug mb-3">
+                                    {{ $featured->title }}
+                                </h3>
+                                <p class="text-sm text-gray-500 leading-relaxed line-clamp-2">
+                                    {{ $featured->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($featured->body), 160) }}
+                                </p>
+                            </div>
+                            <div class="mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-tpc-primary group-hover:gap-3 transition-all">
+                                Read Article
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                {{-- Remaining --}}
+                @if($latestNews->count() > 1)
+                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach($latestNews->skip(1) as $post)
+                        <article class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden flex flex-col">
+                            <div class="h-1.5 w-full bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300"></div>
+                            @if($post->image_path)
+                                <a href="{{ route('news.show', $post) }}" class="block bg-gray-50 overflow-hidden">
+                                    <div class="flex items-center justify-center h-40 p-3">
+                                        <img src="{{ asset('storage/' . $post->image_path) }}"
+                                             alt="{{ $post->title }}"
+                                             class="max-h-full w-full object-contain group-hover:scale-[1.02] transition duration-300"
+                                             loading="lazy" />
+                                    </div>
+                                </a>
+                            @endif
+                            <div class="p-5 flex flex-col flex-1">
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
+                                        {{ $post->category ?? 'Announcement' }}
+                                    </span>
+                                    @if($post->published_at)
+                                        <time class="text-[11px] text-gray-400">
+                                            {{ $post->published_at->format('M d, Y') }}
+                                        </time>
+                                    @endif
+                                </div>
+                                <h4 class="text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition leading-snug flex-1">
+                                    <a href="{{ route('news.show', $post) }}">{{ $post->title }}</a>
+                                </h4>
+                                <div class="mt-4 pt-3 border-t border-gray-100">
+                                    <a href="{{ route('news.show', $post) }}"
+                                       class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary group-hover:gap-2 transition-all duration-200">
+                                        Read Article
+                                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
                 @endif
 
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="bg-tpc-primary text-white text-[11px] font-bold uppercase tracking-wider px-2 py-0.5">
-                            {{ $featured->category ?? 'Announcement' }}
-                        </span>
-                        @if($featured->published_at)
-                            <time class="text-xs text-gray-400" datetime="{{ $featured->published_at->toDateString() }}">
-                                {{ $featured->published_at->format('F d, Y') }}
-                            </time>
-                        @endif
-                    </div>
-
-                    <h3 class="text-2xl font-bold text-tpc-ink group-hover:text-tpc-primary transition leading-snug">
-                        <a href="{{ route('news.show', $featured) }}">{{ $featured->title }}</a>
-                    </h3>
-
-                    <p class="mt-3 text-sm leading-relaxed text-gray-600">
-                        {{ $featured->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($featured->body), 200) }}
-                    </p>
-
-                    <div class="mt-5 pt-4 border-t border-gray-100">
-                        <a href="{{ route('news.show', $featured) }}"
-                           class="text-sm font-bold text-tpc-primary hover:text-tpc-secondary transition">
-                            Read Full Article →
-                        </a>
-                    </div>
+            @else
+                <div class="py-20 text-center text-gray-400 text-sm border border-dashed border-gray-300 rounded-2xl bg-white">
+                    No news posts published yet.
                 </div>
-            </article>
-
-            {{-- ── Sidebar articles (right column) ── --}}
-            <aside class="flex flex-col gap-0 border border-gray-200 divide-y divide-gray-200 bg-white">
-
-                {{-- Sidebar header --}}
-                <div class="px-4 py-3 bg-tpc-primary">
-                    <p class="text-xs font-bold text-white uppercase tracking-widest">More Stories</p>
-                </div>
-
-                @foreach($latestNews->skip(1) as $post)
-                    <article class="group flex gap-3 p-4 hover:bg-gray-50 transition">
-                        @if($post->image_path)
-                            <a href="{{ route('news.show', $post) }}" class="shrink-0">
-                                <img src="{{ asset('storage/' . $post->image_path) }}"
-                                    alt="{{ $post->title }}"
-                                    class="h-16 w-20 object-contain bg-gray-50"
-                                    loading="lazy">
-                            </a>
-                        @else
-                            <div class="shrink-0 h-16 w-1.5 bg-tpc-primary rounded-sm"></div>
-                        @endif
-
-                        <div class="min-w-0">
-                            <span class="text-[10px] font-bold text-tpc-primary uppercase tracking-wide">
-                                {{ $post->category ?? 'Announcement' }}
-                            </span>
-                            <h4 class="mt-0.5 text-sm font-bold text-tpc-ink group-hover:text-tpc-primary transition leading-snug line-clamp-2">
-                                <a href="{{ route('news.show', $post) }}">{{ $post->title }}</a>
-                            </h4>
-                            @if($post->published_at)
-                                <time class="mt-1 block text-[11px] text-gray-400">
-                                    {{ $post->published_at->format('M d, Y') }}
-                                </time>
-                            @endif
-                        </div>
-                    </article>
-                @endforeach
-
-                <div class="p-4 mt-auto">
-                    <a href="{{ route('news.index') }}"
-                       class="block w-full text-center border-2 border-tpc-primary py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
-                        All News →
-                    </a>
-                </div>
-            </aside>
-        </div>
-
-        @else
-        <div class="border border-dashed border-gray-300 py-16 text-center text-gray-400">
-            No news posts published yet.
-        </div>
-        @endif
-    </div>
-
-    {{-- ══════════════════════════════════════
-         DIVIDER
-    ══════════════════════════════════════ --}}
-    <div class="border-t-4 border-double border-gray-300"></div>
-
-    {{-- ══════════════════════════════════════
-         ABOUT / VISION / MISSION
-    ══════════════════════════════════════ --}}
-    <section id="about" class="scroll-mt-20 bg-gray-50 border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-12">
-
-            <div class="flex items-center gap-4 mb-8">
-                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
-                <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">About the College</h2>
-                <div class="flex-1 h-px bg-gray-300"></div>
-            </div>
-
-            <div class="grid gap-8 lg:grid-cols-3">
-                {{-- Intro --}}
-                <div class="lg:col-span-1">
-                    <h3 class="text-xl font-bold text-tpc-ink leading-snug">
-                        Building competitive and community-responsive graduates
-                    </h3>
-                    <p class="mt-3 text-sm leading-relaxed text-gray-600">
-                        Talibon Polytechnic College is committed to providing accessible, high-quality education
-                        through academic excellence, innovation, and service to the community.
-                    </p>
-                    {{-- <a href="{{ route('academics') }}"
-                       class="mt-5 inline-flex items-center text-sm font-bold text-tpc-primary hover:text-tpc-secondary transition">
-                        View Programs →
-                    </a> --}}
-                </div>
-
-                {{-- Vision --}}
-                <div class="bg-white border border-gray-200 border-l-4 border-l-tpc-primary p-6">
-                    <p class="text-[11px] font-bold tracking-widest text-tpc-primary uppercase mb-2">Vision</p>
-                    <p class="text-sm leading-relaxed text-gray-700">
-                        An institution committed to provide quality educational opportunities and academic programs
-                        that empower students to become competitive and responsive to the needs of the community.
-                    </p>
-                </div>
-
-                {{-- Mission --}}
-                <div class="bg-white border border-gray-200 border-l-4 border-l-tpc-secondary p-6">
-                    <p class="text-[11px] font-bold tracking-widest text-tpc-primary uppercase mb-2">Mission</p>
-                    <p class="text-sm leading-relaxed text-gray-700">
-                        To provide quality educational opportunities and support services, strengthen innovative
-                        research and extension, and produce competent individuals in technological and professional
-                        fields for community transformation and development.
-                    </p>
-                </div>
-            </div>
+            @endif
         </div>
     </section>
 
@@ -213,60 +338,62 @@
          PROGRAMS
     ══════════════════════════════════════ --}}
     <section class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-12">
+        <div class="max-w-7xl mx-auto px-4 py-14">
 
-            <div class="flex items-center gap-4 mb-8">
+            <div class="flex items-center gap-4 mb-10">
                 <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
                 <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Academic Programs</h2>
                 <div class="flex-1 h-px bg-gray-200"></div>
-                {{-- <a href="{{ route('academics') }}"
-                   class="text-xs font-bold text-tpc-primary hover:text-tpc-secondary uppercase tracking-wide transition">
-                    View All →
-                </a> --}}
             </div>
 
             @php
-                $programCount = $programs->count();
+                $programCount     = $programs->count();
                 $lastRowRemainder = $programCount % 3;
             @endphp
 
-            <div class="grid gap-px bg-gray-200 border border-gray-200 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($programs as $program)
                     @php
-                        $isLast = $loop->last;
-                        $colStart = ($isLast && $lastRowRemainder === 1) ? 'lg:col-start-2' : '';
+                        $isLast   = $loop->last;
+                        $lgCenter = ($isLast && $lastRowRemainder === 1) ? 'lg:col-start-2' : '';
                     @endphp
-                    <article class="group bg-white p-6 flex items-center gap-4 hover:bg-tpc-primary/5 transition {{ $colStart }}">
+                    <a href="{{ route('academics.show', $program) }}"
+                       class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden flex items-center gap-4 p-5 {{ $lgCenter }}">
+                        <div class="h-1.5 absolute top-0 left-0 right-0 bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300 rounded-t-2xl"></div>
                         @if($program->logo_path)
-                            <img src="{{ asset('storage/' . $program->logo_path) }}"
-                                 alt="{{ $program->code }} logo"
-                                 class="h-14 w-14 object-contain shrink-0"
-                                 loading="lazy">
+                            <div class="shrink-0 h-14 w-14 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center p-2">
+                                <img src="{{ asset('storage/' . $program->logo_path) }}"
+                                     alt="{{ $program->code }} logo"
+                                     class="h-full w-full object-contain" loading="lazy">
+                            </div>
                         @else
-                            <div class="h-14 w-14 shrink-0 flex items-center justify-center bg-tpc-primary/10 text-2xl">
+                            <div class="shrink-0 h-14 w-14 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center text-2xl">
                                 🎓
                             </div>
                         @endif
-                        <div>
-                            <p class="text-[10px] font-bold text-tpc-primary uppercase tracking-wider">
+                        <div class="min-w-0">
+                            <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-1">
                                 {{ $program->code ?? 'Program' }}
-                            </p>
-                            <h3 class="mt-0.5 text-sm font-bold text-tpc-ink group-hover:text-tpc-primary transition leading-snug">
+                            </span>
+                            <h3 class="text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition leading-snug">
                                 {{ $program->name }}
                             </h3>
                         </div>
-                    </article>
+                    </a>
                 @empty
-                    <div class="bg-white col-span-3 py-12 text-center text-gray-400 text-sm">
+                    <div class="col-span-3 py-16 text-center text-gray-400 text-sm border border-dashed border-gray-300 rounded-2xl">
                         No programs added yet.
                     </div>
                 @endforelse
             </div>
 
-            <div class="mt-6 text-center">
+            <div class="mt-8 text-center">
                 <a href="{{ route('academics') }}"
-                   class="inline-flex items-center border-2 border-tpc-primary px-6 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
-                    View All Academic Programs →
+                   class="inline-flex items-center gap-2 rounded-lg border-2 border-tpc-primary px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                    View All Academic Programs
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </a>
             </div>
         </div>
@@ -276,21 +403,26 @@
          CTA BANNER
     ══════════════════════════════════════ --}}
     <section class="bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-10 lg:flex lg:items-center lg:justify-between gap-8">
+        <div class="max-w-7xl mx-auto px-4 py-14 lg:flex lg:items-center lg:justify-between gap-8">
             <div>
-                <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Enrollment Open</p>
-                <h2 class="text-2xl font-bold text-white">Ready to enroll at TPC?</h2>
-                <p class="mt-1 text-sm text-white/75">
+                <span class="inline-block bg-white/15 backdrop-blur-sm text-tpc-accent text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-3">
+                    Enrollment Open
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white">Ready to enroll at TPC?</h2>
+                <p class="mt-2 text-sm text-white/75 max-w-lg">
                     Review our admission requirements and start your application today.
                 </p>
             </div>
-            <div class="mt-6 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
+            <div class="mt-8 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
                 <a href="{{ route('admission') }}"
-                   class="inline-flex items-center border-2 border-white bg-white px-6 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center gap-2 rounded-lg border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     Admission Guide
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </a>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center border-2 border-white/60 px-6 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center rounded-lg border-2 border-white/60 px-6 py-3 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                     Contact Us
                 </a>
             </div>

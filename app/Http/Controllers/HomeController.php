@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AboutSlide;
 use App\Models\NewsPost;
 use App\Models\Program;
 
@@ -20,6 +21,8 @@ class HomeController extends Controller
                 ->orderByDesc('published_at')
                 ->take(3)
                 ->get(),
+
+            'aboutSlides' => AboutSlide::active()->get(),
         ]);
     }
 }

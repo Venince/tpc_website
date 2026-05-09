@@ -1,12 +1,13 @@
 @php
     $isActive = fn ($pattern) => request()->routeIs($pattern);
 
-    $dashActive  = $isActive('admin.dashboard');
-    $progActive  = $isActive('admin.programs.*');
-    $newsActive  = $isActive('admin.news-posts.*');
-    $admActive   = $isActive('admin.admission.*');
-    $setActive   = $isActive('admin.settings.*');
-    $usersActive = $isActive('admin.users.*');
+    $dashActive    = $isActive('admin.dashboard');
+    $progActive    = $isActive('admin.programs.*');
+    $newsActive    = $isActive('admin.news-posts.*');
+    $admActive     = $isActive('admin.admission.*');
+    $slidesActive  = $isActive('admin.about-slides.*');
+    $setActive     = $isActive('admin.settings.*');
+    $usersActive   = $isActive('admin.users.*');
 
     $itemBase   = "group relative flex items-center rounded-2xl py-2.5 text-sm transition duration-200 ease-out active:scale-[0.98]
                    focus:outline-none focus:ring-2 focus:ring-tpc-primary/20";
@@ -175,12 +176,33 @@
             <span class="{{ $labelBase }}" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">Admission</span>
         </a>
 
+        {{-- About Slides --}}
+        <a
+            href="{{ route('admin.about-slides.index') }}"
+            @click="closeMobileSidebar()"
+            title="About Slides"
+            class="{{ $itemBase }} {{ $slidesActive ? $itemActive : $itemIdle }} px-3 gap-3 justify-start
+                   sm:px-3 sm:gap-3 sm:justify-start"
+            :class="sidebarCollapsed ? 'sm:px-2 sm:gap-0 sm:justify-center' : ''"
+        >
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-tpc-primary transition-opacity duration-200 {{ $slidesActive ? 'opacity-100' : 'opacity-0' }}"></span>
+            <span class="absolute inset-0 rounded-2xl ring-1 transition duration-200 {{ $slidesActive ? 'ring-tpc-primary/10' : 'ring-transparent group-hover:ring-tpc-primary/10' }}"></span>
+
+            <span class="relative grid h-9 w-9 place-items-center rounded-xl border border-tpc-primary/12 bg-white/70 text-tpc-primary
+                         transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="12" rx="2"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 6V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1"/>
+                    <circle cx="12" cy="12" r="2"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12h.01M18 12h.01"/>
+                </svg>
+            </span>
+
+            <span class="{{ $labelBase }}" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">About Slides</span>
+        </a>
+
         {{-- Users (Super Admin only) --}}
-        @if (
-            auth()->check()
-            && (auth()->user()->is_super_admin ?? false)
-            && \Illuminate\Support\Facades\Route::has('admin.users.index')
-        )
+        @if(auth()->check() && (auth()->user()->is_super_admin ?? false) && \Illuminate\Support\Facades\Route::has('admin.users.index'))
             <a
                 href="{{ route('admin.users.index') }}"
                 @click="closeMobileSidebar()"

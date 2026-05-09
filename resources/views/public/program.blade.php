@@ -6,49 +6,72 @@
 @section('content')
 
     {{-- HEADER --}}
-    <section class="bg-tpc-primary">
+    <section class="relative overflow-hidden bg-tpc-primary">
         <div class="max-w-7xl mx-auto px-4 py-10">
             <a href="{{ route('academics') }}"
-               class="inline-flex items-center gap-1.5 text-xs font-semibold text-white/60 hover:text-white transition mb-4">
-                ← Back to Programs
+               class="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white uppercase tracking-wide transition mb-6">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back to Programs
             </a>
+
             <div class="flex items-start gap-5">
                 @if ($program->logo_path)
-                    <img src="{{ asset('storage/' . $program->logo_path) }}"
-                         alt="{{ $program->code }}"
-                         class="h-16 w-16 object-contain shrink-0 bg-white/10 p-1 rounded-xl">
+                    <div class="shrink-0 h-20 w-20 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center p-2">
+                        <img src="{{ asset('storage/' . $program->logo_path) }}"
+                             alt="{{ $program->code }}"
+                             class="h-full w-full object-contain">
+                    </div>
                 @endif
-                <div>
-                    <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">
-                        {{ $program->code }}
-                        @if ($program->department) &middot; {{ $program->department }} @endif
-                    </p>
+                <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="inline-block bg-white/20 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full backdrop-blur-sm">
+                            {{ $program->code }}
+                        </span>
+                        @if ($program->department)
+                            <span class="inline-block bg-tpc-accent/30 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+                                {{ $program->department }}
+                            </span>
+                        @endif
+                    </div>
                     <h1 class="text-3xl sm:text-4xl font-bold text-white leading-tight">{{ $program->name }}</h1>
                     @if ($program->description)
                         <p class="mt-2 max-w-2xl text-sm text-white/75 leading-relaxed">{{ $program->description }}</p>
                     @endif
                 </div>
             </div>
-            <div class="mt-5 flex flex-wrap gap-3">
+
+            <div class="mt-6 flex flex-wrap gap-3">
                 <a href="{{ route('admission') }}"
-                   class="inline-flex items-center border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center gap-2 rounded-lg border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     How to Enroll
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </a>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center rounded-lg border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                     Ask a Question
                 </a>
             </div>
         </div>
+
+        {{-- Wave divider --}}
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-10">
+                <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f9fafb"/>
+            </svg>
+        </div>
     </section>
 
     {{-- MAIN --}}
-    <section class="bg-white">
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <div class="grid gap-10 lg:grid-cols-3">
+    <section class="bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 py-14">
+            <div class="grid gap-8 lg:grid-cols-3">
 
                 {{-- LEFT MAIN --}}
-                <div class="lg:col-span-2 space-y-14">
+                <div class="lg:col-span-2 space-y-10">
 
                     {{-- PROGRAM HEAD + COORDINATOR --}}
                     @if ($head->isNotEmpty() || $coordinators->isNotEmpty())
@@ -60,24 +83,26 @@
                             </div>
                             <div class="grid gap-5 sm:grid-cols-2">
                                 @foreach ($head->merge($coordinators) as $person)
-                                    <div class="flex flex-col items-center text-center border border-gray-200 p-6 bg-tpc-primary/[0.02] hover:bg-tpc-primary/5 transition">
-                                        {{-- Large square photo --}}
-                                        @if ($person->photo_path)
-                                            <img src="{{ asset('storage/' . $person->photo_path) }}"
-                                                 class="h-36 w-36 rounded-full object-cover border-4 border-tpc-primary/20 shadow-sm mb-4"
-                                                 alt="{{ $person->name }}">
-                                        @else
-                                            <span class="h-36 w-36 rounded-full bg-tpc-primary/10 flex items-center justify-center text-4xl font-bold text-tpc-primary mb-4">
-                                                {{ strtoupper(substr($person->name, 0, 1)) }}
+                                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300">
+                                        <div class="h-1.5 bg-tpc-primary"></div>
+                                        <div class="p-6 flex flex-col items-center text-center">
+                                            @if ($person->photo_path)
+                                                <img src="{{ asset('storage/' . $person->photo_path) }}"
+                                                     class="h-32 w-32 rounded-full object-cover border-4 border-tpc-primary/20 shadow-sm mb-4"
+                                                     alt="{{ $person->name }}">
+                                            @else
+                                                <span class="h-32 w-32 rounded-full bg-tpc-primary/10 flex items-center justify-center text-3xl font-bold text-tpc-primary mb-4">
+                                                    {{ strtoupper(substr($person->name, 0, 1)) }}
+                                                </span>
+                                            @endif
+                                            <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2">
+                                                {{ $person->role_label }}
                                             </span>
-                                        @endif
-                                        <p class="text-[10px] font-bold tracking-widest text-tpc-primary uppercase mb-1">
-                                            {{ $person->role_label }}
-                                        </p>
-                                        <p class="font-bold text-tpc-ink text-base leading-snug">{{ $person->name }}</p>
-                                        @if ($person->position)
-                                            <p class="text-sm text-gray-500 mt-0.5">{{ $person->position }}</p>
-                                        @endif
+                                            <p class="font-bold text-gray-800 text-base leading-snug">{{ $person->name }}</p>
+                                            @if ($person->position)
+                                                <p class="text-sm text-gray-500 mt-0.5">{{ $person->position }}</p>
+                                            @endif
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
@@ -91,23 +116,27 @@
                                 <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
                                 <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Instructors</h2>
                                 <div class="flex-1 h-px bg-gray-200"></div>
+                                <span class="text-xs text-gray-400 font-medium">{{ $instructors->count() }} {{ Str::plural('Instructor', $instructors->count()) }}</span>
                             </div>
-                            <div class="grid gap-px bg-gray-200 border border-gray-200 sm:grid-cols-2 lg:grid-cols-3">
+                            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                                 @foreach ($instructors as $person)
-                                    <div class="bg-white p-5 flex flex-col items-center text-center hover:bg-tpc-primary/5 transition">
-                                        @if ($person->photo_path)
-                                            <img src="{{ asset('storage/' . $person->photo_path) }}"
-                                                 class="h-36 w-36 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm mb-3"
-                                                 alt="{{ $person->name }}">
-                                        @else
-                                            <span class="h-36 w-36 rounded-full bg-tpc-primary/10 flex items-center justify-center text-2xl font-bold text-tpc-primary mb-3">
-                                                {{ strtoupper(substr($person->name, 0, 1)) }}
-                                            </span>
-                                        @endif
-                                        <p class="text-sm font-bold text-tpc-ink leading-snug">{{ $person->name }}</p>
-                                        @if ($person->position)
-                                            <p class="text-xs text-gray-500 mt-0.5">{{ $person->position }}</p>
-                                        @endif
+                                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden">
+                                        <div class="h-1 bg-tpc-primary/30"></div>
+                                        <div class="p-5 flex flex-col items-center text-center">
+                                            @if ($person->photo_path)
+                                                <img src="{{ asset('storage/' . $person->photo_path) }}"
+                                                     class="h-24 w-24 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm mb-3"
+                                                     alt="{{ $person->name }}">
+                                            @else
+                                                <span class="h-24 w-24 rounded-full bg-tpc-primary/10 flex items-center justify-center text-2xl font-bold text-tpc-primary mb-3">
+                                                    {{ strtoupper(substr($person->name, 0, 1)) }}
+                                                </span>
+                                            @endif
+                                            <p class="text-sm font-bold text-gray-800 leading-snug">{{ $person->name }}</p>
+                                            @if ($person->position)
+                                                <p class="text-xs text-gray-500 mt-0.5">{{ $person->position }}</p>
+                                            @endif
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
@@ -122,20 +151,24 @@
                                 <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Achievements</h2>
                                 <div class="flex-1 h-px bg-gray-200"></div>
                             </div>
-                            <div class="space-y-6">
+                            <div class="space-y-5">
                                 @foreach ($achievements as $achievement)
-                                    <div class="border border-gray-200 hover:bg-gray-50 transition overflow-hidden">
-                                        {{-- Full-width image on top --}}
+                                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden">
+                                        <div class="h-1.5 bg-tpc-accent"></div>
                                         @if ($achievement->photo_path)
-                                            <img src="{{ asset('storage/' . $achievement->photo_path) }}"
-                                                 class="w-full object-contain"
-                                                 alt="{{ $achievement->title }}" loading="lazy">
+                                            <div class="bg-gray-50 border-b border-gray-100">
+                                                <img src="{{ asset('storage/' . $achievement->photo_path) }}"
+                                                     class="w-full object-contain max-h-80"
+                                                     alt="{{ $achievement->title }}" loading="lazy">
+                                            </div>
                                         @endif
-                                        <div class="p-5">
+                                        <div class="p-6">
                                             @if ($achievement->year)
-                                                <p class="text-[10px] font-bold tracking-widest text-tpc-primary uppercase mb-1">{{ $achievement->year }}</p>
+                                                <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2">
+                                                    {{ $achievement->year }}
+                                                </span>
                                             @endif
-                                            <p class="font-bold text-tpc-ink text-base leading-snug">{{ $achievement->title }}</p>
+                                            <p class="font-bold text-gray-800 text-base leading-snug">{{ $achievement->title }}</p>
                                             @if ($achievement->description)
                                                 <p class="mt-2 text-sm text-gray-500 leading-relaxed">{{ $achievement->description }}</p>
                                             @endif
@@ -148,8 +181,9 @@
 
                     {{-- EMPTY STATE --}}
                     @if ($head->isEmpty() && $coordinators->isEmpty() && $instructors->isEmpty() && $achievements->isEmpty())
-                        <div class="py-20 text-center text-gray-400 text-sm border border-dashed border-gray-200 rounded-xl">
-                            More details about this program will be available soon.
+                        <div class="py-24 text-center border border-dashed border-gray-300 rounded-2xl bg-white">
+                            <p class="text-lg font-semibold text-gray-300 mb-1">No details yet</p>
+                            <p class="text-sm text-gray-400">More details about this program will be available soon.</p>
                         </div>
                     @endif
 
@@ -157,47 +191,62 @@
 
                 {{-- RIGHT SIDEBAR --}}
                 <aside class="space-y-6">
-                    <div class="border border-gray-200">
-                        <div class="bg-tpc-primary px-4 py-3">
-                            <p class="text-xs font-bold text-white uppercase tracking-widest">Interested?</p>
+
+                    {{-- Interested CTA --}}
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="h-1.5 bg-tpc-primary"></div>
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Interested?</p>
                         </div>
                         <div class="p-5 space-y-3">
-                            <p class="text-sm text-gray-600">Ready to enroll in <span class="font-semibold text-tpc-ink">{{ $program->code }}</span>?</p>
+                            <p class="text-sm text-gray-500 leading-relaxed">
+                                Ready to enroll in <span class="font-semibold text-gray-800">{{ $program->code }}</span>? Check out the admission guide or reach out to us.
+                            </p>
                             <a href="{{ route('admission') }}"
-                               class="flex items-center justify-center border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                               class="flex items-center justify-center rounded-lg border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                 View Admission Guide
                             </a>
                             <a href="{{ route('contact') }}"
-                               class="flex items-center justify-center border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                               class="flex items-center justify-center rounded-lg border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
                                 Contact Us
                             </a>
                         </div>
                     </div>
 
+                    {{-- Other Programs --}}
                     @if ($otherPrograms->isNotEmpty())
-                        <div class="border border-gray-200">
-                            <div class="bg-tpc-primary px-4 py-3">
-                                <p class="text-xs font-bold text-white uppercase tracking-widest">Other Programs</p>
+                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                            <div class="h-1.5 bg-tpc-primary"></div>
+                            <div class="px-5 py-4 border-b border-gray-100">
+                                <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Other Programs</p>
                             </div>
                             <div class="divide-y divide-gray-100">
                                 @foreach ($otherPrograms as $other)
                                     <a href="{{ route('academics.show', $other) }}"
-                                       class="flex items-center gap-3 px-4 py-3 hover:bg-tpc-primary/5 transition group">
+                                       class="group flex items-center gap-3 px-5 py-3.5 hover:bg-tpc-primary/5 transition">
                                         @if ($other->logo_path)
-                                            <img src="{{ asset('storage/' . $other->logo_path) }}"
-                                                 class="h-8 w-8 object-contain shrink-0" alt="{{ $other->code }}">
+                                            <div class="shrink-0 h-9 w-9 rounded-lg bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center p-1">
+                                                <img src="{{ asset('storage/' . $other->logo_path) }}"
+                                                     class="h-full w-full object-contain" alt="{{ $other->code }}">
+                                            </div>
                                         @else
-                                            <span class="h-8 w-8 flex items-center justify-center bg-tpc-primary/10 text-base shrink-0">🎓</span>
+                                            <div class="shrink-0 h-9 w-9 rounded-lg bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center text-base">
+                                                🎓
+                                            </div>
                                         @endif
                                         <div class="min-w-0">
-                                            <p class="text-xs font-bold text-tpc-primary">{{ $other->code }}</p>
-                                            <p class="text-xs text-gray-500 truncate group-hover:text-tpc-ink transition">{{ $other->name }}</p>
+                                            <p class="text-[10px] font-bold text-tpc-primary uppercase tracking-wider">{{ $other->code }}</p>
+                                            <p class="text-xs text-gray-500 truncate group-hover:text-gray-800 transition leading-snug">{{ $other->name }}</p>
                                         </div>
+                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary transition ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
                                     </a>
                                 @endforeach
                             </div>
                         </div>
                     @endif
+
                 </aside>
 
             </div>
