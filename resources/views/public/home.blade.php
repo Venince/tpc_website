@@ -216,19 +216,24 @@
     </section>
 
     {{-- ══════════════════════════════════════
-         NEWS
+         NEWS  (redesigned)
     ══════════════════════════════════════ --}}
     <section class="bg-gray-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-14">
 
-            <div class="flex items-center gap-4 mb-10">
-                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
-                <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Latest News & Announcements</h2>
-                <div class="flex-1 h-px bg-gray-200"></div>
+            {{-- Section header --}}
+            <div class="flex items-end justify-between gap-4 mb-10">
+                <div class="flex items-center gap-4">
+                    <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>
+                    <div>
+                        <p class="text-[10px] font-bold tracking-widest text-tpc-primary/60 uppercase mb-0.5">TPC Updates</p>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">Latest News &amp; Announcements</h2>
+                    </div>
+                </div>
                 <a href="{{ route('news.index') }}"
-                   class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary hover:text-tpc-secondary uppercase tracking-wide transition">
+                   class="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold text-tpc-primary hover:text-tpc-secondary uppercase tracking-wide transition group">
                     View All
-                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                     </svg>
                 </a>
@@ -236,82 +241,130 @@
 
             @if($latestNews->isNotEmpty())
 
-                {{-- Featured --}}
                 @php $featured = $latestNews->first(); @endphp
+
+                {{-- ── FEATURED POST (magazine layout) ── --}}
                 <a href="{{ route('news.show', $featured) }}"
-                   class="group block bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden mb-6">
-                    <div class="sm:flex">
+                   class="news-featured-card group relative block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-6
+                          hover:shadow-lg hover:border-tpc-primary/30 transition-all duration-300">
+
+                    {{-- Accent ribbon top --}}
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tpc-primary via-tpc-primary to-tpc-accent z-10"></div>
+
+                    <div class="sm:flex min-h-[260px]">
+                        {{-- Image pane --}}
                         @if($featured->image_path)
-                            <div class="sm:w-2/5 bg-gray-100 flex items-center justify-center overflow-hidden">
+                            <div class="relative sm:w-[42%] bg-gray-100 overflow-hidden shrink-0">
                                 <img src="{{ asset('storage/' . $featured->image_path) }}"
                                      alt="{{ $featured->title }}"
-                                     class="w-full h-52 sm:h-full object-contain group-hover:scale-[1.02] transition duration-300"
+                                     class="absolute inset-0 w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-500"
                                      loading="lazy" />
+                                {{-- Gradient overlay on image for sm+ --}}
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/10 hidden sm:block"></div>
+                                {{-- Mobile fallback height --}}
+                                <div class="sm:hidden h-52"></div>
                             </div>
                         @endif
-                        <div class="flex-1 p-7 flex flex-col justify-between">
+
+                        {{-- Content pane --}}
+                        <div class="flex-1 flex flex-col justify-between p-6 sm:p-8">
                             <div>
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="inline-block bg-tpc-primary text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                                {{-- Meta row --}}
+                                <div class="flex flex-wrap items-center gap-2 mb-4">
+                                    <span class="inline-flex items-center gap-1 bg-tpc-primary text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                                        <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
                                         {{ $featured->category ?? 'Announcement' }}
                                     </span>
                                     <span class="inline-block bg-tpc-accent/20 text-tpc-primary text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
                                         Latest
                                     </span>
                                     @if($featured->published_at)
-                                        <time class="text-xs text-gray-400 ml-auto" datetime="{{ $featured->published_at->toDateString() }}">
+                                        <time class="ml-auto text-xs text-gray-400 font-medium" datetime="{{ $featured->published_at->toDateString() }}">
                                             {{ $featured->published_at->format('F d, Y') }}
                                         </time>
                                     @endif
                                 </div>
-                                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 group-hover:text-tpc-primary transition leading-snug mb-3">
+
+                                {{-- Title --}}
+                                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-tpc-primary transition-colors duration-200 leading-snug mb-3">
                                     {{ $featured->title }}
                                 </h3>
-                                <p class="text-sm text-gray-500 leading-relaxed line-clamp-2">
-                                    {{ $featured->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($featured->body), 160) }}
+
+                                {{-- Excerpt --}}
+                                <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                                    {{ $featured->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($featured->body), 180) }}
                                 </p>
                             </div>
-                            <div class="mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-tpc-primary group-hover:gap-3 transition-all">
-                                Read Article
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                </svg>
+
+                            {{-- CTA row --}}
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="inline-flex items-center gap-1.5 text-sm font-bold text-tpc-primary group-hover:gap-3 transition-all duration-200">
+                                    Read Article
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </span>
+                                <span class="hidden sm:inline-flex items-center gap-1 text-xs text-gray-300 font-medium">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    Featured story
+                                </span>
                             </div>
                         </div>
                     </div>
                 </a>
 
-                {{-- Remaining --}}
+                {{-- ── SECONDARY POSTS GRID ── --}}
                 @if($latestNews->count() > 1)
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach($latestNews->skip(1) as $post)
-                        <article class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden flex flex-col">
-                            <div class="h-1.5 w-full bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300"></div>
+                        <article class="news-card group bg-white rounded-2xl border border-gray-200 shadow-sm
+                                        hover:shadow-md hover:border-tpc-primary/30 hover:-translate-y-0.5
+                                        transition-all duration-300 overflow-hidden flex flex-col">
+
+                            {{-- Image --}}
                             @if($post->image_path)
-                                <a href="{{ route('news.show', $post) }}" class="block bg-gray-50 overflow-hidden">
-                                    <div class="flex items-center justify-center h-40 p-3">
-                                        <img src="{{ asset('storage/' . $post->image_path) }}"
-                                             alt="{{ $post->title }}"
-                                             class="max-h-full w-full object-contain group-hover:scale-[1.02] transition duration-300"
-                                             loading="lazy" />
-                                    </div>
-                                </a>
-                            @endif
-                            <div class="p-5 flex flex-col flex-1">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
+                                <a href="{{ route('news.show', $post) }}" class="block shrink-0 bg-gray-50 overflow-hidden relative"
+                                   style="height: 168px;">
+                                    <img src="{{ asset('storage/' . $post->image_path) }}"
+                                         alt="{{ $post->title }}"
+                                         class="absolute inset-0 w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-500"
+                                         loading="lazy" />
+                                    {{-- Category badge over image --}}
+                                    <span class="absolute top-3 left-3 inline-block bg-tpc-primary/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
                                         {{ $post->category ?? 'Announcement' }}
                                     </span>
-                                    @if($post->published_at)
-                                        <time class="text-[11px] text-gray-400">
-                                            {{ $post->published_at->format('M d, Y') }}
-                                        </time>
-                                    @endif
+                                </a>
+                            @else
+                                {{-- No-image fallback with patterned bg --}}
+                                <div class="shrink-0 relative overflow-hidden flex items-center justify-center bg-tpc-primary/5"
+                                     style="height: 80px;">
+                                    <svg class="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+                                        <defs><pattern id="dots-{{ $loop->index }}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+                                            <circle cx="2" cy="2" r="1.5" fill="#166534"/>
+                                        </pattern></defs>
+                                        <rect width="100%" height="100%" fill="url(#dots-{{ $loop->index }})"/>
+                                    </svg>
+                                    <span class="relative inline-block bg-tpc-primary/90 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                                        {{ $post->category ?? 'Announcement' }}
+                                    </span>
                                 </div>
-                                <h4 class="text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition leading-snug flex-1">
+                            @endif
+
+                            {{-- Body --}}
+                            <div class="p-5 flex flex-col flex-1">
+                                @if($post->published_at)
+                                    <time class="text-[11px] text-gray-400 font-medium mb-2 block">
+                                        {{ $post->published_at->format('M d, Y') }}
+                                    </time>
+                                @endif
+
+                                <h4 class="text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition-colors duration-200 leading-snug flex-1 line-clamp-3">
                                     <a href="{{ route('news.show', $post) }}">{{ $post->title }}</a>
                                 </h4>
-                                <div class="mt-4 pt-3 border-t border-gray-100">
+
+                                <div class="mt-4 pt-4 border-t border-gray-100">
                                     <a href="{{ route('news.show', $post) }}"
                                        class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary group-hover:gap-2 transition-all duration-200">
                                         Read Article
