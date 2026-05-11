@@ -18,6 +18,11 @@
             {{-- <span class="inline-block bg-white/15 backdrop-blur-sm text-tpc-accent text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-4">
                 Official College Website
             </span> --}}
+            <div class="flex justify-center mb-5 -mt-10">
+                <img src="{{ asset('images/TPC-Logo.png') }}"
+                    alt="Talibon Polytechnic College Logo"
+                    class="h-20 w-20 object-contain drop-shadow-lg">
+            </div>
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 TALIBON POLYTECHNIC COLLEGE
             </h1>

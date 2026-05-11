@@ -119,42 +119,82 @@ function startBadgePolling() {
 }
 
 /* ---------------------------
+   Mobile nav active state
+---------------------------- */
+const MOBILE_IDS = ['mob-home', 'mob-about', 'mob-academics', 'mob-admission', 'mob-news', 'mob-contact'];
+
+const MOBILE_LINK_ACTIVE   = ['bg-tpc-primary', 'text-white', 'shadow-sm'];
+const MOBILE_LINK_INACTIVE = ['text-gray-700'];
+
+const MOBILE_ICON_ACTIVE   = ['bg-white/20', 'text-white'];
+const MOBILE_ICON_INACTIVE = ['bg-gray-100', 'text-gray-500'];
+
+function setMobileNavActive(activeId) {
+  MOBILE_IDS.forEach((id) => {
+    const a = document.getElementById(id);
+    if (!a) return;
+
+    const icon    = a.querySelector('span.flex-shrink-0');
+    const isActive = id === activeId;
+
+    // Link element classes
+    a.classList.remove(...MOBILE_LINK_ACTIVE, ...MOBILE_LINK_INACTIVE);
+    a.classList.add(...(isActive ? MOBILE_LINK_ACTIVE : MOBILE_LINK_INACTIVE));
+
+    // Icon wrapper classes
+    if (icon) {
+      icon.classList.remove(...MOBILE_ICON_ACTIVE, ...MOBILE_ICON_INACTIVE);
+      // Keep the non-toggled hover classes intact; only swap the state ones
+      icon.classList.add(...(isActive ? MOBILE_ICON_ACTIVE : MOBILE_ICON_INACTIVE));
+    }
+
+    // Swap dot indicator vs chevron arrow
+    const dot     = a.querySelector('span.rounded-full');
+    const chevron = a.querySelector('svg.h-3\\.5');
+
+    if (dot)     dot.classList.toggle('hidden', !isActive);
+    if (chevron) chevron.classList.toggle('hidden', isActive);
+  });
+}
+
+/* ---------------------------
    Nav active state
 ---------------------------- */
 function setNavActiveByUrl(urlStr = window.location.href) {
-  const url = new URL(urlStr, window.location.origin);
+  const url  = new URL(urlStr, window.location.origin);
   const path = url.pathname.replace(/\/+$/, '') || '/';
 
+  // --- Desktop: clear all, then re-apply ---
   const links = document.querySelectorAll('[data-tpc-link]');
   links.forEach((l) => l.classList.remove('tpc-active'));
 
-  // Home page
+  // Home / About
   if (isHomePath(path)) {
     if (url.hash === '#about') {
-      const about = document.getElementById('nav-about');
-      if (about) about.classList.add('tpc-active');
+      document.getElementById('nav-about')?.classList.add('tpc-active');
+      setMobileNavActive('mob-about');
     } else {
-      const home = document.getElementById('nav-home');
-      if (home) home.classList.add('tpc-active');
+      document.getElementById('nav-home')?.classList.add('tpc-active');
+      setMobileNavActive('mob-home');
     }
     return;
   }
 
   // Admin messages
   if (path === '/admin/messages' || path.startsWith('/admin/messages/')) {
-    const msg = document.getElementById('nav-messages');
-    if (msg) msg.classList.add('tpc-active');
+    document.getElementById('nav-messages')?.classList.add('tpc-active');
+    setMobileNavActive(null);
     return;
   }
 
   // Admin
   if (path === '/admin' || path.startsWith('/admin/')) {
-    const admin = document.getElementById('nav-admin');
-    if (admin) admin.classList.add('tpc-active');
+    document.getElementById('nav-admin')?.classList.add('tpc-active');
+    setMobileNavActive(null);
     return;
   }
 
-  // All other pages — match by pathname
+  // All other pages — desktop: match by pathname
   links.forEach((l) => {
     try {
       const lu = new URL(l.href, window.location.origin);
@@ -162,6 +202,20 @@ function setNavActiveByUrl(urlStr = window.location.href) {
       if (lp === path) l.classList.add('tpc-active');
     } catch (_) {}
   });
+
+  // Mobile: map pathname to mobile link id
+  if (path.startsWith('/news')) {
+    setMobileNavActive('mob-news');
+    return;
+  }
+
+  const mobileMap = {
+    '/academics': 'mob-academics',
+    '/admission': 'mob-admission',
+    '/contact':   'mob-contact',
+  };
+
+  setMobileNavActive(mobileMap[path] ?? null);
 }
 
 /* ---------------------------
@@ -204,8 +258,13 @@ function initHomeNav() {
   const setActive = (which) => {
     navHome.classList.remove('tpc-active');
     navAbout.classList.remove('tpc-active');
-    if (which === 'about') navAbout.classList.add('tpc-active');
-    else navHome.classList.add('tpc-active');
+    if (which === 'about') {
+      navAbout.classList.add('tpc-active');
+      setMobileNavActive('mob-about');
+    } else {
+      navHome.classList.add('tpc-active');
+      setMobileNavActive('mob-home');
+    }
   };
 
   // Set initial active based on hash
@@ -287,6 +346,7 @@ function handleAboutLinkFromOtherPage(e) {
     document.querySelectorAll('[data-tpc-link]').forEach(l => l.classList.remove('tpc-active'));
     const navAbout = document.getElementById('nav-about');
     if (navAbout) navAbout.classList.add('tpc-active');
+    setMobileNavActive('mob-about');
 
     // PJAX navigate to home, then after swap scroll to about
     window._scrollToAboutAfterNav = true;
@@ -531,7 +591,6 @@ document.addEventListener('click', (e) => {
   const a = e.target.closest('a');
   if (!a) return;
 
-  // Special handling for About link from non-home pages
   const href = a.getAttribute('href') || '';
   const url  = new URL(a.href, window.location.href);
 
@@ -541,6 +600,7 @@ document.addEventListener('click', (e) => {
     document.querySelectorAll('[data-tpc-link]').forEach(l => l.classList.remove('tpc-active'));
     const navAbout = document.getElementById('nav-about');
     if (navAbout) navAbout.classList.add('tpc-active');
+    setMobileNavActive('mob-about');
 
     window._scrollToAboutAfterNav = true;
     pjaxNavigate(url.href);

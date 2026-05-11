@@ -16,8 +16,6 @@ export default {
       fontFamily: {
         sans: ['Figtree', ...defaultTheme.fontFamily.sans],
       },
-
-      // ✅ COLORS go here
       colors: {
         'tpc-primary': 'rgb(0 128 0 / <alpha-value>)',
         'tpc-secondary': 'rgb(0 100 0 / <alpha-value>)',

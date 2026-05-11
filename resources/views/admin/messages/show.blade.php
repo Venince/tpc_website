@@ -53,7 +53,7 @@
                           action="{{ route('admin.messages.read', $message) }}"
                           class="{{ $message->is_read ? 'hidden' : '' }}">
                         @csrf @method('PATCH')
-                        <button class="rounded-lg border-2 border-white bg-white px-4 py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                        <button class="rounded-full border-2 border-white bg-white px-4 py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                             Mark Read
                         </button>
                     </form>
@@ -61,7 +61,7 @@
                           action="{{ route('admin.messages.unread', $message) }}"
                           class="{{ $message->is_read ? '' : 'hidden' }}">
                         @csrf @method('PATCH')
-                        <button class="rounded-lg border-2 border-white/60 px-4 py-2 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                        <button class="rounded-full border-2 border-white/60 px-4 py-2 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                             Mark Unread
                         </button>
                     </form>
@@ -122,14 +122,14 @@
                     <div class="flex flex-wrap gap-3">
                         <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ urlencode($to) }}&su={{ urlencode($subject) }}&body={{ urlencode($body) }}"
                            target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-2 rounded-lg bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary transition">
+                           class="inline-flex items-center gap-2 rounded-l-full bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary transition">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                             Reply via Gmail
                         </a>
                         <a href="{{ route('admin.messages.index') }}"
-                           class="inline-flex items-center gap-2 rounded-lg border-2 border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
+                           class="inline-flex items-center gap-2 rounded-r-full border-2 border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                             </svg>

@@ -16,7 +16,7 @@
                 <div class="lg:col-span-2">
                     <div class="flex items-start gap-3">
                         <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo"
-                             class="h-12 w-12 rounded bg-white p-1.5 shrink-0">
+                             class="h-20 w-20 rounded shrink-0">
                         <div>
                             <p class="text-lg font-bold text-white leading-tight">{{ $siteName }}</p>
                             <p class="mt-1.5 text-sm text-white/70 leading-relaxed max-w-sm">
