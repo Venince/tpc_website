@@ -157,7 +157,7 @@
                             </div>
                             <div class="mt-4 sm:mt-0 flex flex-wrap gap-3 shrink-0">
                                 <a href="{{ route('contact') }}"
-                                   class="inline-flex items-center gap-2 rounded-lg border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white
+                                   class="inline-flex items-center gap-2 rounded-l-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white
                                           hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -165,7 +165,7 @@
                                     Contact Us
                                 </a>
                                 <a href="{{ route('academics') }}"
-                                   class="inline-flex items-center gap-1 rounded-lg border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary
+                                   class="inline-flex items-center gap-1 rounded-r-full border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary
                                           hover:bg-tpc-primary hover:text-white transition">
                                     View Programs
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">

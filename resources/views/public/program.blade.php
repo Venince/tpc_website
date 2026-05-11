@@ -44,14 +44,14 @@
 
             <div class="mt-6 flex flex-wrap gap-3">
                 <a href="{{ route('admission') }}"
-                   class="inline-flex items-center gap-2 rounded-lg border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center gap-2 rounded-l-full border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     How to Enroll
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                     </svg>
                 </a>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center rounded-lg border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                     Ask a Question
                 </a>
             </div>
@@ -158,7 +158,7 @@
                                         @if ($achievement->photo_path)
                                             <div class="bg-gray-50 border-b border-gray-100">
                                                 <img src="{{ asset('storage/' . $achievement->photo_path) }}"
-                                                     class="w-full object-contain max-h-80"
+                                                     class="w-full object-cover max-h-80"
                                                      alt="{{ $achievement->title }}" loading="lazy">
                                             </div>
                                         @endif
@@ -203,11 +203,11 @@
                                 Ready to enroll in <span class="font-semibold text-gray-800">{{ $program->code }}</span>? Check out the admission guide or reach out to us.
                             </p>
                             <a href="{{ route('admission') }}"
-                               class="flex items-center justify-center rounded-lg border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                               class="flex items-center justify-center rounded-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                 View Admission Guide
                             </a>
                             <a href="{{ route('contact') }}"
-                               class="flex items-center justify-center rounded-lg border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                               class="flex items-center justify-center rounded-full border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
                                 Contact Us
                             </a>
                         </div>

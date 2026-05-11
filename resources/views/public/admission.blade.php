@@ -15,11 +15,11 @@
             </p>
             <div class="mt-5 flex flex-wrap gap-3">
                 <a href="#requirements"
-                   class="inline-flex items-center rounded-lg border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center rounded-l-full border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     View Requirements
                 </a>
                 <a href="#process"
-                   class="inline-flex items-center rounded-lg border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                     Enrollment Process
                 </a>
                 <a href="{{ route('contact') }}"
@@ -154,11 +154,11 @@
                             </div>
                             <div class="flex flex-wrap gap-3 shrink-0">
                                 <a href="{{ route('academics') }}"
-                                   class="inline-flex items-center rounded-lg border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                                   class="inline-flex items-center rounded-l-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                     View Programs
                                 </a>
                                 <a href="{{ route('news.index') }}"
-                                   class="inline-flex items-center rounded-lg border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                                   class="inline-flex items-center rounded-r-full border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
                                     Latest Updates →
                                 </a>
                             </div>
@@ -206,7 +206,7 @@
                                 Reach out for enrollment concerns, schedule, and guidance.
                             </p>
                             <a href="{{ route('contact') }}"
-                               class="mt-4 flex items-center justify-center rounded-lg border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                               class="mt-4 flex items-center justify-center rounded-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                 Go to Contact Page
                             </a>
                         </div>

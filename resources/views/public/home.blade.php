@@ -27,14 +27,14 @@
                 </p>
                 <div class="mt-8 flex flex-wrap gap-3">
                     <a href="{{ route('academics') }}"
-                       class="inline-flex items-center gap-2 rounded-lg border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary transition hover:bg-tpc-accent hover:border-tpc-accent">
+                       class="inline-flex items-center gap-2 rounded-l-full border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary transition hover:bg-tpc-accent hover:border-tpc-accent">
                         Explore Programs
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                         </svg>
                     </a>
                     <a href="{{ route('admission') }}"
-                       class="inline-flex items-center rounded-lg border-2 border-white/60 px-6 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-tpc-primary">
+                       class="inline-flex items-center rounded-r-full border-2 border-white/60 px-6 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-tpc-primary">
                         Admission Guide
                     </a>
                 </div>
@@ -73,7 +73,7 @@
                      style="width: 560px; max-width: 78vw; will-change: transform, opacity;">
                     <img src="{{ asset('storage/' . $slide->image_path) }}"
                          alt="About TPC"
-                         class="w-full object-contain block pointer-events-none bg-gray-100"
+                         class="w-full object-cover block pointer-events-none bg-gray-100"
                          style="height: 280px;"
                          loading="lazy"
                          draggable="false">
@@ -257,7 +257,7 @@
                             <div class="relative sm:w-[42%] bg-gray-100 overflow-hidden shrink-0">
                                 <img src="{{ asset('storage/' . $featured->image_path) }}"
                                      alt="{{ $featured->title }}"
-                                     class="absolute inset-0 w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-500"
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                                      loading="lazy" />
                                 {{-- Gradient overlay on image for sm+ --}}
                                 <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/10 hidden sm:block"></div>
@@ -329,7 +329,7 @@
                                    style="height: 168px;">
                                     <img src="{{ asset('storage/' . $post->image_path) }}"
                                          alt="{{ $post->title }}"
-                                         class="absolute inset-0 w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-500"
+                                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
                                          loading="lazy" />
                                     {{-- Category badge over image --}}
                                     <span class="absolute top-3 left-3 inline-block bg-tpc-primary/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
@@ -442,7 +442,7 @@
 
             <div class="mt-8 text-center">
                 <a href="{{ route('academics') }}"
-                   class="inline-flex items-center gap-2 rounded-lg border-2 border-tpc-primary px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                   class="inline-flex items-center gap-2 rounded-full border-2 border-tpc-primary px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
                     View All Academic Programs
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -468,14 +468,14 @@
             </div>
             <div class="mt-8 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
                 <a href="{{ route('admission') }}"
-                   class="inline-flex items-center gap-2 rounded-lg border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center gap-2 rounded-l-full border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     Admission Guide
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                     </svg>
                 </a>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center rounded-lg border-2 border-white/60 px-6 py-3 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-6 py-3 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                     Contact Us
                 </a>
             </div>

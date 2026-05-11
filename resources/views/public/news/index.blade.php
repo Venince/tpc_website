@@ -24,19 +24,19 @@
                         <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
                     </svg>
                     <input name="q" value="{{ request('q') }}" placeholder="Search news…"
-                           class="rounded-lg border-2 border-white/30 bg-white/10 text-white placeholder-white/50
+                           class="rounded-full border-2 border-white/30 bg-white/10 text-white placeholder-white/50
                                   pl-9 pr-4 py-2 text-sm focus:border-white focus:outline-none backdrop-blur-sm w-60" />
                 </div>
 
                 <select name="category"
-                        class="rounded-lg border-2 border-white/30 bg-white/10 text-white px-4 py-2 text-sm focus:border-white focus:outline-none">
+                        class="rounded-full border-2 border-white/30 bg-white/10 text-white px-4 py-2 text-sm focus:border-white focus:outline-none">
                     <option value="" class="text-tpc-ink">All categories</option>
                     @foreach(['Announcement','Event','Advisory','Scholarship'] as $cat)
                         <option value="{{ $cat }}" class="text-tpc-ink" @selected(request('category') === $cat)>{{ $cat }}</option>
                     @endforeach
                 </select>
 
-                <button class="rounded-lg border-2 border-white bg-white px-5 py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                <button class="rounded-full border-2 border-white bg-white px-5 py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     Filter
                 </button>
 
@@ -110,7 +110,7 @@
                             <div class="relative sm:w-[42%] bg-gray-100 overflow-hidden shrink-0">
                                 <img src="{{ asset('storage/' . $featured->image_path) }}"
                                      alt="{{ $featured->title }}"
-                                     class="absolute inset-0 w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-500"
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                                      loading="lazy" />
                                 <div class="sm:hidden h-56"></div>
                             </div>
@@ -177,7 +177,7 @@
                                    style="height: 176px;">
                                     <img src="{{ asset('storage/' . $post->image_path) }}"
                                          alt="{{ $post->title }}"
-                                         class="absolute inset-0 w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-500"
+                                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
                                          loading="lazy" />
                                     {{-- Category pill overlaid on image --}}
                                     <span class="absolute top-3 left-3 inline-flex items-center gap-1 bg-tpc-primary/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">

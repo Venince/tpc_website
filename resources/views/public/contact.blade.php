@@ -113,14 +113,14 @@
                             <div class="bg-gray-50 px-5 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-b-2xl">
                                 <p class="text-xs text-gray-400">We respond on weekdays only (Monday – Friday).</p>
                                 <div class="flex gap-3">
-                                    <button class="inline-flex items-center gap-2 rounded-lg border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                                    <button class="inline-flex items-center gap-2 rounded-l-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                         </svg>
                                         Send Message
                                     </button>
                                     <a href="{{ route('home') }}"
-                                       class="inline-flex items-center rounded-lg border-2 border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
+                                       class="inline-flex items-center rounded-r-full border-2 border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
                                         Back to Home
                                     </a>
                                 </div>
@@ -206,12 +206,12 @@
                             <div class="mt-4 grid gap-2 sm:grid-cols-2">
                                 @if($mapLink)
                                     <a href="{{ $mapLink }}" target="_blank" rel="noopener"
-                                       class="flex items-center justify-center rounded-lg border-2 border-tpc-primary px-4 py-2 text-xs font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                                       class="flex items-center justify-center rounded-l-full border-2 border-tpc-primary px-4 py-2 text-xs font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
                                         Open in Maps
                                     </a>
                                 @endif
                                 <a href="{{ route('admission') }}"
-                                   class="flex items-center justify-center rounded-lg border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
+                                   class="flex items-center justify-center rounded-r-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
                                     View Admission
                                 </a>
                             </div>

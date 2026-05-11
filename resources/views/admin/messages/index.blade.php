@@ -23,17 +23,17 @@
                         name="q"
                         value="{{ $q }}"
                         placeholder="Search name, email, subject..."
-                        class="rounded-lg border-2 border-white/30 bg-white/10 text-white placeholder-white/50 px-4 py-2 text-sm focus:border-white focus:outline-none backdrop-blur-sm w-64"
+                        class="rounded-full border-2 border-white/30 bg-white/10 text-white placeholder-white/50 px-4 py-2 text-sm focus:border-white focus:outline-none backdrop-blur-sm w-64"
                     />
                     <select
                         name="status"
-                        class="rounded-lg border-2 border-white/30 bg-white/10 text-white px-4 py-2 text-sm focus:border-white focus:outline-none"
+                        class="rounded-full border-2 border-white/30 bg-white/10 text-white px-4 py-2 text-sm focus:border-white focus:outline-none"
                     >
                         <option value="unread" class="text-tpc-ink" @selected($status === 'unread')>Unread</option>
                         <option value="read" class="text-tpc-ink" @selected($status === 'read')>Read</option>
                         <option value="all" class="text-tpc-ink" @selected($status === 'all')>All</option>
                     </select>
-                    <button class="rounded-lg border-2 border-white bg-white px-5 py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                    <button class="rounded-full border-2 border-white bg-white px-5 py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                         Filter
                     </button>
                 </form>

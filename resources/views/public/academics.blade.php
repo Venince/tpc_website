@@ -15,11 +15,11 @@
             </p>
             <div class="mt-5 flex flex-wrap gap-3">
                 <a href="{{ route('admission') }}"
-                   class="inline-flex items-center rounded-lg border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center rounded-l-full border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     Admission Guide
                 </a>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center rounded-lg border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                     Contact Us
                 </a>
             </div>
@@ -138,11 +138,11 @@
             </div>
             <div class="mt-6 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center border-2 border-white bg-white px-6 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center rounded-l-full border-2 border-white bg-white px-6 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                     Contact Us
                 </a>
                 <a href="{{ route('news.index') }}"
-                   class="inline-flex items-center border-2 border-white/60 px-6 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-6 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
                     Latest Updates →
                 </a>
             </div>

@@ -12,8 +12,6 @@ class UserController extends Controller
 {
     public function index()
     {
-        // ✅ Users page contains Admin/Staff ONLY
-        // Super Admin is NOT listed here
         $users = User::where('is_admin', true)
             ->where('is_super_admin', false)
             ->orderByDesc('created_at')
@@ -35,7 +33,7 @@ class UserController extends Controller
             'password' => ['required','string','min:8','confirmed'],
         ]);
 
-        // ✅ Always create as Admin/Staff
+        // Always create as Admin/Staff
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -49,7 +47,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        // ✅ Super Admin should NOT be edited here (use /profile instead)
+        // Super Admin should NOT be edited here (use /profile instead)
         abort_if($user->is_super_admin, 404);
 
         return view('admin.users.edit', compact('user'));
@@ -57,7 +55,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        // ✅ Super Admin should NOT be edited here (use /profile instead)
+        // Super Admin should NOT be edited here (use /profile instead)
         abort_if($user->is_super_admin, 404);
 
         $data = $request->validate([
@@ -73,7 +71,7 @@ class UserController extends Controller
             $user->password = Hash::make($data['password']);
         }
 
-        // ✅ Keep role fixed as Admin/Staff
+        // Keep role fixed as Admin/Staff
         $user->is_admin = true;
         $user->is_super_admin = false;
 
