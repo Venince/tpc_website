@@ -6,38 +6,36 @@
 @section('content')
 
     {{-- ══════════════════════════════════════
-         MASTHEAD BANNER
+        MASTHEAD BANNER
     ══════════════════════════════════════ --}}
     <section class="relative overflow-hidden bg-tpc-primary">
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/school-bg.jpg') }}" alt="" aria-hidden="true"
-                 class="h-full w-full object-cover object-center opacity-40">
+                class="h-full w-full object-cover object-center opacity-20">
         </div>
 
-        <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 lg:py-24">
-            <div class="max-w-3xl">
-                <span class="inline-block bg-white/15 backdrop-blur-sm text-tpc-accent text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-4">
-                    Official College Website
-                </span>
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-                    Talibon Polytechnic College
-                </h1>
-                <p class="mt-4 text-base text-white/80 max-w-xl leading-relaxed">
-                    A student-centered institution committed to quality education, research, and community development in Talibon, Bohol.
-                </p>
-                <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="{{ route('academics') }}"
-                       class="inline-flex items-center gap-2 rounded-l-full border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary transition hover:bg-tpc-accent hover:border-tpc-accent">
-                        Explore Programs
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                    <a href="{{ route('admission') }}"
-                       class="inline-flex items-center rounded-r-full border-2 border-white/60 px-6 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-tpc-primary">
-                        Admission Guide
-                    </a>
-                </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 lg:py-24 text-center">
+            {{-- <span class="inline-block bg-white/15 backdrop-blur-sm text-tpc-accent text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-4">
+                Official College Website
+            </span> --}}
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+                TALIBON POLYTECHNIC COLLEGE
+            </h1>
+            <p class="mt-4 text-base text-white/80 max-w-xl leading-relaxed mx-auto">
+                A student-centered institution committed to quality education, research, and community development in Talibon, Bohol.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3 justify-center">
+                <a href="{{ route('academics') }}"
+                class="inline-flex items-center gap-2 rounded-l-full border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary transition hover:bg-tpc-accent hover:border-tpc-accent">
+                    Explore Programs
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="{{ route('admission') }}"
+                class="inline-flex items-center rounded-r-full border-2 border-white/60 px-6 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-tpc-primary">
+                    Admission Guide
+                </a>
             </div>
         </div>
 
@@ -216,7 +214,7 @@
     </section>
 
     {{-- ══════════════════════════════════════
-         NEWS  (redesigned)
+         NEWS
     ══════════════════════════════════════ --}}
     <section class="bg-gray-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-14">
@@ -243,33 +241,27 @@
 
                 @php $featured = $latestNews->first(); @endphp
 
-                {{-- ── FEATURED POST (magazine layout) ── --}}
+                {{-- ── FEATURED POST ── --}}
                 <a href="{{ route('news.show', $featured) }}"
                    class="news-featured-card group relative block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-6
                           hover:shadow-lg hover:border-tpc-primary/30 transition-all duration-300">
 
-                    {{-- Accent ribbon top --}}
                     <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tpc-primary via-tpc-primary to-tpc-accent z-10"></div>
 
                     <div class="sm:flex min-h-[260px]">
-                        {{-- Image pane --}}
                         @if($featured->image_path)
                             <div class="relative sm:w-[42%] bg-gray-100 overflow-hidden shrink-0">
                                 <img src="{{ asset('storage/' . $featured->image_path) }}"
                                      alt="{{ $featured->title }}"
                                      class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                                      loading="lazy" />
-                                {{-- Gradient overlay on image for sm+ --}}
                                 <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/10 hidden sm:block"></div>
-                                {{-- Mobile fallback height --}}
                                 <div class="sm:hidden h-52"></div>
                             </div>
                         @endif
 
-                        {{-- Content pane --}}
                         <div class="flex-1 flex flex-col justify-between p-6 sm:p-8">
                             <div>
-                                {{-- Meta row --}}
                                 <div class="flex flex-wrap items-center gap-2 mb-4">
                                     <span class="inline-flex items-center gap-1 bg-tpc-primary text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
                                         <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
@@ -285,18 +277,15 @@
                                     @endif
                                 </div>
 
-                                {{-- Title --}}
                                 <h3 class="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-tpc-primary transition-colors duration-200 leading-snug mb-3">
                                     {{ $featured->title }}
                                 </h3>
 
-                                {{-- Excerpt --}}
                                 <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
                                     {{ $featured->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($featured->body), 180) }}
                                 </p>
                             </div>
 
-                            {{-- CTA row --}}
                             <div class="mt-6 flex items-center justify-between">
                                 <span class="inline-flex items-center gap-1.5 text-sm font-bold text-tpc-primary group-hover:gap-3 transition-all duration-200">
                                     Read Article
@@ -323,7 +312,6 @@
                                         hover:shadow-md hover:border-tpc-primary/30 hover:-translate-y-0.5
                                         transition-all duration-300 overflow-hidden flex flex-col">
 
-                            {{-- Image --}}
                             @if($post->image_path)
                                 <a href="{{ route('news.show', $post) }}" class="block shrink-0 bg-gray-50 overflow-hidden relative"
                                    style="height: 168px;">
@@ -331,13 +319,11 @@
                                          alt="{{ $post->title }}"
                                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
                                          loading="lazy" />
-                                    {{-- Category badge over image --}}
                                     <span class="absolute top-3 left-3 inline-block bg-tpc-primary/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
                                         {{ $post->category ?? 'Announcement' }}
                                     </span>
                                 </a>
                             @else
-                                {{-- No-image fallback with patterned bg --}}
                                 <div class="shrink-0 relative overflow-hidden flex items-center justify-center bg-tpc-primary/5"
                                      style="height: 80px;">
                                     <svg class="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
@@ -352,7 +338,6 @@
                                 </div>
                             @endif
 
-                            {{-- Body --}}
                             <div class="p-5 flex flex-col flex-1">
                                 @if($post->published_at)
                                     <time class="text-[11px] text-gray-400 font-medium mb-2 block">
@@ -440,45 +425,28 @@
                 @endforelse
             </div>
 
-            <div class="mt-8 text-center">
-                <a href="{{ route('academics') }}"
-                   class="inline-flex items-center gap-2 rounded-full border-2 border-tpc-primary px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
-                    View All Academic Programs
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
+            <div class="mt-8 max-w-2xl mx-auto">
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="h-1.5 bg-tpc-accent"></div>
+                    <div class="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                            <p class="font-bold text-gray-800">Explore programs before enrolling</p>
+                            <p class="mt-1 text-sm text-gray-500">View all academic programs offered by Talibon Polytechnic College.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-3 shrink-0">
+                            <a href="{{ route('academics') }}"
+                               class="inline-flex items-center rounded-l-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                                View Programs
+                            </a>
+                            <a href="{{ route('news.index') }}"
+                               class="inline-flex items-center rounded-r-full border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                                Latest Updates →
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
 
-    {{-- ══════════════════════════════════════
-         CTA BANNER
-    ══════════════════════════════════════ --}}
-    <section class="bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-14 lg:flex lg:items-center lg:justify-between gap-8">
-            <div>
-                <span class="inline-block bg-white/15 backdrop-blur-sm text-tpc-accent text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-3">
-                    Enrollment Open
-                </span>
-                <h2 class="text-2xl sm:text-3xl font-bold text-white">Ready to enroll at TPC?</h2>
-                <p class="mt-2 text-sm text-white/75 max-w-lg">
-                    Review our admission requirements and start your application today.
-                </p>
-            </div>
-            <div class="mt-8 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
-                <a href="{{ route('admission') }}"
-                   class="inline-flex items-center gap-2 rounded-l-full border-2 border-white bg-white px-6 py-3 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
-                    Admission Guide
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-                <a href="{{ route('contact') }}"
-                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-6 py-3 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
-                    Contact Us
-                </a>
-            </div>
         </div>
     </section>
 

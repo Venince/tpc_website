@@ -4,10 +4,15 @@
     $dashActive    = $isActive('admin.dashboard');
     $progActive    = $isActive('admin.programs.*');
     $newsActive    = $isActive('admin.news-posts.*');
+    $reviewActive  = $isActive('admin.news-review.*');
     $admActive     = $isActive('admin.admission.*');
     $slidesActive  = $isActive('admin.about-slides.*');
     $setActive     = $isActive('admin.settings.*');
     $usersActive   = $isActive('admin.users.*');
+
+    $pendingCount  = auth()->check() && auth()->user()->is_super_admin
+                        ? \App\Models\NewsPost::pending()->count()
+                        : 0;
 
     $itemBase   = "group relative flex items-center rounded-2xl py-2.5 text-sm transition duration-200 ease-out active:scale-[0.98]
                    focus:outline-none focus:ring-2 focus:ring-tpc-primary/20";
@@ -153,6 +158,52 @@
 
             <span class="{{ $labelBase }}" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">News Posts</span>
         </a>
+
+        {{-- News Review (Super Admin only) --}}
+        @if(auth()->check() && auth()->user()->is_super_admin)
+            <a
+                href="{{ route('admin.news-review.index') }}"
+                @click="closeMobileSidebar()"
+                title="News Review"
+                class="{{ $itemBase }} {{ $reviewActive ? $itemActive : $itemIdle }} px-3 gap-3 justify-start
+                       sm:px-3 sm:gap-3 sm:justify-start"
+                :class="sidebarCollapsed ? 'sm:px-2 sm:gap-0 sm:justify-center' : ''"
+            >
+                <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-tpc-primary transition-opacity duration-200 {{ $reviewActive ? 'opacity-100' : 'opacity-0' }}"></span>
+                <span class="absolute inset-0 rounded-2xl ring-1 transition duration-200 {{ $reviewActive ? 'ring-tpc-primary/10' : 'ring-transparent group-hover:ring-tpc-primary/10' }}"></span>
+
+                <span class="relative grid h-9 w-9 place-items-center rounded-xl border border-tpc-primary/12 bg-white/70 text-tpc-primary
+                             transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
+                    {{-- Checkmark/shield icon --}}
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+
+                    {{-- Pending badge on icon (collapsed view) --}}
+                    @if($pendingCount > 0)
+                        <span
+                            class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-[9px] font-bold text-yellow-900"
+                            :class="sidebarCollapsed ? 'sm:flex' : 'sm:hidden'"
+                        >
+                            {{ $pendingCount > 9 ? '9+' : $pendingCount }}
+                        </span>
+                    @endif
+                </span>
+
+                {{-- Label + badge (expanded view) --}}
+                <span
+                    class="{{ $labelBase }} flex items-center gap-2"
+                    :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''"
+                >
+                    News Review
+                    @if($pendingCount > 0)
+                        <span class="ml-auto shrink-0 rounded-full bg-yellow-400 px-1.5 py-0.5 text-[10px] font-bold text-yellow-900">
+                            {{ $pendingCount > 9 ? '9+' : $pendingCount }}
+                        </span>
+                    @endif
+                </span>
+            </a>
+        @endif
 
         {{-- Admission --}}
         <a

@@ -48,38 +48,32 @@
                 </div>
             @else
                 @php
-                    $count     = $programs->count();
-                    $smRem     = $count % 2;
-                    $lgRem     = $count % 3;
+                    $count = $programs->count();
+                    $smRem = $count % 2;
+                    $lgRem = $count % 3;
                 @endphp
 
                 <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($programs as $program)
                         @php
-                            $isLast = $loop->last;
-
-                            // Center on lg (3-col) if remainder is 1
+                            $isLast   = $loop->last;
                             $lgCenter = ($isLast && $lgRem === 1) ? 'lg:col-start-2' : '';
-
-                            // Center on sm (2-col) if remainder is 1 AND not already handled by lg
                             $smCenter = ($isLast && $smRem === 1 && $lgRem !== 1) ? 'sm:col-start-1 sm:col-span-2 sm:max-w-sm sm:mx-auto sm:w-full' : '';
                         @endphp
 
                         <a href="{{ route('academics.show', $program) }}"
-                        class="group relative bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
+                           class="group relative bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
 
-                            {{-- Top accent bar --}}
                             <div class="h-1.5 w-full bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300"></div>
 
                             <div class="p-6 flex flex-col flex-1">
 
-                                {{-- Logo + Code --}}
                                 <div class="flex items-start gap-4 mb-4">
                                     @if ($program->logo_path)
                                         <div class="shrink-0 h-16 w-16 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center p-2">
                                             <img src="{{ asset('storage/' . $program->logo_path) }}"
-                                                alt="{{ $program->code }} logo"
-                                                class="h-full w-full object-contain" loading="lazy">
+                                                 alt="{{ $program->code }} logo"
+                                                 class="h-full w-full object-contain" loading="lazy">
                                         </div>
                                     @else
                                         <div class="shrink-0 h-16 w-16 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center text-2xl">
@@ -100,7 +94,6 @@
                                     </div>
                                 </div>
 
-                                {{-- Description --}}
                                 @if ($program->description)
                                     <p class="text-xs text-gray-500 leading-relaxed line-clamp-3 flex-1">
                                         {{ $program->description }}
@@ -109,7 +102,6 @@
                                     <div class="flex-1"></div>
                                 @endif
 
-                                {{-- Footer --}}
                                 <div class="mt-5 pt-4 border-t border-gray-100 flex items-center justify-end">
                                     <span class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary group-hover:gap-2 transition-all duration-200">
                                         View Program
@@ -122,30 +114,31 @@
                         </a>
                     @endforeach
                 </div>
-            @endif
-        </div>
-    </section>
 
-    {{-- CTA --}}
-    <section class="bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-10 lg:flex lg:items-center lg:justify-between gap-8">
-            <div>
-                <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Need Help?</p>
-                <h2 class="text-2xl font-bold text-white">Not sure which program to choose?</h2>
-                <p class="mt-1 text-sm text-white/75">
-                    Contact us for guidance on requirements, enrollment, and academic support.
-                </p>
-            </div>
-            <div class="mt-6 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
-                <a href="{{ route('contact') }}"
-                   class="inline-flex items-center rounded-l-full border-2 border-white bg-white px-6 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
-                    Contact Us
-                </a>
-                <a href="{{ route('news.index') }}"
-                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-6 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
-                    Latest Updates →
-                </a>
-            </div>
+                {{-- CTA Card --}}
+                <div class="mt-8 max-w-2xl mx-auto">
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="h-1.5 bg-tpc-accent"></div>
+                        <div class="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <p class="font-bold text-gray-800">Not sure which program to choose?</p>
+                                <p class="mt-1 text-sm text-gray-500">Contact us for guidance on requirements, enrollment, and academic support.</p>
+                            </div>
+                            <div class="flex flex-wrap gap-3 shrink-0">
+                                <a href="{{ route('contact') }}"
+                                class="inline-flex items-center rounded-l-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                                    Contact Us
+                                </a>
+                                <a href="{{ route('news.index') }}"
+                                class="inline-flex items-center rounded-r-full border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                                    Latest Updates →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
         </div>
     </section>
 

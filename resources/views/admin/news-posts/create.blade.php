@@ -6,9 +6,13 @@
             <h1 class="text-2xl font-semibold text-tpc-ink">Create News Post</h1>
             <p class="mt-1 text-sm text-tpc-ink/70">Add a new announcement or update.</p>
         </div>
-        <a href="{{ route('admin.news-posts.index') }}" class="text-sm font-medium text-tpc-primary hover:text-tpc-secondary">
-            ← Back
-        </a>
+        <a href="{{ route('admin.news-posts.index') }}" class="text-sm font-medium text-tpc-primary hover:text-tpc-secondary">← Back</a>
+    </div>
+
+    {{-- Pending note --}}
+    <div class="mt-4 rounded-2xl border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+        <span class="font-semibold">Heads up:</span>
+        After saving, this post will be sent to the superadmin for review before it goes live.
     </div>
 
     <form
@@ -59,18 +63,11 @@
                 <p class="mt-2 text-xs text-tpc-ink/60">PNG/JPG/WEBP up to 5MB.</p>
                 @error('image') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
-
-            <div class="sm:col-span-2 flex items-center gap-2">
-                <input id="is_published" type="checkbox" name="is_published" value="1"
-                       {{ old('is_published') ? 'checked' : '' }}
-                       class="rounded border-tpc-primary/30 text-tpc-primary focus:ring-tpc-primary/20" />
-                <label for="is_published" class="text-sm text-tpc-ink/80">Publish now</label>
-            </div>
         </div>
 
         <div class="mt-6 flex gap-3">
-            <button class="rounded-lg bg-green-600 px-5 py-3 text-sm font-medium text-white hover:bg-green-700">
-                Save
+            <button class="rounded-lg bg-tpc-primary px-5 py-3 text-sm font-medium text-white hover:bg-tpc-secondary">
+                Submit for Review
             </button>
             <a href="{{ route('admin.news-posts.index') }}"
                class="rounded-lg border border-tpc-primary/30 bg-white px-5 py-3 text-sm font-medium text-tpc-primary hover:bg-tpc-primary/5">

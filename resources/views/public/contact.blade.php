@@ -206,7 +206,7 @@
                             <div class="mt-4 grid gap-2 sm:grid-cols-2">
                                 @if($mapLink)
                                     <a href="{{ $mapLink }}" target="_blank" rel="noopener"
-                                       class="flex items-center justify-center rounded-l-full border-2 border-tpc-primary px-4 py-2 text-xs font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                                       class="flex items-center justify-center rounded-l-full border-2 border-tpc-primary bg-tpc-primary px-4 py-2 text-xs font-bold text-white hover:bg-tpc-secondary hover:text-white transition">
                                         Open in Maps
                                     </a>
                                 @endif

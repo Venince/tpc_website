@@ -71,7 +71,7 @@
             <p class="text-xs text-white/80">
                 © {{ now()->year }} {{ $siteName }}. All rights reserved.
             </p>
-            <p class="text-xs text-white/60">SecrIT Solutions</p>
+            <p class="text-xs text-white/60">SecrIT Solutions: AABJRSV</p>
         </div>
     </div>
 </footer>

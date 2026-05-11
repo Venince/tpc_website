@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\ProgramDetailController;
 use App\Http\Controllers\Admin\ProgramPersonController;
 use App\Http\Controllers\Admin\ProgramAchievementController;
 use App\Http\Controllers\Admin\AboutSlideController;
+use App\Http\Controllers\Admin\NewsReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,6 +141,21 @@ Route::middleware(['auth', 'admin'])
             ->name('admission.sections.items.destroy');
         Route::post('admission/sections/{section}/reorder', [AdminAdmissionController::class, 'reorderItems'])
             ->name('admission.sections.reorder');
+
+        Route::middleware('super_admin')->group(function () {
+
+        Route::resource('users', UserController::class)->except(['show']);
+
+        // ── News Review (superadmin approval queue) ──────────────
+        Route::prefix('news-review')->name('news-review.')->group(function () {
+            Route::get('/',                           [NewsReviewController::class, 'index'])   ->name('index');
+            Route::get('/{newsPost}',                 [NewsReviewController::class, 'show'])    ->name('show');
+            Route::post('/{newsPost}/approve',        [NewsReviewController::class, 'approve']) ->name('approve');
+            Route::post('/{newsPost}/decline',        [NewsReviewController::class, 'decline']) ->name('decline');
+            Route::post('/{newsPost}/pending',        [NewsReviewController::class, 'pending']) ->name('pending');
+        });
+
+    });
 
         // ── About Slides ────────────────────────────────────────────
         Route::resource('about-slides', AboutSlideController::class)

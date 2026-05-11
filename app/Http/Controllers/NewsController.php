@@ -9,16 +9,15 @@ class NewsController extends Controller
 {
     public function index(Request $request)
     {
-        $q = $request->query('q');
+        $q        = $request->query('q');
         $category = $request->query('category');
 
         $posts = NewsPost::query()
-            ->where('is_published', 1)
-            ->whereNotNull('published_at')
+            ->published()   // scope: status=approved, is_published=true, published_at not null
             ->when($q, fn($query) => $query->where(function ($qq) use ($q) {
-                $qq->where('title', 'like', "%{$q}%")
+                $qq->where('title',   'like', "%{$q}%")
                    ->orWhere('excerpt', 'like', "%{$q}%")
-                   ->orWhere('body', 'like', "%{$q}%");
+                   ->orWhere('body',    'like', "%{$q}%");
             }))
             ->when($category, fn($query) => $query->where('category', $category))
             ->orderByDesc('published_at')
@@ -30,10 +29,12 @@ class NewsController extends Controller
 
     public function show(NewsPost $newsPost)
     {
-        abort_unless($newsPost->is_published && $newsPost->published_at, 404);
+        // Only approved + published posts are visible to the public
+        abort_unless(
+            $newsPost->isApproved() && $newsPost->is_published && $newsPost->published_at,
+            404
+        );
 
-        return view('public.news.show', [
-            'post' => $newsPost,
-        ]);
+        return view('public.news.show', ['post' => $newsPost]);
     }
 }
