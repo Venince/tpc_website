@@ -36,8 +36,12 @@ Route::get('/admission', [AdmissionController::class, 'index'])->name('admission
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/{newsPost:slug}', [NewsController::class, 'show'])->name('news.show');
 
+Route::get('/about/{aboutSlide}', [HomeController::class, 'showSlide'])->name('about.show');
+
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 /*
 |----------------------------------------------------------------------
@@ -85,6 +89,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
 
+        // Messages — unread-count MUST be before {message} wildcard
         Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
         Route::get('messages/unread-count', [ContactMessageController::class, 'unreadCount'])->name('messages.unreadCount');
         Route::get('messages/{message}', [ContactMessageController::class, 'show'])->name('messages.show');
@@ -93,34 +98,6 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('admission', [AdminAdmissionController::class, 'index'])
             ->name('admission.index');
-
-        Route::prefix('programs/{program}/details')->name('programs.details.')->group(function () {
-            Route::get('/',               [ProgramDetailController::class, 'index'])   ->name('index');
-            Route::get('/create',         [ProgramDetailController::class, 'create'])  ->name('create');
-            Route::post('/',              [ProgramDetailController::class, 'store'])   ->name('store');
-            Route::get('/{detail}/edit',  [ProgramDetailController::class, 'edit'])    ->name('edit');
-            Route::patch('/{detail}',     [ProgramDetailController::class, 'update'])  ->name('update');
-            Route::delete('/{detail}',    [ProgramDetailController::class, 'destroy']) ->name('destroy');
-            Route::post('/reorder',       [ProgramDetailController::class, 'reorder']) ->name('reorder');
-        });
-
-        Route::prefix('programs/{program}/people')->name('programs.people.')->group(function () {
-            Route::get('/create',         [ProgramPersonController::class, 'create'])  ->name('create');
-            Route::post('/',              [ProgramPersonController::class, 'store'])   ->name('store');
-            Route::get('/{person}/edit',  [ProgramPersonController::class, 'edit'])    ->name('edit');
-            Route::patch('/{person}',     [ProgramPersonController::class, 'update'])  ->name('update');
-            Route::delete('/{person}',    [ProgramPersonController::class, 'destroy']) ->name('destroy');
-            Route::post('/reorder',       [ProgramPersonController::class, 'reorder']) ->name('reorder');
-        });
-
-        Route::prefix('programs/{program}/achievements')->name('programs.achievements.')->group(function () {
-            Route::get('/create',                [ProgramAchievementController::class, 'create'])  ->name('create');
-            Route::post('/',                     [ProgramAchievementController::class, 'store'])   ->name('store');
-            Route::get('/{achievement}/edit',    [ProgramAchievementController::class, 'edit'])    ->name('edit');
-            Route::patch('/{achievement}',       [ProgramAchievementController::class, 'update'])  ->name('update');
-            Route::delete('/{achievement}',      [ProgramAchievementController::class, 'destroy']) ->name('destroy');
-            Route::post('/reorder',              [ProgramAchievementController::class, 'reorder']) ->name('reorder');
-        });
 
         // Section edit
         Route::get('admission/sections/{section}/edit', [AdminAdmissionController::class, 'editSection'])
@@ -142,22 +119,38 @@ Route::middleware(['auth', 'admin'])
         Route::post('admission/sections/{section}/reorder', [AdminAdmissionController::class, 'reorderItems'])
             ->name('admission.sections.reorder');
 
-        Route::middleware('super_admin')->group(function () {
-
-        Route::resource('users', UserController::class)->except(['show']);
-
-        // ── News Review (superadmin approval queue) ──────────────
-        Route::prefix('news-review')->name('news-review.')->group(function () {
-            Route::get('/',                           [NewsReviewController::class, 'index'])   ->name('index');
-            Route::get('/{newsPost}',                 [NewsReviewController::class, 'show'])    ->name('show');
-            Route::post('/{newsPost}/approve',        [NewsReviewController::class, 'approve']) ->name('approve');
-            Route::post('/{newsPost}/decline',        [NewsReviewController::class, 'decline']) ->name('decline');
-            Route::post('/{newsPost}/pending',        [NewsReviewController::class, 'pending']) ->name('pending');
+        // Program Details
+        Route::prefix('programs/{program}/details')->name('programs.details.')->group(function () {
+            Route::get('/',               [ProgramDetailController::class, 'index'])   ->name('index');
+            Route::get('/create',         [ProgramDetailController::class, 'create'])  ->name('create');
+            Route::post('/',              [ProgramDetailController::class, 'store'])   ->name('store');
+            Route::get('/{detail}/edit',  [ProgramDetailController::class, 'edit'])    ->name('edit');
+            Route::patch('/{detail}',     [ProgramDetailController::class, 'update'])  ->name('update');
+            Route::delete('/{detail}',    [ProgramDetailController::class, 'destroy']) ->name('destroy');
+            Route::post('/reorder',       [ProgramDetailController::class, 'reorder']) ->name('reorder');
         });
 
-    });
+        // Program People
+        Route::prefix('programs/{program}/people')->name('programs.people.')->group(function () {
+            Route::get('/create',         [ProgramPersonController::class, 'create'])  ->name('create');
+            Route::post('/',              [ProgramPersonController::class, 'store'])   ->name('store');
+            Route::get('/{person}/edit',  [ProgramPersonController::class, 'edit'])    ->name('edit');
+            Route::patch('/{person}',     [ProgramPersonController::class, 'update'])  ->name('update');
+            Route::delete('/{person}',    [ProgramPersonController::class, 'destroy']) ->name('destroy');
+            Route::post('/reorder',       [ProgramPersonController::class, 'reorder']) ->name('reorder');
+        });
 
-        // ── About Slides ────────────────────────────────────────────
+        // Program Achievements
+        Route::prefix('programs/{program}/achievements')->name('programs.achievements.')->group(function () {
+            Route::get('/create',                [ProgramAchievementController::class, 'create'])  ->name('create');
+            Route::post('/',                     [ProgramAchievementController::class, 'store'])   ->name('store');
+            Route::get('/{achievement}/edit',    [ProgramAchievementController::class, 'edit'])    ->name('edit');
+            Route::patch('/{achievement}',       [ProgramAchievementController::class, 'update'])  ->name('update');
+            Route::delete('/{achievement}',      [ProgramAchievementController::class, 'destroy']) ->name('destroy');
+            Route::post('/reorder',              [ProgramAchievementController::class, 'reorder']) ->name('reorder');
+        });
+
+        // About Slides
         Route::resource('about-slides', AboutSlideController::class)
             ->parameters(['about-slides' => 'aboutSlide'])
             ->except(['show']);
@@ -168,8 +161,19 @@ Route::middleware(['auth', 'admin'])
         |----------------------------------------------------------------------
         */
         Route::middleware('super_admin')->group(function () {
+
             Route::resource('users', UserController::class)->except(['show']);
+
+            Route::prefix('news-review')->name('news-review.')->group(function () {
+                Route::get('/',                    [NewsReviewController::class, 'index'])   ->name('index');
+                Route::get('/{newsPost}',          [NewsReviewController::class, 'show'])    ->name('show');
+                Route::post('/{newsPost}/approve', [NewsReviewController::class, 'approve']) ->name('approve');
+                Route::post('/{newsPost}/decline', [NewsReviewController::class, 'decline']) ->name('decline');
+                Route::post('/{newsPost}/pending', [NewsReviewController::class, 'pending']) ->name('pending');
+            });
+
         });
+
     });
 
 /*

@@ -2,42 +2,56 @@
 
 @section('content')
 
-    <div class="flex items-center justify-between mb-6">
-        <p class="text-sm text-tpc-ink/60">Manage all sections and items shown on the public Admission page.</p>
+    {{-- ── Page header ── --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div>
+            <h1 class="text-lg font-bold text-tpc-ink">Admission Page</h1>
+            <p class="mt-0.5 text-xs text-tpc-ink/50">Manage all sections and items shown on the public Admission page</p>
+        </div>
         <a href="{{ route('admission') }}" target="_blank"
-           class="inline-flex items-center gap-1.5 text-sm font-semibold text-tpc-primary hover:text-tpc-secondary transition">
+           class="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-xl border border-tpc-primary/25 bg-white px-4 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition">
             View Live Page
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
             </svg>
         </a>
     </div>
 
-    <div class="space-y-6">
+    <div class="space-y-5">
         @foreach ($sections as $section)
             <div class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm overflow-hidden">
 
                 {{-- Section Header --}}
-                <div class="flex items-center justify-between gap-4 px-5 py-4 bg-tpc-primary/5 border-b border-tpc-primary/10">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 bg-tpc-primary/4 border-b border-tpc-primary/8">
                     <div class="flex items-center gap-3 min-w-0">
-                        <span class="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider
+                        {{-- Visibility badge --}}
+                        <span class="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider
                             {{ $section->is_visible ? 'bg-tpc-accent/30 text-tpc-secondary' : 'bg-gray-100 text-gray-500' }}">
                             {{ $section->is_visible ? 'Visible' : 'Hidden' }}
                         </span>
                         <div class="min-w-0">
-                            <p class="font-bold text-tpc-ink truncate">{{ $section->label }}</p>
-                            <p class="text-xs text-tpc-ink/50 mt-0.5">Type: <span class="font-medium">{{ $section->type }}</span> &middot; Key: <span class="font-mono">{{ $section->key }}</span></p>
+                            <p class="font-bold text-tpc-ink text-sm truncate">{{ $section->label }}</p>
+                            <p class="text-[11px] text-tpc-ink/40 mt-0.5">
+                                Type: <span class="font-semibold text-tpc-ink/60">{{ $section->type }}</span>
+                                &middot; Key: <span class="font-mono text-tpc-ink/60">{{ $section->key }}</span>
+                            </p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <a href="{{ route('admin.admission.sections.edit', $section) }}"
-                           class="rounded-xl border border-tpc-primary/20 bg-white px-3 py-1.5 text-xs font-semibold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                           class="inline-flex items-center gap-1.5 rounded-xl border border-tpc-primary/20 bg-white px-3 py-1.5 text-xs font-semibold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
+                            </svg>
                             Edit Section
                         </a>
                         @if ($section->type !== 'note')
                             <a href="{{ route('admin.admission.sections.items.create', $section) }}"
-                               class="rounded-xl bg-tpc-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-tpc-secondary transition">
-                                + Add Item
+                               class="inline-flex items-center gap-1.5 rounded-xl bg-tpc-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-tpc-secondary transition">
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Add Item
                             </a>
                         @endif
                     </div>
@@ -45,60 +59,81 @@
 
                 {{-- Section note preview --}}
                 @if ($section->note)
-                    <div class="px-5 py-3 border-b border-dashed border-tpc-primary/10 bg-tpc-primary/[0.03]">
-                        <p class="text-xs text-tpc-ink/60"><span class="font-semibold text-tpc-primary">Note/Tip:</span> {{ $section->note }}</p>
+                    <div class="flex items-start gap-2.5 px-5 py-3 border-b border-dashed border-tpc-primary/10 bg-tpc-primary/[0.02]">
+                        <svg class="h-3.5 w-3.5 text-tpc-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                        </svg>
+                        <p class="text-xs text-tpc-ink/60"><span class="font-semibold text-tpc-primary">Note:</span> {{ $section->note }}</p>
                     </div>
                 @endif
 
                 {{-- Items --}}
                 @if ($section->type !== 'note')
                     @if ($section->items->isEmpty())
-                        <div class="px-5 py-6 text-center text-sm text-tpc-ink/40">No items yet. Add one above.</div>
+                        <div class="px-5 py-8 text-center">
+                            <svg class="mx-auto h-8 w-8 text-tpc-ink/15 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                            </svg>
+                            <p class="text-xs text-tpc-ink/40 font-medium">No items yet</p>
+                            <a href="{{ route('admin.admission.sections.items.create', $section) }}"
+                               class="mt-2 inline-block text-xs font-semibold text-tpc-primary hover:text-tpc-secondary">Add the first item →</a>
+                        </div>
                     @else
-                        <ul class="divide-y divide-gray-100" id="sortable-{{ $section->id }}">
+                        <ul class="divide-y divide-tpc-primary/6" id="sortable-{{ $section->id }}">
                             @foreach ($section->items as $item)
-                                <li class="flex items-start gap-4 px-5 py-3.5 hover:bg-gray-50 transition group"
+                                <li class="flex items-start gap-3 px-5 py-3.5 hover:bg-tpc-primary/[0.02] transition group"
                                     data-id="{{ $item->id }}">
 
                                     {{-- Drag handle --}}
-                                    <span class="mt-0.5 shrink-0 cursor-grab text-gray-300 group-hover:text-tpc-primary/40 transition select-none drag-handle"
+                                    <span class="mt-1 shrink-0 cursor-grab text-tpc-ink/20 group-hover:text-tpc-primary/40 transition select-none drag-handle text-base leading-none"
                                           title="Drag to reorder">⠿</span>
 
-                                    {{-- Item badge (step number or bullet) --}}
+                                    {{-- Item badge --}}
                                     @if ($section->type === 'steps')
-                                        <span class="shrink-0 flex h-6 w-6 items-center justify-center bg-tpc-primary text-white text-xs font-bold rounded">
+                                        <span class="shrink-0 flex h-5 w-5 mt-0.5 items-center justify-center bg-tpc-primary text-white text-[10px] font-bold rounded-md">
                                             {{ $loop->iteration }}
                                         </span>
                                     @else
-                                        <span class="mt-2 shrink-0 h-1.5 w-1.5 rounded-full bg-tpc-primary"></span>
+                                        <span class="mt-2 shrink-0 h-1.5 w-1.5 rounded-full bg-tpc-primary/60"></span>
                                     @endif
 
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-semibold text-tpc-ink">{{ $item->title }}</p>
                                         @if ($item->body)
-                                            <p class="text-xs text-tpc-ink/60 mt-0.5">{{ $item->body }}</p>
+                                            <p class="text-xs text-tpc-ink/55 mt-0.5">{{ $item->body }}</p>
                                         @endif
                                     </div>
 
-                                    <div class="flex items-center gap-3 shrink-0 ml-auto">
+                                    <div class="flex items-center gap-1 shrink-0 ml-auto opacity-0 group-hover:opacity-100 transition">
                                         <a href="{{ route('admin.admission.sections.items.edit', [$section, $item]) }}"
-                                           class="text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition">Edit</a>
-
+                                           class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-tpc-primary hover:bg-tpc-primary/8 transition">
+                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
+                                            </svg>
+                                            Edit
+                                        </a>
                                         <form method="POST"
                                               action="{{ route('admin.admission.sections.items.destroy', [$section, $item]) }}"
                                               onsubmit="return confirm('Delete this item?');">
                                             @csrf @method('DELETE')
-                                            <button class="text-xs font-semibold text-red-500 hover:text-red-700 transition">Delete</button>
+                                            <button class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition">
+                                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                                                </svg>
+                                                Delete
+                                            </button>
                                         </form>
                                     </div>
                                 </li>
                             @endforeach
                         </ul>
 
-                        {{-- Reorder hint --}}
-                        <p class="px-5 py-2 text-[11px] text-tpc-ink/30 border-t border-gray-100">
-                            Drag rows to reorder. Changes save automatically.
-                        </p>
+                        <div class="flex items-center gap-1.5 px-5 py-2 border-t border-tpc-primary/6">
+                            <svg class="h-3 w-3 text-tpc-ink/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"/>
+                            </svg>
+                            <p class="text-[11px] text-tpc-ink/30">Drag rows to reorder · saves automatically</p>
+                        </div>
                     @endif
                 @endif
             </div>
@@ -108,18 +143,15 @@
 @endsection
 
 @push('scripts')
-{{-- SortableJS for drag-to-reorder --}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
 document.querySelectorAll('[id^="sortable-"]').forEach(function (list) {
     const sectionId = list.id.replace('sortable-', '');
-
     Sortable.create(list, {
         handle: '.drag-handle',
         animation: 150,
         onEnd: function () {
             const order = [...list.querySelectorAll('[data-id]')].map(el => el.dataset.id);
-
             fetch(`/tpc_admin/admission/sections/${sectionId}/reorder`, {
                 method: 'POST',
                 headers: {

@@ -93,7 +93,7 @@ async function refreshUnreadBadge({ force = false } = {}) {
   unreadBadgeCooldownUntil = now + 800;
 
   try {
-    const res = await fetch(`/admin/messages/unread-count?ts=${now}`, {
+    const res = await fetch(`/tpc_admin/messages/unread-count?ts=${now}`, {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
       credentials: 'same-origin',
       cache: 'no-store',
@@ -121,7 +121,7 @@ function startBadgePolling() {
 /* ---------------------------
    Mobile nav active state
 ---------------------------- */
-const MOBILE_IDS = ['mob-home', 'mob-about', 'mob-academics', 'mob-admission', 'mob-news', 'mob-contact'];
+const MOBILE_IDS = ['mob-home', 'mob-about', 'mob-academics', 'mob-admission', 'mob-news', 'mob-contact', 'mob-messages'];
 
 const MOBILE_LINK_ACTIVE   = ['bg-tpc-primary', 'text-white', 'shadow-sm'];
 const MOBILE_LINK_INACTIVE = ['text-gray-700'];
@@ -137,18 +137,14 @@ function setMobileNavActive(activeId) {
     const icon    = a.querySelector('span.flex-shrink-0');
     const isActive = id === activeId;
 
-    // Link element classes
     a.classList.remove(...MOBILE_LINK_ACTIVE, ...MOBILE_LINK_INACTIVE);
     a.classList.add(...(isActive ? MOBILE_LINK_ACTIVE : MOBILE_LINK_INACTIVE));
 
-    // Icon wrapper classes
     if (icon) {
       icon.classList.remove(...MOBILE_ICON_ACTIVE, ...MOBILE_ICON_INACTIVE);
-      // Keep the non-toggled hover classes intact; only swap the state ones
       icon.classList.add(...(isActive ? MOBILE_ICON_ACTIVE : MOBILE_ICON_INACTIVE));
     }
 
-    // Swap dot indicator vs chevron arrow
     const dot     = a.querySelector('span.rounded-full');
     const chevron = a.querySelector('svg.h-3\\.5');
 
@@ -164,11 +160,9 @@ function setNavActiveByUrl(urlStr = window.location.href) {
   const url  = new URL(urlStr, window.location.origin);
   const path = url.pathname.replace(/\/+$/, '') || '/';
 
-  // --- Desktop: clear all, then re-apply ---
   const links = document.querySelectorAll('[data-tpc-link]');
   links.forEach((l) => l.classList.remove('tpc-active'));
 
-  // Home / About
   if (isHomePath(path)) {
     if (url.hash === '#about') {
       document.getElementById('nav-about')?.classList.add('tpc-active');
@@ -180,21 +174,18 @@ function setNavActiveByUrl(urlStr = window.location.href) {
     return;
   }
 
-  // Admin messages
-  if (path === '/admin/messages' || path.startsWith('/admin/messages/')) {
+  if (path === '/tpc_admin/messages' || path.startsWith('/tpc_admin/messages/')) {
     document.getElementById('nav-messages')?.classList.add('tpc-active');
-    setMobileNavActive(null);
+    setMobileNavActive('mob-messages');
     return;
   }
 
-  // Admin
-  if (path === '/admin' || path.startsWith('/admin/')) {
+  if (path === '/tpc_admin' || path.startsWith('/tpc_admin/')) {
     document.getElementById('nav-admin')?.classList.add('tpc-active');
     setMobileNavActive(null);
     return;
   }
 
-  // All other pages — desktop: match by pathname
   links.forEach((l) => {
     try {
       const lu = new URL(l.href, window.location.origin);
@@ -203,7 +194,6 @@ function setNavActiveByUrl(urlStr = window.location.href) {
     } catch (_) {}
   });
 
-  // Mobile: map pathname to mobile link id
   if (path.startsWith('/news')) {
     setMobileNavActive('mob-news');
     return;
@@ -246,7 +236,6 @@ function initHomeNav() {
   const topSection   = document.getElementById('top');
   const aboutSection = document.getElementById('about');
 
-  // Only wire up scroll behavior when actually on home page
   if (!navHome || !navAbout || !topSection || !aboutSection) {
     homeCleanup = () => {};
     return;
@@ -267,13 +256,11 @@ function initHomeNav() {
     }
   };
 
-  // Set initial active based on hash
   setActive(window.location.hash === '#about' ? 'about' : 'home');
 
-  // Home nav click — scroll to top
   navHome.addEventListener('click', (e) => {
     const onHome = isHomePath(window.location.pathname);
-    if (!onHome) return; // let PJAX handle it
+    if (!onHome) return;
 
     e.preventDefault();
     setActive('home');
@@ -281,10 +268,9 @@ function initHomeNav() {
     history.replaceState(null, '', window.location.pathname + window.location.search);
   }, { signal });
 
-  // About nav click — scroll to about section
   navAbout.addEventListener('click', (e) => {
     const onHome = isHomePath(window.location.pathname);
-    if (!onHome) return; // let PJAX handle it
+    if (!onHome) return;
 
     e.preventDefault();
     setActive('about');
@@ -296,7 +282,6 @@ function initHomeNav() {
     setTimeout(() => aboutSection.classList.remove('tpc-highlight'), 900);
   }, { signal });
 
-  // IntersectionObserver to track scroll position
   const observer = new IntersectionObserver(
     (entries) => {
       const visible = entries
@@ -321,7 +306,6 @@ function initHomeNav() {
 
 /* ---------------------------
    Handle About link from other pages
-   (navigate to /#about via PJAX then scroll)
 ---------------------------- */
 function handleAboutLinkFromOtherPage(e) {
   const a = e.target.closest('a');
@@ -330,32 +314,25 @@ function handleAboutLinkFromOtherPage(e) {
   const href = a.getAttribute('href');
   if (!href) return;
 
-  // Check if this is the About nav link pointing to /#about or home#about
   const url = new URL(a.href, window.location.href);
   const onHome = isHomePath(window.location.pathname);
 
-  // If already on home, let initHomeNav handle it
   if (onHome) return;
 
-  // If clicking a link that goes to home + #about from another page
   if (isHomePath(url.pathname) && url.hash === '#about') {
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    // Activate about in nav immediately for visual feedback
     document.querySelectorAll('[data-tpc-link]').forEach(l => l.classList.remove('tpc-active'));
     const navAbout = document.getElementById('nav-about');
     if (navAbout) navAbout.classList.add('tpc-active');
     setMobileNavActive('mob-about');
 
-    // PJAX navigate to home, then after swap scroll to about
     window._scrollToAboutAfterNav = true;
     pjaxNavigate(url.href);
   }
 
-  // If clicking a link that goes to home (no hash) from another page — activate Home
   if (isHomePath(url.pathname) && !url.hash) {
-    // Let normal PJAX handle, but ensure Home gets active not About
     window._scrollToAboutAfterNav = false;
   }
 }
@@ -391,13 +368,16 @@ function handleSamePageHash(url) {
    PJAX navigation
 ---------------------------- */
 let navigating = false;
+let ajaxFormBusy = false;  // prevents PJAX racing against AJAX form submissions
 
 async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = {}) {
   if (navigating) return;
+  if (ajaxFormBusy) return;  // block PJAX while mark read/unread is in flight
   navigating = true;
 
   const container = contentEl();
   if (!container) {
+    navigating = false;
     window.location.href = urlStr;
     return;
   }
@@ -429,6 +409,7 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     html = await res.text();
   } catch (_) {
+    navigating = false;  // reset before redirect
     window.location.href = url.href;
     return;
   }
@@ -438,6 +419,7 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
   const newContainer = doc.getElementById(containerId);
 
   if (!newContainer) {
+    navigating = false;  // reset before redirect
     window.location.href = url.href;
     return;
   }
@@ -486,7 +468,6 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
 
   // Scroll handling
   if (window._scrollToAboutAfterNav) {
-    // Coming from another page, navigating to /#about
     window._scrollToAboutAfterNav = false;
     requestAnimationFrame(() => {
       setTimeout(() => {
@@ -533,6 +514,7 @@ document.addEventListener('submit', async (e) => {
   if (form.dataset.ajax !== 'true') return;
 
   e.preventDefault();
+  ajaxFormBusy = true;  // block PJAX during this request
 
   const btn = form.querySelector('button');
   if (btn) { btn.disabled = true; btn.classList.add('opacity-70'); }
@@ -563,6 +545,7 @@ document.addEventListener('submit', async (e) => {
     form.submit();
   } finally {
     if (btn) { btn.disabled = false; btn.classList.remove('opacity-70'); }
+    ajaxFormBusy = false;  // unblock PJAX
   }
 });
 
@@ -591,8 +574,7 @@ document.addEventListener('click', (e) => {
   const a = e.target.closest('a');
   if (!a) return;
 
-  const href = a.getAttribute('href') || '';
-  const url  = new URL(a.href, window.location.href);
+  const url = new URL(a.href, window.location.href);
 
   if (isHomePath(url.pathname) && url.hash === '#about' && !isHomePath(window.location.pathname)) {
     e.preventDefault();

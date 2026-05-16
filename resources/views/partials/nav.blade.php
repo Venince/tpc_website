@@ -17,7 +17,7 @@
     {{-- Green top stripe --}}
     <div class="h-1 w-full bg-tpc-primary"></div>
 
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
         {{-- Brand --}}
         <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0" data-tpc-link>
@@ -182,7 +182,7 @@
                                     {{ $item['active']
                                         ? 'bg-white/20 text-white'
                                         : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         {!! $item['icon'] !!}
                                     </svg>
                                 </span>
@@ -207,22 +207,26 @@
                             <div class="px-2 pb-2">
                                 <p class="px-3 pt-1 pb-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Admin</p>
 
-                                <a data-tpc-link href="{{ route('admin.messages.index') }}" @click="open=false"
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group
-                                       {{ $messagesActive
-                                           ? 'bg-tpc-primary text-white shadow-sm'
-                                           : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all
+                                <a id="mob-messages" data-tpc-link href="{{ route('admin.messages.index') }}" @click="open=false"
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group
+                                    {{ $messagesActive
+                                        ? 'bg-tpc-primary text-white shadow-sm'
+                                        : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
+                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150
                                         {{ $messagesActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16v12H4z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6"/>
                                         </svg>
                                     </span>
                                     <span class="flex-1">Messages</span>
-                                    <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                    </svg>
+                                    @if($messagesActive)
+                                        <span class="rounded-full w-1.5 h-1.5 bg-white/60"></span>
+                                    @else
+                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    @endif
                                 </a>
 
                                 <a href="{{ route('admin.dashboard') }}" data-no-pjax="true" @click="open=false"
@@ -251,4 +255,24 @@
 
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const homeLinks = document.querySelectorAll('[id="nav-home"], [id="mob-home"]');
+
+        homeLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                const isOnHome = window.location.pathname === '/'
+                    || window.location.pathname === '/home'
+                    || window.location.hash !== '';
+
+                if (isOnHome) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    history.replaceState(null, '', window.location.pathname);
+                }
+            });
+        });
+    });
+    </script>
 </header>

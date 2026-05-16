@@ -8,7 +8,7 @@
     <section class="relative overflow-hidden bg-tpc-primary">
         <div class="max-w-7xl mx-auto px-4 py-10">
             <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Admin</p>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div class="flex flex-col gap-2">
                 <div>
                     <h1 class="text-3xl sm:text-4xl font-bold text-white leading-tight">Inbox</h1>
                     <p class="mt-2 text-sm text-white/70">
@@ -18,22 +18,24 @@
                 </div>
 
                 {{-- Filter form --}}
-                <form method="GET" class="w-full sm:w-auto flex flex-col gap-2 sm:flex-row sm:items-end">
-                    <input
-                        name="q"
-                        value="{{ $q }}"
-                        placeholder="Search name, email, subject..."
-                        class="rounded-full border-2 border-white/30 bg-white/10 text-white placeholder-white/50 px-4 py-2 text-sm focus:border-white focus:outline-none backdrop-blur-sm w-64"
-                    />
-                    <select
-                        name="status"
-                        class="rounded-full border-2 border-white/30 bg-white/10 text-white px-4 py-2 text-sm focus:border-white focus:outline-none"
-                    >
-                        <option value="unread" class="text-tpc-ink" @selected($status === 'unread')>Unread</option>
-                        <option value="read" class="text-tpc-ink" @selected($status === 'read')>Read</option>
-                        <option value="all" class="text-tpc-ink" @selected($status === 'all')>All</option>
-                    </select>
-                    <button class="rounded-full border-2 border-white bg-white px-5 py-2 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                <form method="GET" class="w-full mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <div class="flex gap-2 flex-1">
+                        <input
+                            name="q"
+                            value="{{ $q }}"
+                            placeholder="Search name, email, subject..."
+                            class="flex-1 min-w-0 rounded-xl border-2 border-white/30 bg-white/10 text-white placeholder-white/50 px-4 py-2.5 text-sm focus:border-white focus:outline-none backdrop-blur-sm"
+                        />
+                        <select
+                            name="status"
+                            class="rounded-xl border-2 border-white/30 bg-tpc-primary text-white px-3 py-2.5 text-sm focus:border-white focus:outline-none appearance-none cursor-pointer"
+                        >
+                            <option value="unread" class="text-tpc-ink" @selected($status === 'unread')>Unread</option>
+                            <option value="read"   class="text-tpc-ink" @selected($status === 'read')>Read</option>
+                            <option value="all"    class="text-tpc-ink" @selected($status === 'all')>All</option>
+                        </select>
+                    </div>
+                    <button class="w-full sm:w-auto rounded-xl border-2 border-white bg-white px-6 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
                         Filter
                     </button>
                 </form>
@@ -117,8 +119,8 @@
 
                                 {{-- Date --}}
                                 <div class="shrink-0 flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-0.5">
-                                    <p class="text-xs font-semibold text-gray-500">{{ $m->created_at->format('M d, Y') }}</p>
-                                    <p class="text-xs text-gray-400">{{ $m->created_at->format('h:i A') }}</p>
+                                    <p class="text-xs font-semibold text-gray-500">{{ $m->created_at->timezone('Asia/Manila')->format('M d, Y') }}</p>
+                                    <p class="text-xs text-gray-400">{{ $m->created_at->timezone('Asia/Manila')->format('h:i A') }}</p>
                                 </div>
                             </div>
                         </div>

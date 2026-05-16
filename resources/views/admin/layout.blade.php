@@ -12,7 +12,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="text-tpc-ink tpc-admin-bg relative isolate overflow-x-hidden">
+<body class="text-tpc-ink bg-tpc-primary/5 relative isolate overflow-x-hidden">
 
     <div aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 flex items-center justify-center">
         <img
@@ -26,19 +26,22 @@
 <div
     class="min-h-screen flex relative z-10"
     x-data="{
-        // Desktop: collapsed = icons only
         sidebarCollapsed: (localStorage.getItem('tpcSidebarCollapsed') ?? 'false') === 'true',
-
-        // Mobile: drawer open/close
         mobileSidebarOpen: false,
 
+        init() {
+            const mq = window.matchMedia('(min-width: 640px)');
+            const handler = () => { if (mq.matches) this.mobileSidebarOpen = false; };
+            handler();
+            mq.addEventListener?.('change', handler);
+        },
+
         toggleSidebar() {
-            const isMobile = window.matchMedia('(max-width: 639px)').matches; // Tailwind sm breakpoint
+            const isMobile = window.matchMedia('(max-width: 639px)').matches;
             if (isMobile) {
                 this.mobileSidebarOpen = !this.mobileSidebarOpen;
                 return;
             }
-
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('tpcSidebarCollapsed', this.sidebarCollapsed ? 'true' : 'false');
         },
@@ -47,13 +50,6 @@
             this.mobileSidebarOpen = false;
         }
     }"
-    x-init="
-        // When resizing to desktop, force-close mobile drawer
-        const mq = window.matchMedia('(min-width: 640px)');
-        const handler = () => { if (mq.matches) mobileSidebarOpen = false; };
-        handler();
-        mq.addEventListener?.('change', handler);
-    "
     x-effect="document.body.classList.toggle('overflow-hidden', mobileSidebarOpen)"
     @keydown.escape.window="mobileSidebarOpen = false"
 >
@@ -76,7 +72,7 @@
         @include('admin.partials.header', ['title' => $title ?? null])
 
         {{-- Only body/content area --}}
-        <main id="tpc-admin-main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main id="tpc-admin-main" class="max-w-full px-4 sm:px-6 lg:px-8 py-6">
             {{-- Flash success --}}
             @if (session('success'))
                 <div class="mb-5 rounded-2xl border border-tpc-primary/15 bg-white/80 p-4 shadow-sm backdrop-blur">
@@ -100,7 +96,7 @@
             @endif
 
             {{-- Content card --}}
-            <div class="rounded-3xl border border-tpc-primary/10 bg-white/70 shadow-sm backdrop-blur p-4 sm:p-6">
+            <div class="rounded-3xl border border-tpc-primary/20 bg-white shadow-sm p-4 sm:p-6">
                 @hasSection('page_actions')
                     <div
                         class="sticky top-[72px] sm:top-[80px] z-30 -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 mb-4
@@ -118,6 +114,9 @@
             </div>
         </main>
     </div>
+
+    @stack('scripts')
+
 </div>
 </body>
 </html>

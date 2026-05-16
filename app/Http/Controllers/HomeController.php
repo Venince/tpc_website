@@ -25,4 +25,13 @@ class HomeController extends Controller
             'aboutSlides' => AboutSlide::active()->get(),
         ]);
     }
+
+    public function showSlide(AboutSlide $aboutSlide)
+    {
+        abort_unless($aboutSlide->is_active, 404);
+
+        return view('public.about.show', [
+            'slide' => $aboutSlide,
+        ]);
+    }
 }

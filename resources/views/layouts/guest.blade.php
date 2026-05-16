@@ -13,13 +13,14 @@
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         <div class="w-full max-w-md">
             <div class="flex flex-col items-center text-center">
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-3">
-                    <x-application-logo class="h-14 w-auto" />
+                <a href="{{ route('home') }}">
+                    <img src="{{ asset('images/TPC-Logo.png') }}"
+                        alt="Talibon Polytechnic College Logo"
+                        class="h-16 w-auto object-contain">
                 </a>
-
                 <div class="mt-3">
-                    <div class="text-lg font-semibold text-tpc-ink">Talibon Polytechnic College</div>
-                    <div class="text-sm text-tpc-ink/60">Admin Portal</div>
+                    <div class="text-base font-semibold text-tpc-ink">Talibon Polytechnic College</div>
+                    <div class="text-xs font-medium uppercase tracking-widest text-tpc-ink/50">Admin Portal</div>
                 </div>
             </div>
 

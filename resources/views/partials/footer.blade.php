@@ -52,14 +52,14 @@
                 {{-- Quick links --}}
                 <div>
                     <p class="text-xs font-bold text-tpc-accent uppercase tracking-widest mb-4">Quick Links</p>
-                    <ul class="space-y-2 text-sm">
-                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('home') }}">Home</a></li>
-                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('home') }}#about">About</a></li>
-                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('academics') }}">Academics</a></li>
-                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('admission') }}">Admission</a></li>
-                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('news.index') }}">News</a></li>
-                        <li><a class="text-white/70 hover:text-white transition" href="{{ route('contact') }}">Contact</a></li>
-                    </ul>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                        <a class="text-white/70 hover:text-white transition" href="{{ route('home') }}">Home</a>
+                        <a class="text-white/70 hover:text-white transition" href="{{ route('admission') }}">Admission</a>
+                        <a class="text-white/70 hover:text-white transition" href="{{ route('home') }}#about">About</a>
+                        <a class="text-white/70 hover:text-white transition" href="{{ route('news.index') }}">News</a>
+                        <a class="text-white/70 hover:text-white transition" href="{{ route('academics') }}">Academics</a>
+                        <a class="text-white/70 hover:text-white transition" href="{{ route('contact') }}">Contact</a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -7,25 +7,27 @@
 
     {{-- PAGE HEADER --}}
     <section class="relative overflow-hidden bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-10">
-            <p class="text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Talibon Polytechnic College</p>
-            <h1 class="text-3xl sm:text-4xl font-bold text-white leading-tight">Academic Programs</h1>
-            <p class="mt-2 max-w-2xl text-sm text-white/75 leading-relaxed">
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:py-10">
+            <p class="text-[10px] sm:text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Talibon Polytechnic College</p>
+            <h1 class="text-2xl sm:text-4xl font-bold text-white leading-tight">Academic Programs</h1>
+            <p class="mt-2 max-w-2xl text-xs sm:text-sm text-white/75 leading-relaxed">
                 Explore our academic offerings designed to build competence, confidence, and career readiness.
             </p>
-            <div class="mt-5 flex flex-wrap gap-3">
+            <div class="mt-4 sm:mt-5 flex flex-wrap gap-2 sm:gap-3">
                 <a href="{{ route('admission') }}"
-                   class="inline-flex items-center rounded-l-full border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-accent hover:border-tpc-accent transition">
+                   class="inline-flex items-center justify-center rounded-full border-2 border-white bg-white px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-tpc-primary
+                          hover:bg-tpc-primary hover:border-white hover:text-white transition">
                     Admission Guide
                 </a>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center rounded-r-full border-2 border-white/60 px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                   class="inline-flex items-center justify-center rounded-full border-2 border-white/90 bg-black/20 backdrop-blur-sm px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white
+                          hover:bg-white hover:text-tpc-primary transition">
                     Contact Us
                 </a>
             </div>
         </div>
         <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-10">
+            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-6 sm:h-10">
                 <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f9fafb"/>
             </svg>
         </div>
@@ -33,17 +35,17 @@
 
     {{-- PROGRAMS --}}
     <section class="bg-gray-50 border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-14">
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:py-14">
 
-            <div class="flex items-center gap-4 mb-10">
-                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
+            <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-10">
+                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>
                 <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">All Programs</h2>
                 <div class="flex-1 h-px bg-gray-200"></div>
-                <span class="text-xs text-gray-400 font-medium">{{ $programs->count() }} {{ Str::plural('Program', $programs->count()) }}</span>
+                <span class="text-xs text-gray-400 font-medium shrink-0">{{ $programs->count() }} {{ Str::plural('Program', $programs->count()) }}</span>
             </div>
 
             @if ($programs->isEmpty())
-                <div class="py-20 text-center text-gray-400 text-sm border border-dashed border-gray-300 rounded-xl bg-white">
+                <div class="py-16 sm:py-20 text-center text-gray-400 text-sm border border-dashed border-gray-300 rounded-xl bg-white">
                     No programs found.
                 </div>
             @else
@@ -53,7 +55,7 @@
                     $lgRem = $count % 3;
                 @endphp
 
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($programs as $program)
                         @php
                             $isLast   = $loop->last;
@@ -66,43 +68,43 @@
 
                             <div class="h-1.5 w-full bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300"></div>
 
-                            <div class="p-6 flex flex-col flex-1">
+                            <div class="p-4 sm:p-6 flex flex-col flex-1">
 
-                                <div class="flex items-start gap-4 mb-4">
+                                <div class="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
                                     @if ($program->logo_path)
-                                        <div class="shrink-0 h-16 w-16 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center p-2">
+                                        <div class="shrink-0 h-12 w-12 sm:h-16 sm:w-16 rounded-xl flex items-center justify-center p-1.5 sm:p-2">
                                             <img src="{{ asset('storage/' . $program->logo_path) }}"
                                                  alt="{{ $program->code }} logo"
                                                  class="h-full w-full object-contain" loading="lazy">
                                         </div>
                                     @else
-                                        <div class="shrink-0 h-16 w-16 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center text-2xl">
+                                        <div class="shrink-0 h-12 w-12 sm:h-16 sm:w-16 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center text-xl sm:text-2xl">
                                             🎓
                                         </div>
                                     @endif
 
-                                    <div class="min-w-0 pt-1">
+                                    <div class="min-w-0 pt-0.5 sm:pt-1">
                                         <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-1">
                                             {{ $program->code ?? 'Program' }}
                                         </span>
-                                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition-colors leading-snug">
+                                        <h3 class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition-colors leading-snug">
                                             {{ $program->name }}
                                         </h3>
                                         @if ($program->department)
-                                            <p class="mt-0.5 text-xs text-gray-400">{{ $program->department }}</p>
+                                            <p class="mt-0.5 text-[11px] sm:text-xs text-gray-400">{{ $program->department }}</p>
                                         @endif
                                     </div>
                                 </div>
 
                                 @if ($program->description)
-                                    <p class="text-xs text-gray-500 leading-relaxed line-clamp-3 flex-1">
+                                    <p class="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-3 flex-1">
                                         {{ $program->description }}
                                     </p>
                                 @else
                                     <div class="flex-1"></div>
                                 @endif
 
-                                <div class="mt-5 pt-4 border-t border-gray-100 flex items-center justify-end">
+                                <div class="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-gray-100 flex items-center justify-end">
                                     <span class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary group-hover:gap-2 transition-all duration-200">
                                         View Program
                                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -116,21 +118,23 @@
                 </div>
 
                 {{-- CTA Card --}}
-                <div class="mt-8 max-w-2xl mx-auto">
+                <div class="mt-6 sm:mt-8 max-w-2xl mx-auto">
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                         <div class="h-1.5 bg-tpc-accent"></div>
-                        <div class="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
-                                <p class="font-bold text-gray-800">Not sure which program to choose?</p>
-                                <p class="mt-1 text-sm text-gray-500">Contact us for guidance on requirements, enrollment, and academic support.</p>
+                                <p class="text-sm sm:text-base font-bold text-gray-800">Not sure which program to choose?</p>
+                                <p class="mt-1 text-xs sm:text-sm text-gray-500">Contact us for guidance on requirements, enrollment, and academic support.</p>
                             </div>
-                            <div class="flex flex-wrap gap-3 shrink-0">
+                            <div class="flex gap-2 sm:gap-3 shrink-0">
                                 <a href="{{ route('contact') }}"
-                                class="inline-flex items-center rounded-l-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                                   class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-full border-2 border-tpc-primary bg-tpc-primary px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white
+                                          hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                     Contact Us
                                 </a>
                                 <a href="{{ route('news.index') }}"
-                                class="inline-flex items-center rounded-r-full border-2 border-tpc-primary px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition">
+                                   class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-full border-2 border-tpc-primary px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-tpc-primary
+                                          hover:bg-tpc-primary hover:text-white transition">
                                     Latest Updates →
                                 </a>
                             </div>

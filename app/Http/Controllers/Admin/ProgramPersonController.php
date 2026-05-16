@@ -7,6 +7,10 @@ use App\Models\Program;
 use App\Models\ProgramPerson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Format;
 
 class ProgramPersonController extends Controller
 {
@@ -28,7 +32,7 @@ class ProgramPersonController extends Controller
         $data['order']      = $program->people()->max('order') + 1;
 
         if ($request->hasFile('photo')) {
-            $data['photo_path'] = $request->file('photo')->store('program-people', 'public');
+            $data['photo_path'] = $this->storePhoto($request->file('photo'));
         }
 
         unset($data['photo']);
@@ -62,8 +66,10 @@ class ProgramPersonController extends Controller
         }
 
         if ($request->hasFile('photo')) {
-            if ($person->photo_path) Storage::disk('public')->delete($person->photo_path);
-            $data['photo_path'] = $request->file('photo')->store('program-people', 'public');
+            if ($person->photo_path) {
+                Storage::disk('public')->delete($person->photo_path);
+            }
+            $data['photo_path'] = $this->storePhoto($request->file('photo'));
         }
 
         unset($data['photo'], $data['remove_photo']);
@@ -76,7 +82,9 @@ class ProgramPersonController extends Controller
     public function destroy(Program $program, ProgramPerson $person)
     {
         abort_if($person->program_id !== $program->id, 404);
-        if ($person->photo_path) Storage::disk('public')->delete($person->photo_path);
+        if ($person->photo_path) {
+            Storage::disk('public')->delete($person->photo_path);
+        }
         $person->delete();
 
         return redirect()->route('admin.programs.show', $program)
@@ -85,13 +93,38 @@ class ProgramPersonController extends Controller
 
     public function reorder(Request $request, Program $program)
     {
-        $request->validate(['order' => ['required', 'array'], 'order.*' => ['integer']]);
+        $request->validate([
+            'order'   => ['required', 'array'],
+            'order.*' => ['integer'],
+        ]);
 
         foreach ($request->order as $pos => $id) {
-            ProgramPerson::where('id', $id)->where('program_id', $program->id)
+            ProgramPerson::where('id', $id)
+                ->where('program_id', $program->id)
                 ->update(['order' => $pos + 1]);
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    // ── Private helper ────────────────────────────────────────────────────
+
+    private function storePhoto($file): string
+    {
+        $filename  = Str::random(40) . '.jpg';
+        $directory = storage_path('app/public/program-people');
+
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $manager = new ImageManager(new Driver());
+
+        $manager->decode($file->getRealPath())
+            ->cover(400, 400)
+            ->encodeUsingFormat(Format::JPEG, 85)
+            ->save($directory . '/' . $filename);
+
+        return 'program-people/' . $filename;
     }
 }

@@ -42,7 +42,7 @@
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
                             </svg>
-                            {{ $message->created_at->format('M d, Y h:i A') }}
+                            {{ $message->created_at->timezone('Asia/Manila')->format('M d, Y h:i A') }}
                         </span>
                     </div>
                 </div>
@@ -122,14 +122,14 @@
                     <div class="flex flex-wrap gap-3">
                         <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ urlencode($to) }}&su={{ urlencode($subject) }}&body={{ urlencode($body) }}"
                            target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-2 rounded-l-full bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary transition">
+                           class="inline-flex items-center gap-2 rounded-full bg-tpc-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-tpc-secondary transition">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                             Reply via Gmail
                         </a>
                         <a href="{{ route('admin.messages.index') }}"
-                           class="inline-flex items-center gap-2 rounded-r-full border-2 border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
+                           class="inline-flex items-center gap-2 rounded-full border-2 border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                             </svg>
