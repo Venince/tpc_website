@@ -236,7 +236,7 @@
                     </div>
                 </div>
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    <div class="h-1.5 bg-tpc-accent"></div>
+                    <div class="h-1.5 bg-tpc-primary"></div>
                     <div class="p-5 sm:p-7">
                         <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Mission</p>
                         <p class="text-sm sm:text-base leading-relaxed text-gray-700">
