@@ -65,28 +65,44 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Photo</label>
 
-                @if ($person->photo_path)
-                    <div class="flex items-center gap-4 mb-3 p-3 rounded-xl border border-tpc-primary/12 bg-tpc-primary/3">
-                        <img src="{{ asset('storage/' . $person->photo_path) }}"
-                             class="h-16 w-16 rounded-full object-cover border-2 border-white shadow-sm shrink-0"
-                             alt="{{ $person->name }}">
-                        <div>
-                            <p class="text-xs font-semibold text-tpc-ink mb-1.5">{{ $person->name }}</p>
-                            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                                <input type="checkbox" name="remove_photo" value="1"
-                                       class="rounded border-red-300 text-red-500 focus:ring-red-300/30 w-3.5 h-3.5">
+                <div class="flex items-center gap-3">
+                    <div id="photo-preview" class="shrink-0">
+                        @if ($person->photo_path)
+                            <img id="preview-img" src="{{ asset('storage/' . $person->photo_path) }}"
+                                alt="{{ $person->name }}"
+                                class="h-20 w-20 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm" />
+                        @else
+                            <img id="preview-img" src="" alt="Preview"
+                                class="h-20 w-20 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm hidden" />
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        {{-- Styled file input wrapper --}}
+                        <div class="relative inline-flex">
+                            <span class="inline-flex items-center gap-2 rounded-xl border border-tpc-primary/25 bg-white px-4 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition pointer-events-none">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M4 16l4-4a3 3 0 014.24 0L16 16m-2-2l1.59-1.59A3 3 0 0119.41 12L21 13.41M8 11a2 2 0 110-4 2 2 0 010 4zm13 9H3a2 2 0 01-2-2V7a2 2 0 012-2h3.17A2 2 0 007 4h10a2 2 0 011.83 1H21a2 2 0 012 2v11a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span id="photo-pick-label">Change Photo</span>
+                            </span>
+                            <input id="photo-pick" type="file" accept="image/png,image/jpeg,image/webp"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                        </div>
+                        <p class="mt-1.5 text-xs text-tpc-ink/40">Upload a new photo · will be cropped to square</p>
+
+                        @if ($person->photo_path)
+                            <label class="mt-2 inline-flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" name="remove_photo" value="1" id="remove-photo-check"
+                                    class="rounded border-red-300 text-red-500 focus:ring-red-300/30 w-3.5 h-3.5">
                                 <span class="text-xs text-red-600 font-medium">Remove current photo</span>
                             </label>
-                        </div>
+                        @endif
                     </div>
-                @endif
+                </div>
 
-                <input type="file" name="photo" accept="image/png,image/jpeg,image/webp"
-                       class="w-full rounded-xl border border-tpc-primary/20 bg-white px-3 py-2 text-sm
-                              file:mr-3 file:rounded-lg file:border-0 file:bg-tpc-primary/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-tpc-primary
-                              hover:file:bg-tpc-primary/15 transition" />
-                <p class="mt-1.5 text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB. Upload to replace current photo.</p>
-                @error('photo') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                <input type="hidden" name="photo_crop" id="photo-crop" />
+                @error('photo_crop') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             <div class="pt-2 border-t border-tpc-primary/8 flex flex-wrap gap-3">
@@ -104,5 +120,135 @@
             </div>
         </form>
     </div>
+
+    @push('scripts')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+    <div id="crop-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                <h2 class="text-sm font-bold text-tpc-ink">Crop Photo</h2>
+                <button type="button" id="crop-cancel" class="text-tpc-ink/40 hover:text-tpc-ink transition">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="crop-container" class="relative bg-gray-950" style="height:340px;"></div>
+            <div class="px-5 py-4 flex items-center justify-between gap-3 border-t border-gray-100">
+                <p class="text-xs text-tpc-ink/50">Drag to reposition · Pinch or scroll to zoom</p>
+                <div class="flex gap-2 shrink-0">
+                    <button type="button" id="crop-cancel-btn"
+                            class="rounded-xl border border-tpc-primary/25 px-4 py-2 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition">
+                        Cancel
+                    </button>
+                    <button type="button" id="crop-confirm"
+                            class="rounded-xl bg-tpc-primary px-4 py-2 text-sm font-semibold text-white hover:bg-tpc-secondary transition">
+                        Use Photo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const cropInput     = document.getElementById('photo-crop');
+        const modal         = document.getElementById('crop-modal');
+        const cropContainer = document.getElementById('crop-container');
+        const confirmBtn    = document.getElementById('crop-confirm');
+        const previewImg    = document.getElementById('preview-img');
+        const previewWrap   = document.getElementById('photo-preview');
+        const pickLabel     = document.getElementById('photo-pick-label');
+        const removeCheck   = document.getElementById('remove-photo-check');
+
+        let cropper = null;
+
+        function getPickInput() {
+            return document.getElementById('photo-pick');
+        }
+
+        // Reset the file input value so the same file can be re-selected
+        function resetFileInput() {
+            const el = getPickInput();
+            if (el) el.value = '';
+        }
+
+        getPickInput().addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                openModal(e.target.result);
+            };
+            reader.readAsDataURL(file);
+            // Reset value INSIDE a setTimeout so the reader gets the file first
+            setTimeout(resetFileInput, 300);
+        });
+
+        function openModal(dataUrl) {
+            cropContainer.innerHTML = '';
+            const img = document.createElement('img');
+            img.style.cssText = 'display:block;max-width:100%;';
+            img.onload = function () {
+                if (cropper) { cropper.destroy(); cropper = null; }
+                cropper = new Cropper(img, {
+                    aspectRatio      : 1,
+                    viewMode         : 1,
+                    dragMode         : 'move',
+                    autoCropArea     : 0.9,
+                    movable          : true,
+                    zoomable         : true,
+                    rotatable        : false,
+                    scalable         : false,
+                    cropBoxMovable   : false,
+                    cropBoxResizable : false,
+                    highlight        : false,
+                    background       : true,
+                    responsive       : true,
+                });
+            };
+            cropContainer.appendChild(img);
+            img.src = dataUrl;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            if (cropper) { cropper.destroy(); cropper = null; }
+            cropContainer.innerHTML = '';
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('crop-cancel').addEventListener('click', closeModal);
+        document.getElementById('crop-cancel-btn').addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) closeModal();
+        });
+
+        confirmBtn.addEventListener('click', function () {
+            if (!cropper) return;
+            const canvas  = cropper.getCroppedCanvas({ width: 400, height: 400 });
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+            cropInput.value = dataUrl;
+            previewImg.src  = dataUrl;
+            previewImg.classList.remove('hidden');
+            if (previewWrap) previewWrap.classList.remove('hidden');
+            pickLabel.textContent = 'Change Photo';
+            if (removeCheck) removeCheck.checked = false;
+
+            closeModal();
+        });
+    })();
+    </script>
+    @endpush
 
 @endsection

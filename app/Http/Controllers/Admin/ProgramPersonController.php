@@ -22,20 +22,20 @@ class ProgramPersonController extends Controller
     public function store(Request $request, Program $program)
     {
         $data = $request->validate([
-            'role'     => ['required', 'in:head,coordinator,instructor'],
-            'name'     => ['required', 'string', 'max:255'],
-            'position' => ['nullable', 'string', 'max:255'],
-            'photo'    => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'role'       => ['required', 'in:head,coordinator,instructor'],
+            'name'       => ['required', 'string', 'max:255'],
+            'position'   => ['nullable', 'string', 'max:255'],
+            'photo_crop' => ['nullable', 'string'],
         ]);
 
         $data['program_id'] = $program->id;
         $data['order']      = $program->people()->max('order') + 1;
 
-        if ($request->hasFile('photo')) {
-            $data['photo_path'] = $this->storePhoto($request->file('photo'));
+        if (!empty($data['photo_crop'])) {
+            $data['photo_path'] = $this->storeCroppedPhoto($data['photo_crop']);
         }
 
-        unset($data['photo']);
+        unset($data['photo_crop']);
         ProgramPerson::create($data);
 
         return redirect()->route('admin.programs.show', $program)
@@ -56,7 +56,7 @@ class ProgramPersonController extends Controller
             'role'         => ['required', 'in:head,coordinator,instructor'],
             'name'         => ['required', 'string', 'max:255'],
             'position'     => ['nullable', 'string', 'max:255'],
-            'photo'        => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'photo_crop'   => ['nullable', 'string'],
             'remove_photo' => ['nullable', 'boolean'],
         ]);
 
@@ -65,14 +65,14 @@ class ProgramPersonController extends Controller
             $data['photo_path'] = null;
         }
 
-        if ($request->hasFile('photo')) {
+        if (!empty($data['photo_crop'])) {
             if ($person->photo_path) {
                 Storage::disk('public')->delete($person->photo_path);
             }
-            $data['photo_path'] = $this->storePhoto($request->file('photo'));
+            $data['photo_path'] = $this->storeCroppedPhoto($data['photo_crop']);
         }
 
-        unset($data['photo'], $data['remove_photo']);
+        unset($data['photo_crop'], $data['remove_photo']);
         $person->update($data);
 
         return redirect()->route('admin.programs.show', $program)
@@ -109,8 +109,11 @@ class ProgramPersonController extends Controller
 
     // ── Private helper ────────────────────────────────────────────────────
 
-    private function storePhoto($file): string
+    private function storeCroppedPhoto(string $base64): string
     {
+        $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64);
+        $decoded   = base64_decode($imageData);
+
         $filename  = Str::random(40) . '.jpg';
         $directory = storage_path('app/public/program-people');
 
@@ -119,8 +122,7 @@ class ProgramPersonController extends Controller
         }
 
         $manager = new ImageManager(new Driver());
-
-        $manager->decode($file->getRealPath())
+        $manager->decode($decoded)
             ->cover(400, 400)
             ->encodeUsingFormat(Format::JPEG, 85)
             ->save($directory . '/' . $filename);

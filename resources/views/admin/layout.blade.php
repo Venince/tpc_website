@@ -114,9 +114,9 @@
             </div>
         </main>
     </div>
-
-    @stack('scripts')
-
 </div>
+
+@stack('scripts')
+
 </body>
 </html>
