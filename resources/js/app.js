@@ -1,7 +1,10 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
+import Collapse from '@alpinejs/collapse';
+
 window.Alpine = Alpine;
+Alpine.plugin(Collapse);
 Alpine.start();
 
 /* ---------------------------
@@ -121,7 +124,7 @@ function startBadgePolling() {
 /* ---------------------------
    Mobile nav active state
 ---------------------------- */
-const MOBILE_IDS = ['mob-home', 'mob-about', 'mob-academics', 'mob-admission', 'mob-news', 'mob-contact', 'mob-messages'];
+const MOBILE_IDS = ['mob-home', 'mob-about', 'mob-academics', 'mob-admission', 'mob-news', 'mob-contact', 'mob-messages', 'mob-services'];
 
 const MOBILE_LINK_ACTIVE   = ['bg-tpc-primary', 'text-white', 'shadow-sm'];
 const MOBILE_LINK_INACTIVE = ['text-gray-700'];
@@ -131,26 +134,37 @@ const MOBILE_ICON_INACTIVE = ['bg-gray-100', 'text-gray-500'];
 
 function setMobileNavActive(activeId) {
   MOBILE_IDS.forEach((id) => {
-    const a = document.getElementById(id);
-    if (!a) return;
+    const el = document.getElementById(id);
+    if (!el) return;
 
-    const icon    = a.querySelector('span.flex-shrink-0');
+    const icon = el.querySelector('span.flex-shrink-0');
     const isActive = id === activeId;
 
-    a.classList.remove(...MOBILE_LINK_ACTIVE, ...MOBILE_LINK_INACTIVE);
-    a.classList.add(...(isActive ? MOBILE_LINK_ACTIVE : MOBILE_LINK_INACTIVE));
+    el.classList.remove(...MOBILE_LINK_ACTIVE, ...MOBILE_LINK_INACTIVE);
+    el.classList.add(...(isActive ? MOBILE_LINK_ACTIVE : MOBILE_LINK_INACTIVE));
 
     if (icon) {
       icon.classList.remove(...MOBILE_ICON_ACTIVE, ...MOBILE_ICON_INACTIVE);
       icon.classList.add(...(isActive ? MOBILE_ICON_ACTIVE : MOBILE_ICON_INACTIVE));
     }
 
-    const dot     = a.querySelector('span.rounded-full');
-    const chevron = a.querySelector('svg.h-3\\.5');
-
-    if (dot)     dot.classList.toggle('hidden', !isActive);
-    if (chevron) chevron.classList.toggle('hidden', isActive);
+    if (el.tagName === 'A') {
+      const dot     = el.querySelector('span.rounded-full');
+      const chevron = el.querySelector('svg.h-3\\.5');
+      if (dot)     dot.classList.toggle('hidden', !isActive);
+      if (chevron) chevron.classList.toggle('hidden', isActive);
+    }
   });
+
+  if (activeId !== 'mob-services') {
+    const servBtn = document.getElementById('mob-services');
+    if (servBtn) {
+      const alpineEl = servBtn.closest('[x-data]');
+      if (alpineEl && alpineEl._x_dataStack) {
+        try { alpineEl._x_dataStack[0].servOpen = false; } catch (_) {}
+      }
+    }
+  }
 }
 
 /* ---------------------------
@@ -162,6 +176,13 @@ function setNavActiveByUrl(urlStr = window.location.href) {
 
   const links = document.querySelectorAll('[data-tpc-link]');
   links.forEach((l) => l.classList.remove('tpc-active'));
+
+  document.querySelectorAll('.tpc-navlink').forEach((l) => l.classList.remove('tpc-active'));
+
+  document.querySelectorAll('span[data-service-dot]').forEach((dot) => {
+    dot.style.backgroundColor = '';
+    dot.style.opacity = '';
+  });
 
   if (isHomePath(path)) {
     if (url.hash === '#about') {
@@ -194,10 +215,35 @@ function setNavActiveByUrl(urlStr = window.location.href) {
     } catch (_) {}
   });
 
-  if (path.startsWith('/news')) {
-    setMobileNavActive('mob-news');
-    return;
-  }
+    if (path.startsWith('/services')) {
+        document.querySelectorAll('button.tpc-navlink').forEach((btn) => {
+            if (btn.textContent.trim().startsWith('Services')) {
+                btn.classList.add('tpc-active');
+            }
+        });
+        setMobileNavActive('mob-services');
+
+        // ── NEW: update desktop dropdown dots ──────────────────────
+        document.querySelectorAll('a[data-service-href]').forEach((a) => {
+            const dot = a.querySelector('span[data-service-dot]');
+            if (!dot) return;
+            const linkPath = new URL(a.dataset.serviceHref, window.location.origin)
+                                .pathname.replace(/\/+$/, '');
+            const isActive = linkPath === path;
+            dot.style.backgroundColor = isActive
+                ? 'var(--color-tpc-primary, #16a34a)'
+                : '';
+            dot.style.opacity = isActive ? '1' : '0.3';
+        });
+        // ───────────────────────────────────────────────────────────
+
+        return;
+    }
+
+    if (path.startsWith('/news')) {
+        setMobileNavActive('mob-news');
+        return;
+    }
 
   const mobileMap = {
     '/academics': 'mob-academics',
@@ -231,8 +277,8 @@ let homeCleanup = () => {};
 function initHomeNav() {
   homeCleanup();
 
-  const navHome  = document.getElementById('nav-home');
-  const navAbout = document.getElementById('nav-about');
+  const navHome      = document.getElementById('nav-home');
+  const navAbout     = document.getElementById('nav-about');
   const topSection   = document.getElementById('top');
   const aboutSection = document.getElementById('about');
 
@@ -243,6 +289,8 @@ function initHomeNav() {
 
   const controller = new AbortController();
   const { signal } = controller;
+
+  let ignoreObserver = false;
 
   const setActive = (which) => {
     navHome.classList.remove('tpc-active');
@@ -256,51 +304,47 @@ function initHomeNav() {
     }
   };
 
-  setActive(window.location.hash === '#about' ? 'about' : 'home');
+  // Determine initial active based on scroll position, not just hash
+  const getActiveByScroll = () => {
+    const aboutTop = aboutSection.getBoundingClientRect().top;
+    return aboutTop <= window.innerHeight * 0.4 ? 'about' : 'home';
+  };
+
+  setActive(window.location.hash === '#about' ? 'about' : getActiveByScroll());
 
   navHome.addEventListener('click', (e) => {
-    const onHome = isHomePath(window.location.pathname);
-    if (!onHome) return;
-
+    if (!isHomePath(window.location.pathname)) return;
     e.preventDefault();
     setActive('home');
     scrollToTop();
     history.replaceState(null, '', window.location.pathname + window.location.search);
+    ignoreObserver = true;
+    setTimeout(() => { ignoreObserver = false; }, 1200);
   }, { signal });
 
   navAbout.addEventListener('click', (e) => {
-    const onHome = isHomePath(window.location.pathname);
-    if (!onHome) return;
-
+    if (!isHomePath(window.location.pathname)) return;
     e.preventDefault();
     setActive('about');
     scrollToAbout();
-
+    ignoreObserver = true;
+    setTimeout(() => { ignoreObserver = false; }, 1200);
     aboutSection.classList.remove('tpc-highlight');
     void aboutSection.offsetWidth;
     aboutSection.classList.add('tpc-highlight');
     setTimeout(() => aboutSection.classList.remove('tpc-highlight'), 900);
   }, { signal });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((x) => x.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+  // Use scroll event instead of IntersectionObserver for more reliable Home/About detection
+  const onScroll = () => {
+    if (ignoreObserver) return;
+    setActive(getActiveByScroll());
+  };
 
-      if (!visible) return;
-      if (visible.target.id === 'about') setActive('about');
-      if (visible.target.id === 'top')   setActive('home');
-    },
-    { threshold: [0.35, 0.55, 0.75], rootMargin: '-25% 0px -55% 0px' }
-  );
-
-  observer.observe(topSection);
-  observer.observe(aboutSection);
+  window.addEventListener('scroll', onScroll, { signal, passive: true });
 
   homeCleanup = () => {
     controller.abort();
-    observer.disconnect();
   };
 }
 

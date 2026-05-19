@@ -7,6 +7,7 @@ use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceController;
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProgramController;
@@ -20,6 +21,8 @@ use App\Http\Controllers\Admin\ProgramPersonController;
 use App\Http\Controllers\Admin\ProgramAchievementController;
 use App\Http\Controllers\Admin\AboutSlideController;
 use App\Http\Controllers\Admin\NewsReviewController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
+use App\Http\Controllers\Admin\ServiceContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +45,9 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
+
+Route::get('/services/{service:slug}', [ServiceController::class, 'show'])
+    ->name('services.show');
 
 /*
 |----------------------------------------------------------------------
@@ -155,6 +161,20 @@ Route::middleware(['auth', 'admin'])
             ->parameters(['about-slides' => 'aboutSlide'])
             ->except(['show']);
 
+        Route::resource('services', AdminServiceController::class)
+            ->parameters(['services' => 'service']);
+
+        Route::prefix('services/{service}/contents')
+            ->name('services.contents.')
+            ->group(function () {
+                Route::get('/create',           [ServiceContentController::class, 'create'])  ->name('create');
+                Route::post('/',                [ServiceContentController::class, 'store'])   ->name('store');
+                Route::get('/{content}/edit',   [ServiceContentController::class, 'edit'])    ->name('edit');
+                Route::patch('/{content}',      [ServiceContentController::class, 'update'])  ->name('update');
+                Route::delete('/{content}',     [ServiceContentController::class, 'destroy']) ->name('destroy');
+                Route::post('/reorder',         [ServiceContentController::class, 'reorder']) ->name('reorder');
+            });
+
         /*
         |----------------------------------------------------------------------
         | SUPER ADMIN ONLY
@@ -173,6 +193,8 @@ Route::middleware(['auth', 'admin'])
             });
 
         });
+
+
 
     });
 

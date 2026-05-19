@@ -21,7 +21,7 @@
                     <div class="shrink-0 h-14 w-14 sm:h-20 sm:w-20 rounded-2xl flex items-center justify-center p-1.5 sm:p-2">
                         <img src="{{ asset('storage/' . $program->logo_path) }}"
                              alt="{{ $program->code }}"
-                             class="h-full w-full object-contain">
+                             class="h-full w-full object-cover">
                     </div>
                 @endif
                 <div class="min-w-0">
@@ -160,7 +160,7 @@
                                         @if ($achievement->photo_path)
                                             <div class="bg-gray-50 border-b border-gray-100">
                                                 <img src="{{ asset('storage/' . $achievement->photo_path) }}"
-                                                     class="w-full object-cover max-h-52 sm:max-h-80"
+                                                     class="w-full object-cover"
                                                      alt="{{ $achievement->title }}" loading="lazy">
                                             </div>
                                         @endif
@@ -231,7 +231,7 @@
                                         @if ($other->logo_path)
                                             <div class="shrink-0 h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center p-1">
                                                 <img src="{{ asset('storage/' . $other->logo_path) }}"
-                                                     class="h-full w-full object-contain" alt="{{ $other->code }}">
+                                                     class="h-full w-full object-cover" alt="{{ $other->code }}">
                                             </div>
                                         @else
                                             <div class="shrink-0 h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center text-sm sm:text-base">
