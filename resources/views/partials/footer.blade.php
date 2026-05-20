@@ -67,11 +67,18 @@
 
     {{-- Copyright strip --}}
     <div class="bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-xs text-white/80">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
+            <p class="text-xs text-white/80 text-center sm:text-left">
                 © {{ now()->year }} {{ $siteName }}. All rights reserved.
             </p>
-            <p class="text-xs text-white/60">SecrIT Solutions: AABJRSV</p>
+            <div class="flex items-center gap-2">
+                <a href="https://www.facebook.com/share/18XASdjQ8z/" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ asset('images/self-logo-icon.png') }}" alt="SecrIT Solutions Logo"
+                        class="h-4 w-auto opacity-60 hover:opacity-100 transition">
+                </a>
+                <span class="text-white/30 text-xs">|</span>
+                <p class="text-xs text-white/60">SecrIT Solutions: AABJRSV</p>
+            </div>
         </div>
     </div>
 </footer>
