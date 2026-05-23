@@ -207,6 +207,20 @@
             <span class="{{ $labelBase }}" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">Services</span>
         </a>
 
+        @php $orgActive = request()->routeIs('admin.org-chart.*'); @endphp
+
+        <a href="{{ route('admin.org-chart.index') }}" @click="closeMobileSidebar()" title="Org Chart"
+        class="{{ $itemBase }} {{ $orgActive ? $itemActive : $itemIdle }} px-3 gap-3"
+        :class="sidebarCollapsed ? 'sm:px-2 sm:gap-0 sm:justify-center' : ''">
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-[3px] rounded-r-full bg-white transition-opacity duration-200 {{ $orgActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-30' }}"></span>
+            <span class="{{ $iconBase }} {{ $orgActive ? $iconActive : $iconIdle }}">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-4a4 4 0 100-8 4 4 0 000 8zm6 4a2 2 0 100-4 2 2 0 000 4zM3 18a2 2 0 100-4 2 2 0 000 4z"/>
+                </svg>
+            </span>
+            <span class="{{ $labelBase }}" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">Organizational Chart</span>
+        </a>
+
         {{-- Messages --}}
         <a href="{{ route('admin.messages.index') }}" @click="closeMobileSidebar()" title="Messages"
            class="{{ $itemBase }} {{ $msgsActive ? $itemActive : $itemIdle }} px-3 gap-3"

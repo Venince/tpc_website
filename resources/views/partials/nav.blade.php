@@ -4,7 +4,7 @@
     $isRoute = fn ($pattern) => request()->routeIs($pattern);
 
     $homeActive      = $isRoute('home');
-    $academicsActive = $isRoute('academics');
+    $academicsActive = $isRoute('academics') || $isRoute('org-chart');
     $admissionActive = $isRoute('admission');
     $newsActive      = $isRoute('news.*');
     $contactActive   = $isRoute('contact');

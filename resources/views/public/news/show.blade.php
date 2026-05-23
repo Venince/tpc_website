@@ -8,57 +8,65 @@
     {{-- ══════════════════════════════════════
          ARTICLE HEADER
     ══════════════════════════════════════ --}}
-    <section class="relative overflow-hidden bg-tpc-primary">
-        <div class="max-w-4xl mx-auto px-4 py-8 sm:py-10 relative z-10">
+    <section class="relative overflow-hidden bg-tpc-secondary">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0"
+             style="background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
+                                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)"></div>
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 opacity-[0.04]"
+             style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+                                      linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
+                    background-size: 40px 40px;"></div>
+        <div class="relative mx-auto max-w-4xl px-4 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div class="flex flex-col items-center text-center">
 
-            {{-- Breadcrumb --}}
-            <nav class="flex items-center gap-1.5 text-[10px] sm:text-xs font-medium text-white/60 mb-4 sm:mb-6" aria-label="Breadcrumb">
-                <a href="{{ route('home') }}" class="hover:text-white transition">Home</a>
-                <svg class="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-                <a href="{{ route('news.index') }}" class="hover:text-white transition">News</a>
-                <svg class="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-                <span class="text-white/40 truncate max-w-[120px] sm:max-w-xs">{{ $post->title }}</span>
-            </nav>
+                {{-- Breadcrumb --}}
+                <nav class="flex items-center justify-center gap-1.5 text-[10px] sm:text-xs font-medium text-white/60 mb-5 sm:mb-6" aria-label="Breadcrumb">
+                    <a href="{{ route('home') }}" class="hover:text-white transition">Home</a>
+                    <svg class="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <a href="{{ route('news.index') }}" class="hover:text-white transition">News</a>
+                    <svg class="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <span class="text-white/40 truncate max-w-[120px] sm:max-w-xs">{{ $post->title }}</span>
+                </nav>
 
-            {{-- Category + date row --}}
-            <div class="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-                <span class="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-white/20">
-                    <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
-                    {{ $post->category ?? 'Announcement' }}
-                </span>
-                @if($post->published_at)
-                    <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-white/60">
-                        <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-                        </svg>
-                        <time datetime="{{ $post->published_at->toDateString() }}">
-                            {{ $post->published_at->format('F d, Y') }}
-                        </time>
+                {{-- Category + date row --}}
+                <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
+                    <span class="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-white/20">
+                        <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                        {{ $post->category ?? 'Announcement' }}
                     </span>
+                    @if($post->published_at)
+                        <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-white/60">
+                            <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                            </svg>
+                            <time datetime="{{ $post->published_at->toDateString() }}">
+                                {{ $post->published_at->format('F d, Y') }}
+                            </time>
+                        </span>
+                    @endif
+                    <span class="hidden sm:inline text-xs text-white/40">· Talibon Polytechnic College</span>
+                </div>
+
+                {{-- Title --}}
+                <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-5xl leading-tight max-w-3xl">
+                    {{ $post->title }}
+                </h1>
+
+                @if($post->excerpt)
+                    <p class="mt-4 max-w-lg text-sm text-white/60 leading-relaxed">
+                        {{ $post->excerpt }}
+                    </p>
                 @endif
-                <span class="hidden sm:inline text-xs text-white/40">· Talibon Polytechnic College</span>
+
             </div>
-
-            {{-- Title --}}
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-3xl">
-                {{ $post->title }}
-            </h1>
-
-            @if($post->excerpt)
-                <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-white/70 leading-relaxed max-w-2xl hidden sm:block">
-                    {{ $post->excerpt }}
-                </p>
-            @endif
         </div>
-
-        {{-- Wave divider --}}
         <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-6 sm:h-10">
-                <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f9fafb"/>
+            <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
+                <path d="M0 48 C480 0 960 0 1440 48 L1440 48 L0 48 Z" fill="#f9fafb"/>
             </svg>
         </div>
     </section>

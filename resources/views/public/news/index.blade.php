@@ -8,16 +8,24 @@
     {{-- ══════════════════════════════════════
          PAGE HEADER
     ══════════════════════════════════════ --}}
-    <section class="relative overflow-hidden bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-8 sm:py-10">
-            <p class="text-[10px] sm:text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Talibon Polytechnic College</p>
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">News &amp; Announcements</h1>
-            <p class="mt-2 max-w-2xl text-xs sm:text-sm text-white/75 leading-relaxed hidden sm:block">
-                Read the latest campus announcements, events, advisories, and scholarship updates.
-            </p>
+    <section class="relative overflow-hidden bg-tpc-secondary">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0"
+             style="background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
+                                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)"></div>
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 opacity-[0.04]"
+             style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+                                      linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
+                    background-size: 40px 40px;"></div>
+        <div class="relative mx-auto max-w-4xl px-4 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div class="flex flex-col items-center text-center">
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">News &amp; Announcements</h1>
+                <p class="mt-3 max-w-lg text-sm text-white/60 leading-relaxed">
+                    Read the latest campus announcements, events, advisories, and scholarship updates.
+                </p>
+            </div>
 
             {{-- Filters --}}
-            <form method="GET" action="{{ route('news.index') }}" class="mt-5 sm:mt-6 flex flex-wrap gap-2 sm:gap-3">
+            <form method="GET" action="{{ route('news.index') }}" class="mt-5 sm:mt-6 flex flex-wrap justify-center gap-2 sm:gap-3">
                 <div class="relative w-full sm:w-auto">
                     <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -54,7 +62,7 @@
             </form>
 
             {{-- Category quick-filters --}}
-            <div class="mt-3 sm:mt-4 flex flex-wrap gap-2">
+            <div class="mt-3 sm:mt-4 flex flex-wrap justify-center gap-2">
                 @foreach(['Announcement','Event','Advisory','Scholarship'] as $cat)
                     <a href="{{ route('news.index', ['category' => $cat]) }}"
                        class="inline-block px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wide border transition touch-manipulation
@@ -68,8 +76,8 @@
         </div>
 
         <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-6 sm:h-10">
-                <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f9fafb"/>
+            <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
+                <path d="M0 48 C480 0 960 0 1440 48 L1440 48 L0 48 Z" fill="#f9fafb"/>
             </svg>
         </div>
     </section>

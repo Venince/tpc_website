@@ -15,17 +15,25 @@
 @endphp
 
     {{-- PAGE HEADER --}}
-    <section class="relative overflow-hidden bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-8 sm:py-10">
-            <p class="text-[10px] sm:text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Talibon Polytechnic College</p>
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">Get in Touch</h1>
-            <p class="mt-2 max-w-2xl text-xs sm:text-sm text-white/75 leading-relaxed hidden sm:block">
-                Have questions about programs, enrollment, or announcements? Send us a message and we'll get back to you.
-            </p>
+    <section class="relative overflow-hidden bg-tpc-secondary">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0"
+             style="background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
+                                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)"></div>
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 opacity-[0.04]"
+             style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+                                      linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
+                    background-size: 40px 40px;"></div>
+        <div class="relative mx-auto max-w-4xl px-4 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div class="flex flex-col items-center text-center">
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">Get in Touch</h1>
+                <p class="mt-3 max-w-lg text-sm text-white/60 leading-relaxed">
+                    Have questions about programs, enrollment, or announcements? Send us a message and we'll get back to you.
+                </p>
+            </div>
         </div>
         <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-6 sm:h-10">
-                <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f9fafb"/>
+            <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
+                <path d="M0 48 C480 0 960 0 1440 48 L1440 48 L0 48 Z" fill="#f9fafb"/>
             </svg>
         </div>
     </section>
@@ -120,7 +128,7 @@
                                         Send Message
                                     </button>
                                     <a href="{{ route('home') }}"
-                                       class="inline-flex items-center rounded-full border-2 border-gray-200 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition touch-manipulation">
+                                       class="inline-flex items-center rounded-full border-2 border-tpc-primary px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition touch-manipulation">
                                         Back to Home
                                     </a>
                                 </div>
@@ -211,7 +219,7 @@
                                     </a>
                                 @endif
                                 <a href="{{ route('admission') }}"
-                                   class="flex items-center justify-center rounded-full border-2 border-gray-200 px-4 py-2 text-[10px] sm:text-xs font-bold text-gray-500 hover:border-tpc-primary hover:text-tpc-primary transition touch-manipulation">
+                                   class="flex items-center justify-center rounded-full border-2 border-tpc-primary px-4 py-2 text-[10px] sm:text-xs font-bold text-tpc-primary hover:bg-tpc-primary hover:text-white transition touch-manipulation">
                                     View Admission
                                 </a>
                             </div>

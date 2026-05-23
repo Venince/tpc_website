@@ -56,10 +56,18 @@ const shouldHandleLink = (a) => {
 
 /* ---------------------------
    Re-init page-specific components
+   Called after every PJAX content swap
 ---------------------------- */
 function initPageComponents() {
+  // About carousel
   if (typeof window.initAboutCarousel === 'function' && document.getElementById('about-track')) {
     window.initAboutCarousel();
+  }
+
+  // Org chart — window.initOrgChart is registered by show.blade.php's inline
+  // script when that page is active; safely a no-op on all other pages
+  if (typeof window.initOrgChart === 'function') {
+    window.initOrgChart();
   }
 }
 
@@ -215,35 +223,33 @@ function setNavActiveByUrl(urlStr = window.location.href) {
     } catch (_) {}
   });
 
-    if (path.startsWith('/services')) {
-        document.querySelectorAll('button.tpc-navlink').forEach((btn) => {
-            if (btn.textContent.trim().startsWith('Services')) {
-                btn.classList.add('tpc-active');
-            }
-        });
-        setMobileNavActive('mob-services');
+  if (path.startsWith('/services')) {
+    document.querySelectorAll('button.tpc-navlink').forEach((btn) => {
+      if (btn.textContent.trim().startsWith('Services')) {
+        btn.classList.add('tpc-active');
+      }
+    });
+    setMobileNavActive('mob-services');
 
-        // ── NEW: update desktop dropdown dots ──────────────────────
-        document.querySelectorAll('a[data-service-href]').forEach((a) => {
-            const dot = a.querySelector('span[data-service-dot]');
-            if (!dot) return;
-            const linkPath = new URL(a.dataset.serviceHref, window.location.origin)
-                                .pathname.replace(/\/+$/, '');
-            const isActive = linkPath === path;
-            dot.style.backgroundColor = isActive
-                ? 'var(--color-tpc-primary, #16a34a)'
-                : '';
-            dot.style.opacity = isActive ? '1' : '0.3';
-        });
-        // ───────────────────────────────────────────────────────────
+    document.querySelectorAll('a[data-service-href]').forEach((a) => {
+      const dot = a.querySelector('span[data-service-dot]');
+      if (!dot) return;
+      const linkPath = new URL(a.dataset.serviceHref, window.location.origin)
+                          .pathname.replace(/\/+$/, '');
+      const isActive = linkPath === path;
+      dot.style.backgroundColor = isActive
+        ? 'var(--color-tpc-primary, #16a34a)'
+        : '';
+      dot.style.opacity = isActive ? '1' : '0.3';
+    });
 
-        return;
-    }
+    return;
+  }
 
-    if (path.startsWith('/news')) {
-        setMobileNavActive('mob-news');
-        return;
-    }
+  if (path.startsWith('/news')) {
+    setMobileNavActive('mob-news');
+    return;
+  }
 
   const mobileMap = {
     '/academics': 'mob-academics',
@@ -304,7 +310,6 @@ function initHomeNav() {
     }
   };
 
-  // Determine initial active based on scroll position, not just hash
   const getActiveByScroll = () => {
     const aboutTop = aboutSection.getBoundingClientRect().top;
     return aboutTop <= window.innerHeight * 0.4 ? 'about' : 'home';
@@ -335,7 +340,6 @@ function initHomeNav() {
     setTimeout(() => aboutSection.classList.remove('tpc-highlight'), 900);
   }, { signal });
 
-  // Use scroll event instead of IntersectionObserver for more reliable Home/About detection
   const onScroll = () => {
     if (ignoreObserver) return;
     setActive(getActiveByScroll());
@@ -412,11 +416,11 @@ function handleSamePageHash(url) {
    PJAX navigation
 ---------------------------- */
 let navigating = false;
-let ajaxFormBusy = false;  // prevents PJAX racing against AJAX form submissions
+let ajaxFormBusy = false;
 
 async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = {}) {
   if (navigating) return;
-  if (ajaxFormBusy) return;  // block PJAX while mark read/unread is in flight
+  if (ajaxFormBusy) return;
   navigating = true;
 
   const container = contentEl();
@@ -439,21 +443,27 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
   const isAdminMain = container.id === 'tpc-admin-main';
   const dur = getDurFor(container);
 
+  // Start fetch immediately in parallel with the fade-out animation
+  const fetchPromise = fetch(url.href, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    credentials: 'same-origin',
+  });
+
   if (isAdminMain) container.classList.add('tpc-admin-leave');
   else container.classList.add('tpc-leave');
 
   await sleep(dur);
 
+  // Clear container right after fade-out so old content never bleeds through
+  container.innerHTML = '';
+
   let html;
   try {
-    const res = await fetch(url.href, {
-      headers: { 'X-Requested-With': 'XMLHttpRequest' },
-      credentials: 'same-origin',
-    });
+    const res = await fetchPromise;
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     html = await res.text();
   } catch (_) {
-    navigating = false;  // reset before redirect
+    navigating = false;
     window.location.href = url.href;
     return;
   }
@@ -463,7 +473,7 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
   const newContainer = doc.getElementById(containerId);
 
   if (!newContainer) {
-    navigating = false;  // reset before redirect
+    navigating = false;
     window.location.href = url.href;
     return;
   }
@@ -488,10 +498,14 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
   }
   window.initAboutCarousel = null;
 
+  // Clear org chart init so it doesn't linger on non-org-chart pages
+  window.initOrgChart = null;
+
   // Swap content
   container.innerHTML = newContainer.innerHTML;
 
-  // Re-execute inline scripts
+  // Re-execute inline scripts (this is what registers window.initOrgChart
+  // when navigating to the org chart page)
   container.querySelectorAll('script').forEach((oldScript) => {
     const newScript = document.createElement('script');
     [...oldScript.attributes].forEach((attr) => newScript.setAttribute(attr.name, attr.value));
@@ -538,12 +552,19 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
   if (isAdminMain) {
     container.classList.remove('tpc-admin-leave');
   } else {
+    // FIX: double rAF ensures the browser paints one frame at opacity-0
+    // before removing tpc-enter, so the CSS transition from 0→1 actually fires.
+    // A single rAF collapses both operations into the same paint, skipping the transition.
     container.classList.remove('tpc-leave');
     container.classList.add('tpc-enter');
-    requestAnimationFrame(() => container.classList.remove('tpc-enter'));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => container.classList.remove('tpc-enter'));
+    });
   }
 
   refreshUnreadBadge({ force: true });
+
+  // Run page-specific component init — including org chart if on that page
   initPageComponents();
 
   navigating = false;
@@ -558,7 +579,7 @@ document.addEventListener('submit', async (e) => {
   if (form.dataset.ajax !== 'true') return;
 
   e.preventDefault();
-  ajaxFormBusy = true;  // block PJAX during this request
+  ajaxFormBusy = true;
 
   const btn = form.querySelector('button');
   if (btn) { btn.disabled = true; btn.classList.add('opacity-70'); }
@@ -589,7 +610,7 @@ document.addEventListener('submit', async (e) => {
     form.submit();
   } finally {
     if (btn) { btn.disabled = false; btn.classList.remove('opacity-70'); }
-    ajaxFormBusy = false;  // unblock PJAX
+    ajaxFormBusy = false;
   }
 });
 
@@ -609,7 +630,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initPageComponents();
 });
 
-// Click intercept — About link needs special handling from other pages
+// Click intercept
 document.addEventListener('click', (e) => {
   if (e.defaultPrevented) return;
   if (e.button !== 0) return;

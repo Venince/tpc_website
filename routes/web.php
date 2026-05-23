@@ -8,6 +8,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\OrgChartController;
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProgramController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Admin\AboutSlideController;
 use App\Http\Controllers\Admin\NewsReviewController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\ServiceContentController;
+use App\Http\Controllers\Admin\OrgChartController as AdminOrgChartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,8 @@ Route::post('/contact', [ContactController::class, 'store'])
 
 Route::get('/services/{service:slug}', [ServiceController::class, 'show'])
     ->name('services.show');
+
+Route::get('/org-chart', [OrgChartController::class, 'index'])->name('org-chart');
 
 /*
 |----------------------------------------------------------------------
@@ -174,6 +178,13 @@ Route::middleware(['auth', 'admin'])
                 Route::delete('/{content}',     [ServiceContentController::class, 'destroy']) ->name('destroy');
                 Route::post('/reorder',         [ServiceContentController::class, 'reorder']) ->name('reorder');
             });
+
+        Route::resource('org-chart', AdminOrgChartController::class)
+            ->parameters(['org-chart' => 'orgChart'])
+            ->except(['show']);
+
+        Route::post('org-chart/reorder', [AdminOrgChartController::class, 'reorder'])
+            ->name('org-chart.reorder');
 
         /*
         |----------------------------------------------------------------------

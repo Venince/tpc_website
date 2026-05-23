@@ -6,31 +6,37 @@
 @section('content')
 
     {{-- PAGE HEADER --}}
-    <section class="relative overflow-hidden bg-tpc-primary">
-        <div class="max-w-7xl mx-auto px-4 py-8 sm:py-10">
-            <p class="text-[10px] sm:text-xs font-bold tracking-widest text-tpc-accent uppercase mb-1">Talibon Polytechnic College</p>
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">Enrollment & Requirements</h1>
-            <p class="mt-2 max-w-2xl text-xs sm:text-sm text-white/75 leading-relaxed hidden sm:block">
-                Learn the enrollment steps and prepare the needed documents to become a student of Talibon Polytechnic College.
-            </p>
-            <div class="mt-4 sm:mt-5 flex flex-wrap gap-2 sm:gap-3">
-                <a href="#requirements"
-                   class="inline-flex items-center justify-center rounded-full border-2 border-white bg-white px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-tpc-primary hover:bg-tpc-secondary hover:border-tpc-secondary hover:text-white transition">
-                    View Requirements
-                </a>
-                <a href="#process"
-                   class="inline-flex items-center justify-center rounded-full border-2 border-white px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
-                    Enrollment Process
-                </a>
-                <a href="{{ route('contact') }}"
-                   class="hidden sm:inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white/75 hover:text-white transition">
-                    Need help? Contact us →
-                </a>
+    <section class="relative overflow-hidden bg-tpc-secondary">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0"
+             style="background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
+                                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)"></div>
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 opacity-[0.04]"
+             style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+                                      linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
+                    background-size: 40px 40px;"></div>
+        <div class="relative mx-auto max-w-4xl px-4 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div class="flex flex-col items-center text-center">
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                    Enrollment &amp; Requirements
+                </h1>
+                <p class="mt-3 max-w-lg text-sm text-white/60 leading-relaxed">
+                    Learn the enrollment steps and prepare the needed documents to become a student of Talibon Polytechnic College.
+                </p>
+                <div class="mt-6 flex flex-wrap justify-center gap-3">
+                    <a href="#requirements"
+                       class="inline-flex items-center justify-center rounded-full border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-secondary hover:border-tpc-secondary hover:text-white transition">
+                        View Requirements
+                    </a>
+                    <a href="#process"
+                       class="inline-flex items-center justify-center rounded-full border-2 border-white/90 bg-black/20 backdrop-blur-sm px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                        Enrollment Process
+                    </a>
+                </div>
             </div>
         </div>
         <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-6 sm:h-10">
-                <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f9fafb"/>
+            <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
+                <path d="M0 48 C480 0 960 0 1440 48 L1440 48 L0 48 Z" fill="#f9fafb"/>
             </svg>
         </div>
     </section>
@@ -211,14 +217,6 @@
                                 Go to Contact Page
                             </a>
                         </div>
-                    </div>
-
-                    {{-- Mobile-only: Need help link (visible since header link is hidden on mobile) --}}
-                    <div class="block sm:hidden bg-tpc-primary/5 border border-tpc-primary/20 rounded-xl px-4 py-3 text-center">
-                        <a href="{{ route('contact') }}"
-                           class="text-xs font-semibold text-tpc-primary">
-                            Need help? Contact us →
-                        </a>
                     </div>
 
                 </aside>
