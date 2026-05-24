@@ -76,4 +76,27 @@ class ContactMessageController extends Controller
             ->json(['count' => $count])
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     }
+
+    public function destroy(ContactMessage $message)
+    {
+        $message->delete();
+
+        return redirect()
+            ->route('admin.messages.index')
+            ->with('success', 'Message deleted.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids'   => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer'],
+        ]);
+
+        ContactMessage::whereIn('id', $request->ids)->delete();
+
+        return redirect()
+            ->route('admin.messages.index')
+            ->with('success', count($request->ids) . ' message(s) deleted.');
+    }
 }

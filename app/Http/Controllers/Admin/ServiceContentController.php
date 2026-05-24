@@ -25,8 +25,9 @@ class ServiceContentController extends Controller
             'image_caption' => ['nullable', 'string', 'max:255'],
         ]);
 
-        // Determine order (append to end)
-        $data['order']      = $service->contents()->max('order') + 1;
+        // Prepend: place new content before all existing ones
+        $min = $service->contents()->min('order') ?? 0;
+        $data['order'] = $min - 1;
         $data['service_id'] = $service->id;
 
         if ($request->hasFile('image')) {

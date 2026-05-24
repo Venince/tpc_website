@@ -74,24 +74,29 @@
                         @endphp
 
                         <a href="{{ route('academics.show', $program) }}"
-                           class="group relative bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
+                           class="program-card group relative bg-white rounded-2xl border border-gray-200 shadow-sm
+                                  overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
 
-                            <div class="h-1.5 w-full bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300"></div>
+                            {{-- Top accent bar --}}
+                            <div class="program-card-bar h-1.5 w-full bg-tpc-primary transition-colors duration-300"></div>
 
                             <div class="p-4 sm:p-6 flex flex-col flex-1">
 
                                 <div class="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                    @if ($program->logo_path)
-                                        <div class="shrink-0 h-12 w-12 sm:h-16 sm:w-16 rounded-xl flex items-center justify-center p-1.5 sm:p-2">
+
+                                    {{-- Logo / icon --}}
+                                    <div class="program-logo-wrap shrink-0 h-12 w-12 sm:h-16 sm:w-16
+                                                rounded-xl flex items-center justify-center
+                                                {{ $program->logo_path ? 'p-1.5 sm:p-2' : 'bg-tpc-primary/5 border border-tpc-primary/10' }}">
+                                        @if ($program->logo_path)
                                             <img src="{{ asset('storage/' . $program->logo_path) }}"
                                                  alt="{{ $program->code }} logo"
-                                                 class="h-full w-full object-contain" loading="lazy">
-                                        </div>
-                                    @else
-                                        <div class="shrink-0 h-12 w-12 sm:h-16 sm:w-16 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center text-xl sm:text-2xl">
-                                            🎓
-                                        </div>
-                                    @endif
+                                                 class="h-full w-full object-contain"
+                                                 loading="lazy">
+                                        @else
+                                            <span class="text-xl sm:text-2xl">🎓</span>
+                                        @endif
+                                    </div>
 
                                     <div class="min-w-0 pt-0.5 sm:pt-1">
                                         <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-1">

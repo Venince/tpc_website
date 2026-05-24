@@ -517,3 +517,96 @@ html.tpc-admin-init #tpc-admin-main {
         box-shadow: 0 2px 8px rgba(26,86,50,.1);
     }
 }
+
+/* ============================================================
+   Academics – Program Cards  (org-chart-style hover)
+   ============================================================ */
+
+.program-card {
+    transition:
+        transform 0.22s cubic-bezier(.34, 1.4, .64, 1),
+        box-shadow 0.22s ease,
+        border-color 0.2s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 36px rgba(26, 86, 50, .13), 0 3px 10px rgba(0, 0, 0, .06);
+    border-color: rgba(26, 86, 50, .25);
+}
+
+.program-card:hover .program-card-bar {
+    background-color: #4ade80; /* tpc-accent equivalent */
+}
+
+.program-logo-wrap {
+    transition: transform 0.22s ease;
+}
+
+.program-card:hover .program-logo-wrap {
+    transform: scale(1.06);
+}
+
+/* Mobile: match org-chart mobile — no lift, just a subtle shadow */
+@media (max-width: 639px) {
+    .program-card:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(26, 86, 50, .1);
+        border-color: rgba(26, 86, 50, .2);
+    }
+
+    .program-card:hover .program-logo-wrap {
+        transform: none;
+    }
+}
+
+/* ── Program page – Leadership & Instructor cards ── */
+.person-card {
+    transition:
+        transform 0.22s cubic-bezier(.34, 1.4, .64, 1),
+        box-shadow 0.22s ease,
+        border-color 0.2s ease;
+}
+.person-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 36px rgba(26, 86, 50, .13), 0 3px 10px rgba(0, 0, 0, .06);
+    border-color: rgba(26, 86, 50, .25);
+}
+.person-card .person-photo {
+    transition: transform 0.22s ease;
+}
+.person-card:hover .person-photo {
+    transform: scale(1.06);
+}
+
+/* ── Program page – Achievement cards ── */
+.achievement-card {
+    transition:
+        transform 0.22s cubic-bezier(.34, 1.4, .64, 1),
+        box-shadow 0.22s ease,
+        border-color 0.2s ease;
+}
+.achievement-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 36px rgba(26, 86, 50, .13), 0 3px 10px rgba(0, 0, 0, .06);
+    border-color: rgba(26, 86, 50, .25);
+}
+.achievement-card .achievement-img {
+    transition: transform 0.22s ease;
+    overflow: hidden;
+}
+.achievement-card:hover .achievement-img {
+    transform: scale(1.03);
+}
+
+@media (max-width: 639px) {
+    .person-card:hover,
+    .achievement-card:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(26, 86, 50, .1);
+    }
+    .person-card:hover .person-photo,
+    .achievement-card:hover .achievement-img {
+        transform: none;
+    }
+}

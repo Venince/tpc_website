@@ -35,11 +35,61 @@
         </div>
     @endif
 
+    {{-- ── Bulk-delete action bar (hidden until posts are checked) ── --}}
+    <div id="bulk-bar"
+         class="hidden sticky top-4 z-30 mb-4 flex items-center justify-between gap-3
+                rounded-2xl border border-red-200 bg-white px-5 py-3 shadow-lg shadow-red-50">
+        <p class="text-sm font-semibold text-tpc-ink">
+            <span id="bulk-count">0</span> post(s) selected
+        </p>
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="clearAllSelections()"
+                    class="rounded-xl border border-tpc-primary/20 px-3 py-1.5 text-xs font-semibold text-tpc-ink/60 hover:bg-gray-50 transition">
+                Cancel
+            </button>
+            <button type="button" onclick="submitBulkDelete()"
+                    class="inline-flex items-center gap-1.5 rounded-xl bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition">
+                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                </svg>
+                Delete Selected
+            </button>
+        </div>
+    </div>
+
+    {{-- Hidden bulk-delete form --}}
+    <form id="bulk-form" method="POST"
+          action="{{ route('admin.news-posts.bulkDestroy') }}"
+          class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
+
     {{-- ── Mobile cards ── --}}
     <div class="space-y-3 sm:hidden">
+
+        {{-- Mobile select-all --}}
+        @if ($posts->count())
+            <div class="flex items-center gap-3 px-1">
+                <input type="checkbox" id="select-all-mobile"
+                       class="h-3.5 w-3.5 rounded border-gray-300 text-red-600 cursor-pointer"
+                       onchange="toggleAll(this)">
+                <label for="select-all-mobile" class="text-xs text-tpc-ink/50 cursor-pointer select-none">
+                    Select all on this page
+                </label>
+            </div>
+        @endif
+
         @forelse ($posts as $post)
             <div class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm overflow-hidden">
                 <div class="flex items-start gap-3 p-4">
+
+                    {{-- Checkbox --}}
+                    <input type="checkbox"
+                           class="post-checkbox mt-1 h-3.5 w-3.5 shrink-0 rounded border-gray-300 text-red-600 cursor-pointer"
+                           value="{{ $post->id }}"
+                           onchange="onPostCheck()">
+
                     {{-- Thumbnail --}}
                     <div class="shrink-0">
                         @if($post->image_path)
@@ -63,7 +113,6 @@
                             <span class="font-medium text-tpc-ink/70">{{ $post->category }}</span>
                             · {{ $post->created_at->format('M d, Y') }}
                         </p>
-
                         @if($post->isDeclined() && $post->review_note)
                             <button type="button" onclick="openNoteModal({{ json_encode($post->review_note) }})"
                                     class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-red-600 hover:text-red-700">
@@ -77,8 +126,17 @@
                     </div>
                 </div>
 
-                {{-- Card footer actions --}}
                 <div class="flex items-center justify-end gap-1 border-t border-tpc-primary/8 px-4 py-2.5">
+                    <form method="POST" action="{{ route('admin.news-posts.repost', $post) }}"
+                        onsubmit="return confirm('Repost this as a new post?');">
+                        @csrf
+                        <button class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-tpc-primary/70 hover:bg-tpc-primary/8 transition">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                            </svg>
+                            Repost
+                        </button>
+                    </form>
                     <a href="{{ route('admin.news-posts.edit', $post) }}"
                        class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-tpc-primary hover:bg-tpc-primary/8 transition">
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -117,6 +175,11 @@
             <table class="min-w-full text-sm">
                 <thead>
                     <tr class="border-b border-tpc-primary/8 bg-tpc-primary/4">
+                        <th class="px-4 py-3 w-8">
+                            <input type="checkbox" id="select-all-desktop"
+                                   class="h-3.5 w-3.5 rounded border-gray-300 text-red-600 cursor-pointer"
+                                   onchange="toggleAll(this)">
+                        </th>
                         <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-tpc-ink/50 w-20">Image</th>
                         <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-tpc-ink/50">Title</th>
                         <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-tpc-ink/50 w-32">Category</th>
@@ -129,6 +192,12 @@
                 <tbody class="divide-y divide-tpc-primary/6">
                     @forelse ($posts as $post)
                         <tr class="hover:bg-tpc-primary/3 transition group">
+                            <td class="px-4 py-3">
+                                <input type="checkbox"
+                                       class="post-checkbox h-3.5 w-3.5 rounded border-gray-300 text-red-600 cursor-pointer"
+                                       value="{{ $post->id }}"
+                                       onchange="onPostCheck()">
+                            </td>
                             <td class="px-4 py-3">
                                 @if($post->image_path)
                                     <img src="{{ asset('storage/' . $post->image_path) }}" alt=""
@@ -178,6 +247,16 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right whitespace-nowrap">
+                                <form class="inline" method="POST" action="{{ route('admin.news-posts.repost', $post) }}"
+                                    onsubmit="return confirm('Repost this as a new post?');">
+                                    @csrf
+                                    <button class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-tpc-primary/70 hover:bg-tpc-primary/8 transition">
+                                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                                        </svg>
+                                        Repost
+                                    </button>
+                                </form>
                                 <a href="{{ route('admin.news-posts.edit', $post) }}"
                                    class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-tpc-primary hover:bg-tpc-primary/8 transition">
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -199,7 +278,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-14 text-center">
+                            <td colspan="8" class="px-4 py-14 text-center">
                                 <svg class="mx-auto h-10 w-10 text-tpc-ink/15 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"/>
                                 </svg>
@@ -218,7 +297,6 @@
     {{-- ── Decline Note Modal ── --}}
     <div id="note-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeNoteModal()"></div>
-
         <div class="relative w-full max-w-md rounded-2xl border border-red-100 bg-white shadow-xl">
             <div class="flex items-center justify-between border-b border-red-100 px-5 py-4">
                 <div class="flex items-center gap-2.5">
@@ -236,11 +314,9 @@
                     </svg>
                 </button>
             </div>
-
             <div class="px-5 py-5">
                 <p id="note-modal-body" class="text-sm text-tpc-ink/80 leading-relaxed whitespace-pre-wrap"></p>
             </div>
-
             <div class="border-t border-gray-100 px-5 py-4">
                 <p class="mb-3 text-xs text-tpc-ink/50">Edit your post and re-submit to request approval again.</p>
                 <button type="button" onclick="closeNoteModal()"
@@ -252,6 +328,75 @@
     </div>
 
 <script>
+    // ── Bulk selection ────────────────────────────────────────────────────
+    function onPostCheck() {
+        var checked = document.querySelectorAll('.post-checkbox:checked');
+        var all     = document.querySelectorAll('.post-checkbox');
+
+        // Sync both select-all checkboxes (desktop + mobile)
+        ['select-all-desktop', 'select-all-mobile'].forEach(function (id) {
+            var sa = document.getElementById(id);
+            if (!sa) return;
+            sa.indeterminate = checked.length > 0 && checked.length < all.length;
+            sa.checked       = checked.length === all.length && all.length > 0;
+        });
+
+        document.getElementById('bulk-count').textContent = checked.length;
+
+        var bar = document.getElementById('bulk-bar');
+        if (checked.length > 0) {
+            bar.classList.remove('hidden');
+            bar.classList.add('flex');
+        } else {
+            bar.classList.add('hidden');
+            bar.classList.remove('flex');
+        }
+    }
+
+    function toggleAll(selectAllCb) {
+        document.querySelectorAll('.post-checkbox').forEach(function (cb) {
+            cb.checked = selectAllCb.checked;
+        });
+        // Sync the other select-all
+        ['select-all-desktop', 'select-all-mobile'].forEach(function (id) {
+            var sa = document.getElementById(id);
+            if (sa && sa !== selectAllCb) sa.checked = selectAllCb.checked;
+        });
+        onPostCheck();
+    }
+
+    function clearAllSelections() {
+        document.querySelectorAll('.post-checkbox').forEach(function (cb) { cb.checked = false; });
+        ['select-all-desktop', 'select-all-mobile'].forEach(function (id) {
+            var sa = document.getElementById(id);
+            if (sa) { sa.checked = false; sa.indeterminate = false; }
+        });
+        document.getElementById('bulk-bar').classList.add('hidden');
+        document.getElementById('bulk-bar').classList.remove('flex');
+    }
+
+    function submitBulkDelete() {
+        var checked = document.querySelectorAll('.post-checkbox:checked');
+        if (!checked.length) return;
+        if (!confirm('Delete ' + checked.length + ' selected post(s)? This cannot be undone.')) return;
+
+        var form = document.getElementById('bulk-form');
+
+        // Remove any previously appended id inputs
+        form.querySelectorAll('input[name="ids[]"]').forEach(function (el) { el.remove(); });
+
+        checked.forEach(function (cb) {
+            var input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = 'ids[]';
+            input.value = cb.value;
+            form.appendChild(input);
+        });
+
+        form.submit();
+    }
+
+    // ── Decline Note Modal ────────────────────────────────────────────────
     function openNoteModal(note) {
         document.getElementById('note-modal-body').textContent = note || 'No reason provided.';
         const modal = document.getElementById('note-modal');

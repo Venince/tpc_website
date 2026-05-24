@@ -27,8 +27,6 @@
             </a>
 
             <div class="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-5 sm:gap-8">
-
-                {{-- Logo --}}
                 @if ($program->logo_path)
                     <div class="shrink-0 h-24 w-24">
                         <img src="{{ asset('storage/' . $program->logo_path) }}"
@@ -37,9 +35,7 @@
                     </div>
                 @endif
 
-                {{-- Text --}}
                 <div class="min-w-0 flex-1">
-                    {{-- Badges --}}
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-3">
                         <span class="inline-block bg-white/20 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/20">
                             {{ $program->code }}
@@ -94,7 +90,7 @@
                 {{-- LEFT MAIN --}}
                 <div class="lg:col-span-2 space-y-8 sm:space-y-10">
 
-                    {{-- PROGRAM HEAD + COORDINATOR --}}
+                    {{-- PROGRAM LEADERSHIP --}}
                     @if ($head->isNotEmpty() || $coordinators->isNotEmpty())
                         <div>
                             <div class="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
@@ -104,15 +100,15 @@
                             </div>
                             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2">
                                 @foreach ($head->merge($coordinators) as $person)
-                                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300">
+                                    <div class="person-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                                         <div class="h-1.5 bg-tpc-primary"></div>
                                         <div class="p-4 sm:p-6 flex flex-col items-center text-center">
                                             @if ($person->photo_path)
                                                 <img src="{{ asset('storage/' . $person->photo_path) }}"
-                                                     class="h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover border-4 border-tpc-primary/20 shadow-sm mb-3 sm:mb-4"
+                                                     class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover border-4 border-tpc-primary/20 shadow-sm mb-3 sm:mb-4"
                                                      alt="{{ $person->name }}">
                                             @else
-                                                <span class="h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-tpc-primary/10 flex items-center justify-center text-2xl sm:text-3xl font-bold text-tpc-primary mb-3 sm:mb-4">
+                                                <span class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-tpc-primary/10 flex items-center justify-center text-2xl sm:text-3xl font-bold text-tpc-primary mb-3 sm:mb-4">
                                                     {{ strtoupper(substr($person->name, 0, 1)) }}
                                                 </span>
                                             @endif
@@ -141,15 +137,15 @@
                             </div>
                             <div class="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
                                 @foreach ($instructors as $person)
-                                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden">
+                                    <div class="person-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                                         <div class="h-1 bg-tpc-primary/30"></div>
                                         <div class="p-3 sm:p-5 flex flex-col items-center text-center">
                                             @if ($person->photo_path)
                                                 <img src="{{ asset('storage/' . $person->photo_path) }}"
-                                                     class="h-16 w-16 sm:h-24 sm:w-24 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm mb-2 sm:mb-3"
+                                                     class="person-photo h-16 w-16 sm:h-24 sm:w-24 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm mb-2 sm:mb-3"
                                                      alt="{{ $person->name }}">
                                             @else
-                                                <span class="h-16 w-16 sm:h-24 sm:w-24 rounded-full bg-tpc-primary/10 flex items-center justify-center text-xl sm:text-2xl font-bold text-tpc-primary mb-2 sm:mb-3">
+                                                <span class="person-photo h-16 w-16 sm:h-24 sm:w-24 rounded-full bg-tpc-primary/10 flex items-center justify-center text-xl sm:text-2xl font-bold text-tpc-primary mb-2 sm:mb-3">
                                                     {{ strtoupper(substr($person->name, 0, 1)) }}
                                                 </span>
                                             @endif
@@ -174,10 +170,10 @@
                             </div>
                             <div class="space-y-4 sm:space-y-5">
                                 @foreach ($achievements as $achievement)
-                                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden">
+                                    <div class="achievement-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                                         <div class="h-1.5 bg-tpc-accent"></div>
                                         @if ($achievement->photo_path)
-                                            <div class="bg-gray-50 border-b border-gray-100">
+                                            <div class="achievement-img bg-gray-50 border-b border-gray-100">
                                                 <img src="{{ asset('storage/' . $achievement->photo_path) }}"
                                                      class="w-full object-cover"
                                                      alt="{{ $achievement->title }}" loading="lazy">

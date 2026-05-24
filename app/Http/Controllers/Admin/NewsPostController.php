@@ -152,4 +152,61 @@ class NewsPostController extends Controller
 
         return $slug;
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids'   => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer'],
+        ]);
+
+        $posts = NewsPost::whereIn('id', $request->ids)->get();
+
+        foreach ($posts as $post) {
+            if ($post->image_path) {
+                Storage::disk('public')->delete($post->image_path);
+            }
+            $post->delete();
+        }
+
+        return redirect()
+            ->route('admin.news-posts.index')
+            ->with('success', count($request->ids) . ' post(s) deleted.');
+    }
+
+    public function repost(NewsPost $newsPost)
+    {
+        // Copy the image so each post owns its own file
+        $newImagePath = null;
+        if ($newsPost->image_path && Storage::disk('public')->exists($newsPost->image_path)) {
+            $extension    = pathinfo($newsPost->image_path, PATHINFO_EXTENSION);
+            $newImagePath = 'news-images/' . \Illuminate\Support\Str::random(40) . '.' . $extension;
+            Storage::disk('public')->copy($newsPost->image_path, $newImagePath);
+        }
+
+        $newPost = NewsPost::create([
+            'title'        => $newsPost->title,
+            'slug'         => $this->uniqueSlug($newsPost->title),
+            'category'     => $newsPost->category,
+            'excerpt'      => $newsPost->excerpt,
+            'body'         => $newsPost->body,
+            'image_path'   => $newImagePath,
+            'is_published' => Auth::user()->is_super_admin,
+            'status'       => Auth::user()->is_super_admin
+                                ? NewsPost::STATUS_APPROVED
+                                : NewsPost::STATUS_PENDING,
+            'published_at' => Auth::user()->is_super_admin ? now() : null,
+            'reviewed_at'  => Auth::user()->is_super_admin ? now() : null,
+            'reviewed_by'  => Auth::user()->is_super_admin ? Auth::id() : null,
+            'review_note'  => Auth::user()->is_super_admin ? 'Reposted by superadmin.' : null,
+        ]);
+
+        $message = Auth::user()->is_super_admin
+            ? 'Post reposted and published.'
+            : 'Post reposted and submitted for review.';
+
+        return redirect()
+            ->route('admin.news-posts.index')
+            ->with('success', $message);
+    }
 }

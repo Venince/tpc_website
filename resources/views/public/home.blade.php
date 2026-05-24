@@ -415,38 +415,71 @@
                 <div class="flex-1 h-px bg-gray-200"></div>
             </div>
 
-            @php
-                $programCount     = $programs->count();
-                $lastRowRemainder = $programCount % 3;
-            @endphp
+            @php $programCount = $programs->count(); @endphp
 
             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($programs as $program)
                     @php
-                        $isLast   = $loop->last;
-                        $lgCenter = ($isLast && $lastRowRemainder === 1) ? 'lg:col-start-2' : '';
+                        $isLast          = $loop->last;
+                        $lastRowRemainder = $programCount % 3;
+                        $smRem           = $programCount % 2;
+                        $lgCenter        = ($isLast && $lastRowRemainder === 1) ? 'lg:col-start-2' : '';
+                        $smCenter        = ($isLast && $smRem === 1 && $lastRowRemainder !== 1) ? 'sm:col-start-1 sm:col-span-2 sm:max-w-sm sm:mx-auto sm:w-full' : '';
                     @endphp
+
                     <a href="{{ route('academics.show', $program) }}"
-                       class="group relative bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300 overflow-hidden flex items-center gap-4 p-4 sm:p-5 {{ $lgCenter }}">
-                        <div class="h-1.5 absolute top-0 left-0 right-0 bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300 rounded-t-2xl"></div>
-                        @if($program->logo_path)
-                            <div class="shrink-0 h-24 w-24 rounded-xl flex items-center justify-center">
-                                <img src="{{ asset('storage/' . $program->logo_path) }}"
-                                     alt="{{ $program->code }} logo"
-                                     class="h-full w-full object-contain" loading="lazy">
+                        class="program-card group relative bg-white rounded-2xl border border-gray-200 shadow-sm
+                                overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
+
+                        {{-- Top accent bar --}}
+                        <div class="h-1.5 w-full bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300"></div>
+
+                        <div class="p-4 sm:p-6 flex flex-col flex-1">
+
+                            {{-- Logo + code + name --}}
+                            <div class="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                <div class="program-logo-wrap shrink-0 h-12 w-12 sm:h-16 sm:w-16 rounded-xl flex items-center justify-center
+                                            {{ $program->logo_path ? 'p-1.5 sm:p-2' : 'bg-tpc-primary/5 border border-tpc-primary/10' }}">
+                                    @if($program->logo_path)
+                                        <img src="{{ asset('storage/' . $program->logo_path) }}"
+                                            alt="{{ $program->code }} logo"
+                                            class="h-full w-full object-contain" loading="lazy">
+                                    @else
+                                        <span class="text-xl sm:text-2xl">🎓</span>
+                                    @endif
+                                </div>
+                                <div class="min-w-0 pt-0.5 sm:pt-1">
+                                    <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-1">
+                                        {{ $program->code ?? 'Program' }}
+                                    </span>
+                                    <h3 class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition-colors leading-snug">
+                                        {{ $program->name }}
+                                    </h3>
+                                    @if($program->department)
+                                        <p class="mt-0.5 text-[11px] sm:text-xs text-gray-400">{{ $program->department }}</p>
+                                    @endif
+                                </div>
                             </div>
-                        @else
-                            <div class="shrink-0 h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 flex items-center justify-center text-2xl">
-                                🎓
+
+                            {{-- Description --}}
+                            @if($program->description)
+                                <p class="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-3 flex-1">
+                                    {{ $program->description }}
+                                </p>
+                            @else
+                                <div class="flex-1"></div>
+                            @endif
+
+                            {{-- Footer arrow --}}
+                            <div class="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-gray-100 flex items-center justify-end">
+                                <span class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary group-hover:gap-2 transition-all duration-200">
+                                    View Program
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </span>
                             </div>
-                        @endif
-                        <div class="min-w-0">
-                            <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-1">
-                                {{ $program->code ?? 'Program' }}
-                            </span>
-                            <h3 class="text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition leading-snug">
-                                {{ $program->name }}
-                            </h3>
+
                         </div>
                     </a>
                 @empty

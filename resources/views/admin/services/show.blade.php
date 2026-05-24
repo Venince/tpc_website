@@ -47,11 +47,10 @@
 
         {{-- LEFT: Service meta --}}
         <aside class="lg:col-span-1 space-y-4">
-            {{-- Featured image --}}
             @if ($service->featured_image_path)
                 <div class="rounded-2xl overflow-hidden border border-gray-100">
                     <img src="{{ asset('storage/' . $service->featured_image_path) }}"
-                         class="w-full object-cover alt="">
+                         class="w-full object-cover" alt="">
                 </div>
             @endif
 
@@ -69,10 +68,6 @@
                         </span>
                     @endif
                 </div>
-                <div class="px-4 py-3">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Display Order</p>
-                    <p class="text-sm text-gray-700 font-mono">{{ $service->order }}</p>
-                </div>
                 @if ($service->description)
                     <div class="px-4 py-3">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Description</p>
@@ -83,6 +78,39 @@
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Sections</p>
                     <p class="text-sm font-bold text-tpc-primary">{{ $service->contents->count() }}</p>
                 </div>
+
+                {{-- Social Links --}}
+                @if (!empty($service->social_links))
+                    <div class="px-4 py-3">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Social Links</p>
+                        <div class="space-y-1.5">
+                            @foreach ($service->social_links as $link)
+                                @php
+                                    $platformColors = [
+                                        'facebook'  => 'bg-blue-50 text-blue-700 ring-blue-200/60',
+                                        'instagram' => 'bg-pink-50 text-pink-700 ring-pink-200/60',
+                                        'twitter'   => 'bg-gray-100 text-gray-700 ring-gray-200',
+                                        'youtube'   => 'bg-red-50 text-red-700 ring-red-200/60',
+                                        'tiktok'    => 'bg-gray-900 text-white ring-gray-700',
+                                        'linkedin'  => 'bg-sky-50 text-sky-700 ring-sky-200/60',
+                                        'other'     => 'bg-gray-50 text-gray-600 ring-gray-200',
+                                    ];
+                                    $colorClass = $platformColors[$link['platform']] ?? $platformColors['other'];
+                                    $displayLabel = !empty($link['label']) ? $link['label'] : ucfirst($link['platform']);
+                                @endphp
+                                <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"
+                                   class="flex items-center gap-2 group">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full {{ $colorClass }} px-2.5 py-1 text-[11px] font-bold ring-1 truncate max-w-full group-hover:opacity-80 transition">
+                                        {{ $displayLabel }}
+                                        <svg class="h-2.5 w-2.5 shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+                                        </svg>
+                                    </span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
 
             {{-- Danger zone --}}
@@ -128,15 +156,11 @@
                     @foreach ($service->contents as $content)
                         <div class="content-row flex items-start gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm hover:border-tpc-primary/30 hover:shadow-md transition-all duration-200"
                              data-id="{{ $content->id }}">
-
-                            {{-- Drag handle --}}
                             <span class="drag-handle mt-0.5 shrink-0 cursor-grab text-gray-300 hover:text-gray-500 active:cursor-grabbing">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5"/>
                                 </svg>
                             </span>
-
-                            {{-- Badge --}}
                             <div class="mt-0.5 shrink-0">
                                 @if ($content->isImage())
                                     <span class="inline-flex items-center gap-1 rounded-lg bg-purple-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-600 ring-1 ring-purple-200/60">
@@ -154,8 +178,6 @@
                                     </span>
                                 @endif
                             </div>
-
-                            {{-- Preview --}}
                             <div class="flex-1 min-w-0">
                                 @if ($content->heading)
                                     <p class="text-sm font-bold text-gray-800 truncate">{{ $content->heading }}</p>
@@ -172,8 +194,6 @@
                                     <p class="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">{{ $content->body }}</p>
                                 @endif
                             </div>
-
-                            {{-- Actions --}}
                             <div class="flex items-center gap-1 shrink-0">
                                 <a href="{{ route('admin.services.contents.edit', [$service, $content]) }}"
                                    class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-tpc-primary/60 hover:bg-tpc-primary/8 hover:text-tpc-primary transition" title="Edit">
@@ -200,10 +220,6 @@
 @endsection
 
 @push('scripts')
-{{--
-    Drag-to-reorder using SortableJS (CDN).
-    If you already have SortableJS in your project, remove the script tag.
---}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {

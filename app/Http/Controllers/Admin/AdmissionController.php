@@ -112,4 +112,23 @@ class AdmissionController extends Controller
 
         return response()->json(['ok' => true]);
     }
+
+    public function bulkDestroyItems(Request $request, AdmissionSection $section)
+    {
+        $request->validate([
+            'ids'   => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer'],
+        ]);
+
+        AdmissionItem::whereIn('id', $request->ids)
+            ->where('admission_section_id', $section->id)
+            ->delete();
+
+        // Re-sequence remaining items
+        $section->items()->orderBy('order')->get()
+            ->each(fn($it, $i) => $it->update(['order' => $i + 1]));
+
+        return redirect()->route('admin.admission.index')
+            ->with('success', count($request->ids) . ' item(s) deleted.');
+    }
 }

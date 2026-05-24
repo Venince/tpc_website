@@ -8,49 +8,57 @@
     {{-- ══════════════════════════════════════
          PAGE HEADER
     ══════════════════════════════════════ --}}
-    <section class="relative overflow-hidden bg-tpc-primary">
-        <div class="max-w-4xl mx-auto px-4 py-8 sm:py-10 relative z-10">
+    <section class="relative overflow-hidden bg-tpc-secondary">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0"
+             style="background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
+                                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)"></div>
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 opacity-[0.04]"
+             style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+                                      linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
+                    background-size: 40px 40px;"></div>
 
-            {{-- Breadcrumb --}}
-            <nav class="flex items-center gap-1.5 text-xs font-medium text-white/60 mb-5 sm:mb-6 flex-wrap" aria-label="Breadcrumb">
-                <a href="{{ route('home') }}" class="hover:text-white transition shrink-0">Home</a>
-                <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-                <a href="{{ route('home') }}#about" class="hover:text-white transition shrink-0">About</a>
-                @if($slide->title)
-                    <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                    </svg>
-                    <span class="text-white/40 truncate max-w-[140px] sm:max-w-xs">{{ $slide->title }}</span>
-                @endif
-            </nav>
+        <div class="relative mx-auto max-w-4xl px-4 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div class="flex flex-col items-center text-center">
 
-            {{-- Label row --}}
-            <div class="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-                <span class="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-white/20">
+                {{-- Label --}}
+                <span class="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-white/20 mb-4">
                     <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
                     About the College
                 </span>
-                <span class="text-xs text-white/40 hidden sm:inline">· Talibon Polytechnic College</span>
+
+                {{-- Title --}}
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight max-w-3xl">
+                    {{ $slide->title ?: 'About Talibon Polytechnic College' }}
+                </h1>
+
+                @if($slide->caption)
+                    <p class="mt-3 max-w-lg text-sm text-white/60 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                        {{ $slide->caption }}
+                    </p>
+                @endif
+
+                {{-- Breadcrumb --}}
+                <nav class="mt-5 flex items-center justify-center gap-1.5 text-xs font-medium text-white/50 flex-wrap" aria-label="Breadcrumb">
+                    <a href="{{ route('home') }}" class="hover:text-white transition">Home</a>
+                    <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <a href="{{ route('home') }}#about" class="hover:text-white transition">About</a>
+                    @if($slide->title)
+                        <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
+                        <span class="text-white/30 truncate max-w-[160px] sm:max-w-xs">{{ $slide->title }}</span>
+                    @endif
+                </nav>
+
             </div>
-
-            {{-- Title --}}
-            <h1 class="text-xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight max-w-3xl">
-                {{ $slide->title ?: 'About Talibon Polytechnic College' }}
-            </h1>
-
-            @if($slide->caption)
-                <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-white/70 leading-relaxed max-w-2xl line-clamp-3 sm:line-clamp-none">
-                    {{ $slide->caption }}
-                </p>
-            @endif
         </div>
 
         {{-- Wave divider --}}
         <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-6 sm:h-10">
-                <path d="M0 40 C360 0 1080 0 1440 40 L1440 40 L0 40 Z" fill="#f9fafb"/>
+            <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
+                <path d="M0 48 C480 0 960 0 1440 48 L1440 48 L0 48 Z" fill="#f9fafb"/>
             </svg>
         </div>
     </section>
@@ -76,7 +84,6 @@
                                  alt="{{ $slide->title ?: 'About TPC' }}"
                                  class="w-full object-contain rounded-xl hover:opacity-95 transition"
                                  loading="lazy" />
-                            {{-- View hint overlay --}}
                             <span class="absolute inset-0 rounded-xl flex items-end justify-end p-2 sm:p-3 opacity-0 group-hover:opacity-100 transition">
                                 <span class="inline-flex items-center gap-1 bg-black/60 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-lg backdrop-blur-sm">
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -116,7 +123,6 @@
                         </span>
                     </div>
 
-                    {{-- Divider --}}
                     <div class="my-5 sm:my-8 border-t border-gray-100"></div>
 
                     {{-- Footer CTA --}}

@@ -11,6 +11,17 @@ use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
+    // Supported platforms config: key => [label, url_prefix, icon_svg_path]
+    public const SOCIAL_PLATFORMS = [
+        'facebook'  => ['label' => 'Facebook',  'prefix' => 'https://facebook.com/'],
+        'instagram' => ['label' => 'Instagram', 'prefix' => 'https://instagram.com/'],
+        'twitter'   => ['label' => 'X (Twitter)', 'prefix' => 'https://x.com/'],
+        'youtube'   => ['label' => 'YouTube',   'prefix' => 'https://youtube.com/'],
+        'tiktok'    => ['label' => 'TikTok',    'prefix' => 'https://tiktok.com/@'],
+        'linkedin'  => ['label' => 'LinkedIn',  'prefix' => 'https://linkedin.com/'],
+        'other'     => ['label' => 'Other',     'prefix' => ''],
+    ];
+
     public function index()
     {
         $services = Service::ordered()->paginate(15);
@@ -19,22 +30,31 @@ class ServiceController extends Controller
 
     public function create()
     {
-        return view('admin.services.create');
+        $platforms = self::SOCIAL_PLATFORMS;
+        return view('admin.services.create', compact('platforms'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'          => ['required', 'string', 'max:255'],
-            'description'    => ['nullable', 'string'],
-            'is_active'      => ['nullable', 'boolean'],
-            'order'          => ['nullable', 'integer', 'min:0'],
-            'featured_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'title'             => ['required', 'string', 'max:255'],
+            'description'       => ['nullable', 'string'],
+            'is_active'         => ['nullable', 'boolean'],
+            'featured_image'    => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'social_links'      => ['nullable', 'array'],
+            'social_links.*.platform' => ['required_with:social_links', 'string', 'in:' . implode(',', array_keys(self::SOCIAL_PLATFORMS))],
+            'social_links.*.url'      => ['required_with:social_links', 'url', 'max:500'],
+            'social_links.*.label'    => ['nullable', 'string', 'max:100'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
-        $data['order']     = $request->integer('order', 0);
         $data['slug']      = $this->uniqueSlug($data['title']);
+
+        // Filter out empty social link rows
+        $data['social_links'] = collect($request->input('social_links', []))
+            ->filter(fn($link) => !empty($link['url']))
+            ->values()
+            ->toArray() ?: null;
 
         if ($request->hasFile('featured_image')) {
             $data['featured_image_path'] = $request->file('featured_image')
@@ -56,35 +76,41 @@ class ServiceController extends Controller
 
     public function edit(Service $service)
     {
-        return view('admin.services.edit', compact('service'));
+        $platforms = self::SOCIAL_PLATFORMS;
+        return view('admin.services.edit', compact('service', 'platforms'));
     }
 
     public function update(Request $request, Service $service)
     {
         $data = $request->validate([
-            'title'          => ['required', 'string', 'max:255', Rule::unique('services', 'title')->ignore($service->id)],
-            'description'    => ['nullable', 'string'],
-            'is_active'      => ['nullable', 'boolean'],
-            'order'          => ['nullable', 'integer', 'min:0'],
-            'remove_image'   => ['nullable', 'boolean'],
-            'featured_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'title'             => ['required', 'string', 'max:255', Rule::unique('services', 'title')->ignore($service->id)],
+            'description'       => ['nullable', 'string'],
+            'is_active'         => ['nullable', 'boolean'],
+            'remove_image'      => ['nullable', 'boolean'],
+            'featured_image'    => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'social_links'      => ['nullable', 'array'],
+            'social_links.*.platform' => ['required_with:social_links', 'string', 'in:' . implode(',', array_keys(self::SOCIAL_PLATFORMS))],
+            'social_links.*.url'      => ['required_with:social_links', 'url', 'max:500'],
+            'social_links.*.label'    => ['nullable', 'string', 'max:100'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
-        $data['order']     = $request->integer('order', 0);
 
-        // Re-slug only if title changed
         if ($service->title !== $data['title']) {
             $data['slug'] = $this->uniqueSlug($data['title'], $service->id);
         }
 
-        // Remove featured image
+        // Filter out empty social link rows
+        $data['social_links'] = collect($request->input('social_links', []))
+            ->filter(fn($link) => !empty($link['url']))
+            ->values()
+            ->toArray() ?: null;
+
         if ($request->boolean('remove_image') && $service->featured_image_path) {
             Storage::disk('public')->delete($service->featured_image_path);
             $data['featured_image_path'] = null;
         }
 
-        // Replace featured image
         if ($request->hasFile('featured_image')) {
             if ($service->featured_image_path) {
                 Storage::disk('public')->delete($service->featured_image_path);
@@ -102,12 +128,10 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
-        // Delete featured image
         if ($service->featured_image_path) {
             Storage::disk('public')->delete($service->featured_image_path);
         }
 
-        // Delete all content images
         foreach ($service->contents as $content) {
             if ($content->image_path) {
                 Storage::disk('public')->delete($content->image_path);

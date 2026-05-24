@@ -39,13 +39,10 @@
             </a>
         </div>
     @else
-        {{-- Mobile: card list | Desktop: table --}}
-
         {{-- ── MOBILE CARDS (hidden on sm+) ───────────────────────── --}}
         <div class="space-y-3 sm:hidden">
             @foreach ($services as $service)
                 <div class="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
-                    {{-- Image strip or color bar --}}
                     @if ($service->featured_image_path)
                         <div class="h-28 w-full overflow-hidden bg-gray-100">
                             <img src="{{ asset('storage/' . $service->featured_image_path) }}"
@@ -77,7 +74,6 @@
                                 {{ $service->contents_count ?? $service->contents()->count() }}
                                 <span class="font-normal text-tpc-primary/70">sections</span>
                             </span>
-                            <span class="text-[11px] text-gray-300 font-mono">order: {{ $service->order }}</span>
                         </div>
 
                         <div class="flex items-center gap-2 border-t border-gray-50 pt-3">
@@ -117,7 +113,6 @@
             <table class="min-w-full divide-y divide-gray-100 text-sm">
                 <thead class="bg-gray-50/80">
                     <tr>
-                        <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400 w-12">#</th>
                         <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400">Service</th>
                         <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400">Sections</th>
                         <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400">Status</th>
@@ -127,8 +122,6 @@
                 <tbody class="divide-y divide-gray-50 bg-white">
                     @foreach ($services as $service)
                         <tr class="group hover:bg-tpc-primary/[0.02] transition-colors">
-                            <td class="px-4 py-3.5 text-xs text-gray-400 font-mono">{{ $service->order }}</td>
-
                             <td class="px-4 py-3.5">
                                 <div class="flex items-center gap-3">
                                     @if ($service->featured_image_path)

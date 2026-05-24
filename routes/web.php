@@ -53,6 +53,9 @@ Route::get('/services/{service:slug}', [ServiceController::class, 'show'])
 
 Route::get('/org-chart', [OrgChartController::class, 'index'])->name('org-chart');
 
+Route::post('/news/{newsPost}/like',   [NewsController::class, 'like'])  ->name('news.like');
+Route::post('/news/{newsPost}/unlike', [NewsController::class, 'unlike'])->name('news.unlike');
+
 /*
 |----------------------------------------------------------------------
 | DISABLE /register
@@ -93,6 +96,11 @@ Route::middleware(['auth', 'admin'])
 
         Route::resource('programs', ProgramController::class);
 
+        Route::delete('news-posts/bulk-destroy', [NewsPostController::class, 'bulkDestroy'])
+            ->name('news-posts.bulkDestroy');
+
+        Route::post('news-posts/{newsPost}/repost', [NewsPostController::class, 'repost'])
+            ->name('news-posts.repost');
         Route::resource('news-posts', NewsPostController::class)
             ->parameters(['news-posts' => 'newsPost']);
 
@@ -126,6 +134,8 @@ Route::middleware(['auth', 'admin'])
             ->name('admission.sections.items.update');
         Route::delete('admission/sections/{section}/items/{item}', [AdminAdmissionController::class, 'destroyItem'])
             ->name('admission.sections.items.destroy');
+        Route::delete('admission/sections/{section}/items', [AdminAdmissionController::class, 'bulkDestroyItems'])
+            ->name('admission.sections.items.bulkDestroy');
         Route::post('admission/sections/{section}/reorder', [AdminAdmissionController::class, 'reorderItems'])
             ->name('admission.sections.reorder');
 
@@ -194,6 +204,11 @@ Route::middleware(['auth', 'admin'])
         Route::middleware('super_admin')->group(function () {
 
             Route::resource('users', UserController::class)->except(['show']);
+
+             Route::delete('messages/bulk-destroy', [ContactMessageController::class, 'bulkDestroy'])
+                ->name('messages.bulkDestroy');
+            Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])
+                ->name('messages.destroy');
 
             Route::prefix('news-review')->name('news-review.')->group(function () {
                 Route::get('/',                    [NewsReviewController::class, 'index'])   ->name('index');

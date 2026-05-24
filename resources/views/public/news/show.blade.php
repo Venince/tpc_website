@@ -149,6 +149,27 @@
                         </div>
                     @endif
 
+                    {{-- Like button --}}
+                    <div class="mt-4 sm:mt-6 flex items-center gap-3">
+                        <button
+                            type="button"
+                            data-post-id="{{ $post->id }}"
+                            data-likes="{{ $post->likes_count }}"
+                            onclick="handleLike(this)"
+                            class="like-btn inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold
+                                    border border-gray-200 text-gray-500 hover:border-tpc-primary hover:text-tpc-primary
+                                    hover:bg-tpc-primary/10 transition-all duration-200 select-none">
+                            <svg class="like-icon h-3.5 w-3.5" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+                                <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                            </svg>
+                            <span class="like-count">{{ $post->likes_count }}</span>
+                            <span class="like-label">Like</span>
+                        </button>
+                    </div>
+
                     {{-- Divider --}}
                     <div class="my-6 sm:my-8 border-t border-gray-100"></div>
 

@@ -37,4 +37,28 @@ class NewsController extends Controller
 
         return view('public.news.show', ['post' => $newsPost]);
     }
+
+    public function like(NewsPost $newsPost)
+    {
+        abort_unless(
+            $newsPost->isApproved() && $newsPost->is_published && $newsPost->published_at,
+            404
+        );
+
+        $newsPost->increment('likes_count');
+
+        return response()->json(['likes_count' => $newsPost->likes_count]);
+    }
+
+    public function unlike(NewsPost $newsPost)
+    {
+        abort_unless(
+            $newsPost->isApproved() && $newsPost->is_published && $newsPost->published_at,
+            404
+        );
+
+        $newsPost->decrement('likes_count');
+
+        return response()->json(['likes_count' => $newsPost->likes_count]);
+    }
 }

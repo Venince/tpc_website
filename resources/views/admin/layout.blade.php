@@ -12,7 +12,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="text-tpc-ink bg-tpc-primary/5 relative isolate overflow-x-hidden">
+{{-- h-screen + overflow-hidden on body keeps the viewport locked --}}
+<body class="text-tpc-ink bg-tpc-primary/5 relative isolate overflow-hidden h-screen">
 
     <div aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 flex items-center justify-center">
         <img
@@ -24,7 +25,8 @@
     </div>
 
 <div
-    class="min-h-screen flex relative z-10"
+    {{-- h-screen + overflow-hidden: the flex row itself never scrolls --}}
+    class="h-screen overflow-hidden flex relative z-10"
     x-data="{
         sidebarCollapsed: (localStorage.getItem('tpcSidebarCollapsed') ?? 'false') === 'true',
         mobileSidebarOpen: false,
@@ -53,7 +55,7 @@
     x-effect="document.body.classList.toggle('overflow-hidden', mobileSidebarOpen)"
     @keydown.escape.window="mobileSidebarOpen = false"
 >
-    {{-- Mobile overlay (must be ABOVE header, BELOW sidebar) --}}
+    {{-- Mobile overlay --}}
     <div
         x-cloak
         x-show="mobileSidebarOpen"
@@ -63,16 +65,17 @@
         aria-hidden="true"
     ></div>
 
-    {{-- Sidebar --}}
+    {{-- Sidebar: fixed height, scrolls internally if content overflows --}}
     @include('admin.partials.sidebar')
 
-    {{-- Main --}}
-    <div class="flex-1 min-w-0">
-        {{-- Header --}}
+    {{-- Right column: fills remaining width, stacks header + scrollable main --}}
+    <div class="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
+
+        {{-- Header: never scrolls away --}}
         @include('admin.partials.header', ['title' => $title ?? null])
 
-        {{-- Only body/content area --}}
-        <main id="tpc-admin-main" class="max-w-full px-4 sm:px-6 lg:px-8 py-6">
+        {{-- Only this area scrolls --}}
+        <main id="tpc-admin-main" class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
             {{-- Flash success --}}
             @if (session('success'))
                 <div class="mb-5 rounded-2xl border border-tpc-primary/15 bg-white/80 p-4 shadow-sm backdrop-blur">
@@ -98,8 +101,9 @@
             {{-- Content card --}}
             <div class="rounded-3xl border border-tpc-primary/20 bg-white shadow-sm p-4 sm:p-6">
                 @hasSection('page_actions')
+                    {{-- sticky is now relative to the scrolling <main>, so top-0 pins it to the top of the scroll container --}}
                     <div
-                        class="sticky top-[72px] sm:top-[80px] z-30 -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 mb-4
+                        class="sticky top-0 z-30 -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 mb-4
                                border-b border-tpc-primary/10 bg-white/80 backdrop-blur-xl px-4 sm:px-6 py-3"
                     >
                         @yield('page_actions')
@@ -116,7 +120,7 @@
     </div>
 </div>
 
-@stack('scripts')
-
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

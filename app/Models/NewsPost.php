@@ -19,6 +19,7 @@ class NewsPost extends Model
         'excerpt',
         'body',
         'image_path',
+        'likes_count',
         'is_published',
         'published_at',
         'status',

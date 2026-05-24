@@ -14,15 +14,15 @@ class Service extends Model
         'description',
         'featured_image_path',
         'is_active',
-        'order',
+        'social_links',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'order'     => 'integer',
+        'is_active'    => 'boolean',
+        'social_links' => 'array',
     ];
 
-    // ── Scopes ───────────────────────────────────────────────────────
+    // ── Scopes ────────────────────────────────────────────────────────
 
     public function scopeActive(Builder $q): Builder
     {
@@ -31,7 +31,7 @@ class Service extends Model
 
     public function scopeOrdered(Builder $q): Builder
     {
-        return $q->orderBy('order')->orderBy('title');
+        return $q->orderBy('created_at');
     }
 
     // ── Relationships ─────────────────────────────────────────────────

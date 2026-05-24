@@ -54,20 +54,20 @@ const shouldHandleLink = (a) => {
   return true;
 };
 
-/* ---------------------------
-   Re-init page-specific components
-   Called after every PJAX content swap
----------------------------- */
 function initPageComponents() {
   // About carousel
   if (typeof window.initAboutCarousel === 'function' && document.getElementById('about-track')) {
     window.initAboutCarousel();
   }
 
-  // Org chart — window.initOrgChart is registered by show.blade.php's inline
-  // script when that page is active; safely a no-op on all other pages
+  // Org chart
   if (typeof window.initOrgChart === 'function') {
     window.initOrgChart();
+  }
+
+  // Admission sortable — only runs if Sortable is loaded AND the page has lists
+  if (typeof window.initAdmissionSortable === 'function') {
+    window.initAdmissionSortable();
   }
 }
 
@@ -628,6 +628,14 @@ window.addEventListener('DOMContentLoaded', () => {
   refreshUnreadBadge({ force: true });
   startBadgePolling();
   initPageComponents();
+
+  // Hard-refresh safety: inline script in admission/index runs before
+  // SortableJS (in layout) is parsed, so Sortable is undefined at that point.
+  // DOMContentLoaded fires after ALL scripts are loaded, so this second call
+  // succeeds and initialises the lists properly.
+  if (typeof window.initAdmissionSortable === 'function') {
+    window.initAdmissionSortable();
+  }
 });
 
 // Click intercept
