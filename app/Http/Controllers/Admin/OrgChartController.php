@@ -46,7 +46,7 @@ class OrgChartController extends Controller
         }
 
         $data['is_active']  = $request->boolean('is_active', true);
-        $data['sort_order'] = $data['sort_order'] ?? OrgChartNode::max('sort_order') + 1;
+        $data['sort_order'] = OrgChartNode::max('sort_order') + 1;
         $data['row'] = $request->input('row', 1);
         $data['parent_id']  = isset($data['parent_ids'][0]) ? $data['parent_ids'][0] : null;
 

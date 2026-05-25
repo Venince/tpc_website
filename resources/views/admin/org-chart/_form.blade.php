@@ -70,16 +70,6 @@
     @enderror
 </div>
 
-{{-- Sort Order --}}
-<div>
-    <label for="sort_order" class="block text-sm font-semibold text-gray-700 mb-1.5">Display Order</label>
-    <input type="number" id="sort_order" name="sort_order" min="0"
-           value="{{ old('sort_order', $node?->sort_order ?? 0) }}"
-           class="w-32 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-sm
-                  focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/20 focus:outline-none">
-    <p class="mt-1 text-xs text-gray-400">Lower numbers appear first among siblings.</p>
-</div>
-
 {{-- Row placement --}}
 <div>
     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Row Placement</label>
