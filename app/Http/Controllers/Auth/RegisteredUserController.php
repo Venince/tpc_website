@@ -35,14 +35,14 @@ class RegisteredUserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => $isFirstUser ? 'super_admin' : 'staff', // ✅ key part
+                'role' => $isFirstUser ? 'super_admin' : 'staff',
             ]);
         });
 
         event(new Registered($user));
         Auth::login($user);
 
-        // ✅ If staff or super_admin, go to /admin
+        // If staff or super_admin, go to /admin
         if ($user->canAccessAdmin()) {
             return redirect()->route('admin.dashboard');
         }

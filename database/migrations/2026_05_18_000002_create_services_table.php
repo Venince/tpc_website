@@ -8,23 +8,25 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('services', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->string('featured_image_path')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->json('social_links')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('service_contents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_id')->constrained()->cascadeOnDelete();
-
-            // Content type: 'text' or 'image'
             $table->enum('type', ['text', 'image'])->default('text');
-
-            // For text blocks
             $table->text('body')->nullable();
-
-            // For image blocks
             $table->string('image_path')->nullable();
             $table->string('image_caption')->nullable();
-
-            // Optional heading for any section
             $table->string('heading')->nullable();
-
             $table->unsignedSmallInteger('order')->default(0);
             $table->timestamps();
         });
@@ -33,5 +35,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('service_contents');
+        Schema::dropIfExists('services');
     }
 };
