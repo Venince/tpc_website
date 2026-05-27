@@ -6,6 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Admin' }} - TPC</title>
 
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/TPC-Logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/TPC-Logo.png') }}">
+
     <script>
     document.documentElement.classList.add('tpc-admin-init');
     </script>

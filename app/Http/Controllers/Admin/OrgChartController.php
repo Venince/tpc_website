@@ -36,7 +36,7 @@ class OrgChartController extends Controller
             'parent_ids.*'=> 'exists:org_chart_nodes,id',
             'sort_order'  => 'nullable|integer',
             'is_active'   => 'boolean',
-            'photo'       => 'nullable|image|max:2048',
+            'photo'       => 'nullable|image|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
             'row'         => 'nullable|integer|min:1|max:9',
         ]);
 
@@ -77,7 +77,7 @@ class OrgChartController extends Controller
             'parent_ids.*'=> 'exists:org_chart_nodes,id',
             'sort_order'  => 'nullable|integer',
             'is_active'   => 'boolean',
-            'photo'       => 'nullable|image|max:2048',
+            'photo'       => 'nullable|image|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
             'row'         => 'nullable|integer|min:1|max:9',
         ]);
 

@@ -123,7 +123,7 @@
 
             @auth
                 @if($isAdmin)
-                    <span class="mx-1 h-5 w-px bg-gray-200"></span>
+                    <span class="mx-2 h-5 w-px bg-tpc-primary/50"></span>
                     <a id="nav-messages" data-tpc-link
                        href="{{ route('admin.messages.index') }}"
                        class="{{ $link($messagesActive) }} inline-flex items-center gap-1.5"

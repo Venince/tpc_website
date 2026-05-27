@@ -34,10 +34,10 @@
 <aside
     x-cloak
     class="fixed inset-y-0 left-0 z-50 w-72 border-r border-white/10 bg-tpc-primary backdrop-blur-xl
-           overflow-hidden
-           transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]
-           sm:static sm:translate-x-0 sm:h-screen sm:sticky sm:top-0 sm:z-auto
-           sm:transition-[width] sm:duration-300 sm:ease-[cubic-bezier(0.22,1,0.36,1)]"
+       flex flex-col
+       transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]
+       sm:static sm:translate-x-0 sm:h-screen sm:sticky sm:top-0 sm:z-auto
+       sm:transition-[width] sm:duration-300 sm:ease-[cubic-bezier(0.22,1,0.36,1)]"
     :class="[
         mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full',
         sidebarCollapsed ? 'sm:w-20' : 'sm:w-72'

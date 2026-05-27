@@ -92,7 +92,10 @@
 
 {{-- Photo --}}
 <div>
-    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Photo <span class="text-gray-400 font-normal">(optional, max 2 MB)</span></label>
+    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+        Photo
+        <span class="text-gray-400 font-normal">(optional, max 2 MB, 100×100 – 2000×2000 px)</span>
+    </label>
 
     @if ($node?->photo)
         <div class="mb-3 flex items-center gap-3">
@@ -109,10 +112,84 @@
                   file:mr-3 file:rounded-lg file:border-0 file:bg-tpc-primary/8 file:px-3 file:py-1.5
                   file:text-xs file:font-semibold file:text-tpc-primary hover:file:bg-tpc-primary/15
                   focus:outline-none @error('photo') border-red-400 @enderror">
+
+    {{-- Client-side feedback --}}
+    <div id="photo-feedback" class="mt-1.5 hidden">
+        <div id="photo-preview-wrap" class="mb-2 flex items-center gap-3 hidden">
+            <div class="h-14 w-14 overflow-hidden rounded-full ring-2 ring-gray-200">
+                <img id="photo-preview" src="" alt="Preview" class="h-full w-full object-cover">
+            </div>
+            <p id="photo-meta" class="text-xs text-gray-500"></p>
+        </div>
+        <p id="photo-error" class="text-xs text-red-600 hidden"></p>
+    </div>
+
     @error('photo')
         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
     @enderror
 </div>
+
+<script>
+document.getElementById('photo').addEventListener('change', function () {
+    const file = this.files[0];
+    const feedback   = document.getElementById('photo-feedback');
+    const previewWrap = document.getElementById('photo-preview-wrap');
+    const preview    = document.getElementById('photo-preview');
+    const meta       = document.getElementById('photo-meta');
+    const errorEl    = document.getElementById('photo-error');
+
+    // Reset state
+    feedback.classList.remove('hidden');
+    previewWrap.classList.add('hidden');
+    errorEl.classList.add('hidden');
+    errorEl.textContent = '';
+    this.setCustomValidity('');
+
+    if (!file) return;
+
+    const MAX_BYTES     = 2 * 1024 * 1024; // 2 MB
+    const MIN_PX        = 100;
+    const MAX_PX        = 2000;
+
+    // File size check
+    if (file.size > MAX_BYTES) {
+        const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+        errorEl.textContent = `File is too large (${sizeMB} MB). Maximum allowed size is 2 MB.`;
+        errorEl.classList.remove('hidden');
+        this.setCustomValidity('File too large.');
+        return;
+    }
+
+    // Dimension check via Image
+    const url = URL.createObjectURL(file);
+    const img  = new Image();
+    img.onload = () => {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        URL.revokeObjectURL(url);
+
+        const errors = [];
+        if (w < MIN_PX || h < MIN_PX)
+            errors.push(`Too small (${w}×${h} px). Minimum is ${MIN_PX}×${MIN_PX} px.`);
+        if (w > MAX_PX || h > MAX_PX)
+            errors.push(`Too large (${w}×${h} px). Maximum is ${MAX_PX}×${MAX_PX} px.`);
+
+        if (errors.length) {
+            errorEl.textContent = errors.join(' ');
+            errorEl.classList.remove('hidden');
+            this.setCustomValidity(errors.join(' '));
+            return;
+        }
+
+        // All good — show preview
+        this.setCustomValidity('');
+        preview.src = URL.createObjectURL(file);
+        meta.textContent = `${w}×${h} px · ${(file.size / 1024).toFixed(0)} KB`;
+        previewWrap.classList.remove('hidden');
+    };
+    img.src = url;
+});
+</script>
 
 {{-- Active toggle --}}
 <div class="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">

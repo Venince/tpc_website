@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>@yield('title', 'Talibon Polytechnic College')</title>
 
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/TPC-Logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/TPC-Logo.png') }}">
+
     <link rel="preload" as="image" href="{{ asset('images/TPC-Logo.png') }}">
 
     <script>

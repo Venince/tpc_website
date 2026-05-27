@@ -30,7 +30,7 @@ class NewsPostController extends Controller
             'category' => ['required', 'string', 'max:60'],
             'excerpt'  => ['nullable', 'string', 'max:255'],
             'body'     => ['required', 'string'],
-            'image'    => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
+            'image' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
         ]);
 
         $data['slug'] = $this->uniqueSlug($data['title']);
@@ -76,7 +76,7 @@ class NewsPostController extends Controller
             'excerpt'      => ['nullable', 'string', 'max:255'],
             'body'         => ['required', 'string'],
             'remove_image' => ['nullable', 'boolean'],
-            'image'        => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
+            'image' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
         ]);
 
         if ($newsPost->title !== $data['title']) {

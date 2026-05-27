@@ -69,7 +69,7 @@ Route::match(['get', 'post'], '/register', fn () => abort(404));
 |----------------------------------------------------------------------
 */
 Route::any('/admin/{any?}', fn () => abort(404))->where('any', '.*');
-Route::any('/login/{any?}', fn () => abort(404))->where('any', '.*');
+Route::any('/login/{any}', fn () => abort(404))->where('any', '.+');
 Route::any('/dashboard/{any?}', fn () => abort(404))->where('any', '.*');
 
 /*
