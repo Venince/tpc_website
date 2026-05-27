@@ -23,12 +23,12 @@
                     Learn the enrollment steps and prepare the needed documents to become a student of Talibon Polytechnic College.
                 </p>
                 <div class="mt-6 flex flex-wrap justify-center gap-3">
-                    <a href="#requirements"
-                       class="inline-flex items-center justify-center rounded-full border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary hover:bg-tpc-secondary hover:border-tpc-secondary hover:text-white transition">
+                    <a href="#requirements" data-scroll-btn id="btn-requirements"
+                    class="inline-flex items-center justify-center rounded-full border-2 border-white bg-white px-5 py-2.5 text-sm font-bold text-tpc-primary transition-all duration-200">
                         View Requirements
                     </a>
-                    <a href="#process"
-                       class="inline-flex items-center justify-center rounded-full border-2 border-white/90 bg-black/20 backdrop-blur-sm px-5 py-2.5 text-sm font-bold text-white hover:bg-white hover:text-tpc-primary transition">
+                    <a href="#process" data-scroll-btn id="btn-process"
+                    class="inline-flex items-center justify-center rounded-full border-2 border-white/90 bg-black/20 backdrop-blur-sm px-5 py-2.5 text-sm font-bold text-white transition-all duration-200">
                         Enrollment Process
                     </a>
                 </div>
@@ -224,5 +224,53 @@
             </div>
         </div>
     </section>
+
+<script>
+    // Desktop hover effects (mouse only)
+    var btnReq = document.getElementById('btn-requirements');
+    var btnProc = document.getElementById('btn-process');
+
+    function addDesktopHover(btn, hoverStyles, normalStyles) {
+        btn.addEventListener('mouseenter', function () {
+            Object.assign(btn.style, hoverStyles);
+        });
+        btn.addEventListener('mouseleave', function () {
+            Object.assign(btn.style, normalStyles);
+        });
+    }
+
+    addDesktopHover(btnReq,
+        { backgroundColor: 'var(--color-tpc-secondary, #166534)', borderColor: 'var(--color-tpc-secondary, #166534)', color: '#fff' },
+        { backgroundColor: '#fff', borderColor: '#fff', color: '' }
+    );
+
+    addDesktopHover(btnProc,
+        { backgroundColor: '#fff', borderColor: '#fff', color: 'var(--color-tpc-primary, #15803d)' },
+        { backgroundColor: '', borderColor: '', color: '#fff' }
+    );
+
+    // Click / tap — press animation then scroll
+    document.querySelectorAll('[data-scroll-btn]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var target = document.querySelector(btn.getAttribute('href'));
+
+            btn.style.transform = 'scale(0.93)';
+            btn.style.opacity = '0.65';
+
+            setTimeout(function () {
+                btn.style.transform = '';
+                btn.style.opacity = '';
+                btn.style.backgroundColor = '';
+                btn.style.borderColor = '';
+                btn.style.color = '';
+
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 200);
+        });
+    });
+</script>
 
 @endsection
