@@ -77,7 +77,6 @@
                         @endif
                     </div>
                     <div class="flex-1">
-                        {{-- Styled file input wrapper --}}
                         <div class="relative inline-flex">
                             <span class="inline-flex items-center gap-2 rounded-xl border border-tpc-primary/25 bg-white px-4 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition pointer-events-none">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -121,10 +120,7 @@
         </form>
     </div>
 
-    @push('scripts')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-
+    {{-- Crop Modal --}}
     <div id="crop-modal"
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
@@ -170,7 +166,6 @@
             return document.getElementById('photo-pick');
         }
 
-        // Reset the file input value so the same file can be re-selected
         function resetFileInput() {
             const el = getPickInput();
             if (el) el.value = '';
@@ -185,12 +180,16 @@
                 openModal(e.target.result);
             };
             reader.readAsDataURL(file);
-            // Reset value INSIDE a setTimeout so the reader gets the file first
             setTimeout(resetFileInput, 300);
         });
 
         function openModal(dataUrl) {
             cropContainer.innerHTML = '';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
             const img = document.createElement('img');
             img.style.cssText = 'display:block;max-width:100%;';
             img.onload = function () {
@@ -213,10 +212,6 @@
             };
             cropContainer.appendChild(img);
             img.src = dataUrl;
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
@@ -249,6 +244,5 @@
         });
     })();
     </script>
-    @endpush
 
 @endsection

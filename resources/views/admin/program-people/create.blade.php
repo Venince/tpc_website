@@ -111,10 +111,7 @@
         </form>
     </div>
 
-    @push('scripts')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-
+    {{-- Crop Modal --}}
     <div id="crop-modal"
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
@@ -152,7 +149,6 @@
         const previewImg    = document.getElementById('preview-img');
         const previewWrap   = document.getElementById('photo-preview');
         const pickLabel     = document.getElementById('photo-pick-label');
-        const removeCheck   = document.getElementById('remove-photo-check');
 
         let cropper = null;
 
@@ -160,7 +156,6 @@
             return document.getElementById('photo-pick');
         }
 
-        // Reset the file input value so the same file can be re-selected
         function resetFileInput() {
             const el = getPickInput();
             if (el) el.value = '';
@@ -175,12 +170,16 @@
                 openModal(e.target.result);
             };
             reader.readAsDataURL(file);
-            // Reset value INSIDE a setTimeout so the reader gets the file first
             setTimeout(resetFileInput, 300);
         });
 
         function openModal(dataUrl) {
             cropContainer.innerHTML = '';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
             const img = document.createElement('img');
             img.style.cssText = 'display:block;max-width:100%;';
             img.onload = function () {
@@ -203,10 +202,6 @@
             };
             cropContainer.appendChild(img);
             img.src = dataUrl;
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
@@ -233,12 +228,10 @@
             previewImg.classList.remove('hidden');
             if (previewWrap) previewWrap.classList.remove('hidden');
             pickLabel.textContent = 'Change Photo';
-            if (removeCheck) removeCheck.checked = false;
 
             closeModal();
         });
     })();
     </script>
-    @endpush
 
 @endsection

@@ -51,7 +51,7 @@
                         {{ $program->name }}
                     </h1>
                     @if ($program->description)
-                        <p class="mt-2 sm:mt-3 text-sm text-white/60 leading-relaxed max-w-xl">
+                        <p class="mt-2 sm:mt-3 text-sm text-white/60 leading-relaxed max-w-xl text-justify">
                             {{ $program->description }}
                         </p>
                     @endif
@@ -242,11 +242,11 @@
                             <div class="divide-y divide-gray-100">
                                 @foreach ($otherPrograms as $other)
                                     <a href="{{ route('academics.show', $other) }}"
-                                       class="group flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 hover:bg-tpc-primary/5 transition">
+                                    class="group flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 hover:bg-tpc-primary/5 transition">
                                         @if ($other->logo_path)
                                             <div class="shrink-0 h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center p-1">
                                                 <img src="{{ asset('storage/' . $other->logo_path) }}"
-                                                     class="h-full w-full object-cover" alt="{{ $other->code }}">
+                                                    class="h-full w-full object-cover" alt="{{ $other->code }}">
                                             </div>
                                         @else
                                             <div class="shrink-0 h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center text-sm sm:text-base">
@@ -265,8 +265,8 @@
                             </div>
                             <div class="p-4 sm:p-5 border-t border-gray-100">
                                 <a href="{{ route('org-chart') }}"
-                                   class="flex items-center justify-center gap-1.5 rounded-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white
-                                          hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                                class="flex items-center justify-center gap-1.5 rounded-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white
+                                        hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                     Organizational Chart
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -275,6 +275,27 @@
                             </div>
                         </div>
                     @endif
+
+                    {{-- Org Chart button always visible --}}
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="h-1.5 bg-tpc-primary"></div>
+                        <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
+                            <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Organizational Chart</p>
+                        </div>
+                        <div class="p-4 sm:p-5 space-y-2 sm:space-y-3">
+                            <p class="text-xs sm:text-sm text-gray-500 leading-relaxed">
+                                See the full administration and academic leadership structure of Talibon Polytechnic College.
+                            </p>
+                            <a href="{{ route('org-chart') }}"
+                            class="flex items-center justify-center gap-1.5 rounded-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white
+                                    hover:bg-tpc-secondary hover:border-tpc-secondary transition">
+                                Organizational Chart
+                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
 
                 </aside>
 
