@@ -36,17 +36,6 @@
                 @endif
 
                 <div class="min-w-0 flex-1">
-                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-3">
-                        <span class="inline-block bg-white/20 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/20">
-                            {{ $program->code }}
-                        </span>
-                        @if ($program->department)
-                            <span class="inline-block bg-white/10 text-white/80 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/10">
-                                {{ $program->department }}
-                            </span>
-                        @endif
-                    </div>
-
                     <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
                         {{ $program->name }}
                     </h1>
@@ -187,7 +176,13 @@
                                             @endif
                                             <p class="font-bold text-gray-800 text-sm sm:text-base leading-snug">{{ $achievement->title }}</p>
                                             @if ($achievement->description)
-                                                <p class="mt-1.5 sm:mt-2 text-xs sm:text-sm text-gray-500 leading-relaxed">{{ $achievement->description }}</p>
+                                                <div class="mt-1.5 sm:mt-2 text-xs sm:text-sm text-gray-500 leading-relaxed space-y-2">
+                                                    @foreach (explode("\n", $achievement->description) as $paragraph)
+                                                        @if (trim($paragraph) !== '')
+                                                            <p>{{ trim($paragraph) }}</p>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
