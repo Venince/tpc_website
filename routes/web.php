@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\ServiceContentController;
 use App\Http\Controllers\Admin\OrgChartController as AdminOrgChartController;
 
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | PUBLIC SITE
@@ -203,9 +205,12 @@ Route::middleware(['auth', 'admin'])
         */
         Route::middleware('super_admin')->group(function () {
 
+            Route::get('users/{user}', fn(User $user) => redirect()->route('admin.users.edit', $user))
+                ->where('user', '[0-9]+');
+
             Route::resource('users', UserController::class)->except(['show']);
 
-             Route::delete('messages/bulk-destroy', [ContactMessageController::class, 'bulkDestroy'])
+            Route::delete('messages/bulk-destroy', [ContactMessageController::class, 'bulkDestroy'])
                 ->name('messages.bulkDestroy');
             Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])
                 ->name('messages.destroy');

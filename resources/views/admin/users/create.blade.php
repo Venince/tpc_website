@@ -124,10 +124,6 @@
 
     {{-- ── Actions ── --}}
     <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 pt-1">
-        <a href="{{ route('admin.users.index') }}"
-           class="flex-1 sm:flex-none inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 active:scale-95 transition-all">
-            Cancel
-        </a>
         <button type="submit"
                 class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-7 py-2.5 rounded-xl bg-tpc-primary text-white text-sm font-bold hover:bg-tpc-secondary active:scale-95 transition-all shadow-sm">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -135,6 +131,10 @@
             </svg>
             Create Admin/Staff
         </button>
+        <a href="{{ route('admin.users.index') }}"
+           class="flex-1 sm:flex-none inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 active:scale-95 transition-all">
+            Cancel
+        </a>
     </div>
 
 </form>
