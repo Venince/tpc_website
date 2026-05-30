@@ -35,7 +35,8 @@ class RegisteredUserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => $isFirstUser ? 'super_admin' : 'staff',
+                'is_admin' => $isFirstUser,
+                'is_super_admin' => $isFirstUser,
             ]);
         });
 

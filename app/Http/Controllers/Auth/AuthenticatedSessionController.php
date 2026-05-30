@@ -38,7 +38,6 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        // ✅ Admin rule: ALWAYS land on admin dashboard (/tpc_admin)
         if ($user && $user->can('access-admin')) {
             $request->session()->forget('url.intended');
             return redirect()->route('admin.dashboard');

@@ -73,13 +73,14 @@ Route::match(['get', 'post'], '/register', fn () => abort(404));
 Route::any('/admin/{any?}', fn () => abort(404))->where('any', '.*');
 Route::any('/login/{any}', fn () => abort(404))->where('any', '.+');
 Route::any('/dashboard/{any?}', fn () => abort(404))->where('any', '.*');
+Route::any('/tpc_admin', fn () => abort(404));
 
 /*
 |----------------------------------------------------------------------
 | ADMIN LOGIN URL (alias)
 |----------------------------------------------------------------------
 */
-Route::get('/tpc_admin/login', function () {
+Route::get('/tpc_login', function () {
     abort_unless(Route::has('login'), 404);
     return redirect()->route('login');
 })->name('admin.login');
@@ -94,7 +95,8 @@ Route::middleware(['auth', 'admin'])
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        // Route::get('/', fn () => redirect()->route('admin.dashboard'));
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('programs', ProgramController::class);
 
