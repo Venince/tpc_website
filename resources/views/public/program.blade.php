@@ -74,10 +74,10 @@
     {{-- MAIN --}}
     <section class="bg-gray-50 overflow-x-hidden">
         <div class="max-w-7xl mx-auto px-4 py-8 sm:py-14">
-            <div class="grid gap-6 sm:gap-8 lg:grid-cols-3">
+            <div class="grid gap-6 sm:gap-8 lg:grid-cols-3 w-full min-w-0">
 
                 {{-- LEFT MAIN --}}
-                <div class="lg:col-span-2 space-y-8 sm:space-y-10">
+                <div class="lg:col-span-2 space-y-8 sm:space-y-10 min-w-0 w-full overflow-hidden">
 
                     {{-- PROGRAM LEADERSHIP --}}
                     @if ($head->isNotEmpty() || $coordinators->isNotEmpty())
@@ -202,7 +202,7 @@
                 </div>
 
                 {{-- RIGHT SIDEBAR --}}
-                <aside class="space-y-4 sm:space-y-6">
+                <aside class="space-y-4 sm:space-y-6 min-w-0 w-full overflow-hidden">
 
                     {{-- Interested CTA --}}
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
