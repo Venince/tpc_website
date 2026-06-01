@@ -62,8 +62,8 @@
         </div>
 
         {{-- Wave divider --}}
-        <div class="absolute bottom-0 left-0 right-0 z-10 overflow-hidden leading-none">
-            <svg viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full block" style="height: 50px; display: block; margin-bottom: -1px;">
+        <div class="absolute bottom-0 left-0 right-0 z-10" style="margin-bottom: -2px;">
+            <svg viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full block" style="height: 50px; display: block;">
                 <path d="M0 50 C360 0 1080 0 1440 50 L1440 50 L0 50 Z" fill="white"/>
             </svg>
         </div>
