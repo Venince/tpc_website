@@ -39,7 +39,7 @@
         <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
             <label class="block text-xs font-bold text-gray-600 mb-1.5">Short Description</label>
             <textarea name="description" rows="3"
-                      class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none">{{ old('description', $service->description) }}</textarea>
+                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none text-justify">{{ old('description', $service->description) }}</textarea>
         </div>
 
         {{-- Social Media Links --}}

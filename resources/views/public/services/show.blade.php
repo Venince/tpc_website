@@ -16,14 +16,14 @@
                     background-size: 40px 40px;"></div>
         <div class="relative mx-auto max-w-4xl px-4 pt-10 pb-16 sm:pt-14 sm:pb-20">
             <div class="flex flex-col items-center text-center">
-                <span class="inline-block bg-white/20 text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm border border-white/20 mb-4">
+                {{-- <span class="inline-block bg-white/20 text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm border border-white/20 mb-4">
                     Services
-                </span>
+                </span> --}}
                 <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
                     {{ $service->title }}
                 </h1>
                 @if ($service->description)
-                    <p class="mt-3 max-w-lg text-sm text-white/60 leading-relaxed">
+                    <p class="mt-3 max-w-lg text-sm text-white/60 leading-relaxed text-justify">
                         {{ $service->description }}
                     </p>
                 @endif

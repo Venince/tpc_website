@@ -59,8 +59,7 @@
                     <span class="ml-1 font-normal text-gray-400">(optional)</span>
                 </label>
                 <textarea name="description" rows="3"
-                          placeholder="A brief summary shown in the navbar tooltip and page header…"
-                          class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none transition @error('description') border-red-300 @enderror">{{ old('description') }}</textarea>
+                            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none text-justify">{{ old('description') }}</textarea>
                 @error('description')
                     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
                 @enderror
@@ -86,8 +85,15 @@
                     </div>
                 </div>
 
+                {{-- Single file input, always in the DOM --}}
+                <input type="file" name="featured_image" accept="image/png,image/jpeg,image/webp"
+                    x-ref="imageInput"
+                    @change="handleImage($event)"
+                    class="sr-only">
+
                 <label x-show="!imagePreview"
-                       class="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white px-4 py-8 cursor-pointer hover:border-tpc-primary/40 hover:bg-tpc-primary/[0.02] transition group">
+                    @click="$refs.imageInput.click()"  {{-- trigger the shared input --}}
+                    class="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white px-4 py-8 cursor-pointer hover:border-tpc-primary/40 hover:bg-tpc-primary/[0.02] transition group">
                     <div class="h-10 w-10 rounded-xl bg-gray-100 group-hover:bg-tpc-primary/8 flex items-center justify-center transition">
                         <svg class="h-5 w-5 text-gray-400 group-hover:text-tpc-primary/60 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
@@ -97,21 +103,15 @@
                         <p class="text-xs font-semibold text-gray-500 group-hover:text-tpc-primary/70 transition">Click to upload image</p>
                         <p class="text-[11px] text-gray-400 mt-0.5">JPG, PNG or WebP · max 5 MB</p>
                     </div>
-                    <input type="file" name="featured_image" accept="image/png,image/jpeg,image/webp"
-                           x-ref="imageInput"
-                           @change="handleImage($event)"
-                           class="sr-only">
                 </label>
 
                 <div x-show="imagePreview" class="mt-2">
-                    <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-tpc-primary/70 hover:text-tpc-primary transition">
+                    <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-tpc-primary/70 hover:text-tpc-primary transition"
+                        @click="$refs.imageInput.click()">
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
                         </svg>
                         Replace image
-                        <input type="file" name="featured_image" accept="image/png,image/jpeg,image/webp"
-                               @change="handleImage($event)"
-                               class="sr-only">
                     </label>
                 </div>
 
@@ -139,10 +139,6 @@
 
             {{-- Submit --}}
             <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-2">
-                <a href="{{ route('admin.services.index') }}"
-                   class="w-full sm:w-auto text-center sm:text-left text-sm font-semibold text-gray-400 hover:text-gray-600 transition py-2">
-                    Cancel
-                </a>
                 <button type="submit"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-tpc-primary px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-tpc-secondary transition-all hover:shadow-md active:scale-[0.98]">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -150,6 +146,10 @@
                     </svg>
                     Create Service
                 </button>
+                <a href="{{ route('admin.services.index') }}"
+                   class="w-full sm:w-auto text-center sm:text-left text-sm font-semibold text-gray-400 hover:text-gray-600 transition py-2">
+                    Cancel
+                </a>
             </div>
 
         </div>
