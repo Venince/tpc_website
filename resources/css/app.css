@@ -70,12 +70,8 @@
   without breaking position: sticky on the nav.
 */
 html {
-  overflow-x: hidden;
-}
-@media (min-width: 1024px) {
-  html {
-    scrollbar-gutter: stable;
-  }
+  overflow-x: clip;
+  scrollbar-gutter: stable;
 }
 
 /*
@@ -86,7 +82,6 @@ html {
 */
 body {
   max-width: 100%;
-  overflow-x: hidden;
   width: 100%;
 }
 
@@ -104,7 +99,8 @@ html.tpc-init #tpc-content {
   opacity: 1;
   transform: translateY(0);
   filter: blur(0);
-  overflow-x: hidden;
+  overflow-x: clip;         /* clip instead of hidden — doesn't create scroll container */
+  min-height: 100vh;        /* keeps page height stable during fade so scrollbar never vanishes */
   transition:
     opacity var(--tpc-page-dur) var(--tpc-page-ease),
     transform var(--tpc-page-dur) var(--tpc-page-ease),

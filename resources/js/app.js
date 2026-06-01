@@ -454,7 +454,9 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
 
   await sleep(dur);
 
-  // Clear container right after fade-out so old content never bleeds through
+  // Lock the container height before clearing so the page height
+  // doesn't collapse and cause a scrollbar flash during the swap
+  container.style.minHeight = container.offsetHeight + 'px';
   container.innerHTML = '';
 
   let html;
