@@ -19,12 +19,12 @@
     @stack('styles')
 </head>
 
-<body class="font-sans text-tpc-ink bg-white overflow-x-hidden">
+<body class="font-sans text-tpc-ink bg-white">
 
     @include('partials.nav')
 
-    <div id="tpc-content" class="relative tpc-prose overflow-x-hidden">
-        <main>
+    <div id="tpc-content" class="relative tpc-prose min-h-screen flex flex-col">
+        <main class="flex-1">
             @yield('content')
         </main>
 

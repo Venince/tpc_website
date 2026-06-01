@@ -28,7 +28,7 @@ const getDurFor = (container) => {
   if (!container) return 400;
   return container.id === 'tpc-admin-main'
     ? cssVarNumber('--tpc-admin-dur', 220)
-    : cssVarNumber('--tpc-page-dur', 650);
+    : cssVarNumber('--tpc-page-dur', 240);
 };
 
 const isSameOrigin = (url) => url.origin === window.location.origin;
@@ -449,14 +449,19 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
     credentials: 'same-origin',
   });
 
+  // Scroll to top BEFORE fade so the user sees the top of the new page
+  if (!url.hash && !window._scrollToAboutAfterNav) {
+    window.scrollTo({ top: 0 });
+  }
+
+  // Lock height BEFORE fade starts so viewport doesn't collapse mid-transition
+  container.style.minHeight = container.offsetHeight + 'px';
+
   if (isAdminMain) container.classList.add('tpc-admin-leave');
   else container.classList.add('tpc-leave');
 
   await sleep(dur);
 
-  // Lock the container height before clearing so the page height
-  // doesn't collapse and cause a scrollbar flash during the swap
-  container.style.minHeight = container.offsetHeight + 'px';
   container.innerHTML = '';
 
   let html;
@@ -505,6 +510,7 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
 
   // Swap content
   container.innerHTML = newContainer.innerHTML;
+  container.style.minHeight = '';
 
   // Re-execute inline scripts (this is what registers window.initOrgChart
   // when navigating to the org chart page)
@@ -545,7 +551,7 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
       else window.scrollTo({ top: 0 });
     });
   } else {
-    window.scrollTo({ top: 0 });
+
   }
 
   setNavActiveByUrl(url.href);

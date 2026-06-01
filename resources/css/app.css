@@ -59,7 +59,7 @@
 
 /* ------- Page crossfade (content + footer) ------- */
 :root {
-  --tpc-page-dur: 400ms;
+  --tpc-page-dur: 240ms;
   --tpc-page-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -99,8 +99,7 @@ html.tpc-init #tpc-content {
   opacity: 1;
   transform: translateY(0);
   filter: blur(0);
-  overflow-x: clip;         /* clip instead of hidden — doesn't create scroll container */
-  min-height: 100vh;        /* keeps page height stable during fade so scrollbar never vanishes */
+  overflow-x: clip;
   transition:
     opacity var(--tpc-page-dur) var(--tpc-page-ease),
     transform var(--tpc-page-dur) var(--tpc-page-ease),
