@@ -72,7 +72,7 @@
     </section>
 
     {{-- MAIN --}}
-    <section class="bg-gray-50">
+    <section class="bg-gray-50 overflow-x-hidden">
         <div class="max-w-7xl mx-auto px-4 py-8 sm:py-14">
             <div class="grid gap-6 sm:gap-8 lg:grid-cols-3">
 
@@ -164,7 +164,7 @@
                                         @if ($achievement->photo_path)
                                             <div class="achievement-img bg-gray-50 border-b border-gray-100">
                                                 <img src="{{ asset('storage/' . $achievement->photo_path) }}"
-                                                     class="w-full object-cover"
+                                                    class="w-full max-w-full object-cover"
                                                      alt="{{ $achievement->title }}" loading="lazy">
                                             </div>
                                         @endif

@@ -16,7 +16,7 @@
     $navServices = \App\Models\Service::active()->ordered()->get();
 @endphp
 
-<header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+<header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm overflow-x-clip">
 
     {{-- Green top stripe --}}
     <div class="h-1 w-full bg-tpc-primary"></div>
