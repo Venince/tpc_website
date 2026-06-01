@@ -19,11 +19,11 @@
     @stack('styles')
 </head>
 
-<body class="font-sans text-tpc-ink bg-white">
+<body class="font-sans text-tpc-ink bg-white overflow-x-hidden">
 
     @include('partials.nav')
 
-    <div id="tpc-content" class="relative tpc-prose">
+    <div id="tpc-content" class="relative tpc-prose overflow-x-hidden">
         <main>
             @yield('content')
         </main>
