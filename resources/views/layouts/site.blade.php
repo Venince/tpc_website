@@ -88,7 +88,7 @@
         var seen = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
 
         /* ── IntersectionObserver ────────────────────────── */
-        var io = new IntersectionObserver(function (entries) {
+        var io = window._tpcScrollIO || (window._tpcScrollIO = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (!entry.isIntersecting) return;
                 var el = entry.target;
@@ -100,7 +100,7 @@
                     el.style.removeProperty('--tpc-d');
                 }, 800);
             });
-        }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+        }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' }));
 
         /* ── Register an element ─────────────────────────── */
         function add(el, delay, dir) {
@@ -190,6 +190,9 @@
                 add(el, 0);
             });
         }
+
+        /* Expose so PJAX can re-run after each swap */
+        window.tpcScrollRevealBoot = boot;
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', boot);

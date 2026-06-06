@@ -69,6 +69,11 @@ function initPageComponents() {
   if (typeof window.initAdmissionSortable === 'function') {
     window.initAdmissionSortable();
   }
+
+  // Scroll-reveal — re-scan new DOM after PJAX swap
+  if (typeof window.tpcScrollRevealBoot === 'function') {
+    window.tpcScrollRevealBoot();
+  }
 }
 
 /* ---------------------------
@@ -572,8 +577,9 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
 
   refreshUnreadBadge({ force: true });
 
-  // Run page-specific component init — including org chart if on that page
-  initPageComponents();
+  // Run page-specific component init after the fade-in settles,
+  // so scroll-reveal elements aren't already in view when observed.
+  setTimeout(initPageComponents, 60);
 
   navigating = false;
 }
