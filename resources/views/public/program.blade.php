@@ -259,14 +259,14 @@
                                 @endforeach
                             </div>
                             <div class="p-4 sm:p-5 border-t border-gray-100">
-                                <a href="{{ route('org-chart') }}"
+                                {{-- <a href="{{ route('org-chart') }}"
                                 class="flex items-center justify-center gap-1.5 rounded-full border-2 border-tpc-primary bg-tpc-primary px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white
                                         hover:bg-tpc-secondary hover:border-tpc-secondary transition">
                                     Organizational Chart
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                                     </svg>
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     @endif
