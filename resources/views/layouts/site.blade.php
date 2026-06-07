@@ -72,6 +72,8 @@
         @include('partials.footer')
     </div>
 
+    @stack('portal')  {{-- FABs, modals, overlays that need true viewport-fixed positioning --}}
+
     {{-- ─── Scroll-reveal engine ───────────────────────────
          Auto-detects sections and animates:
            • Section header rows       → fade in
