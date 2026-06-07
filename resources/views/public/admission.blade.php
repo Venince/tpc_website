@@ -110,6 +110,7 @@
                     @if ($sections->has('process') && $sections['process']->is_visible)
                         @php $process = $sections['process']; @endphp
                         <div id="process" class="scroll-mt-20 sm:scroll-mt-24">
+                            <span id="enrollment-process" class="block -mt-24 pt-24 invisible absolute"></span>
 
                             <div class="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                                 <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>

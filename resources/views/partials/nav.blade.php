@@ -17,25 +17,25 @@
 
     // Search destinations — label => [route/url, optional #anchor]
     $searchItems = [
-        ['label' => 'About',                        'url' => route('home') . '#about',         'page' => 'Home'],
-        ['label' => 'Vision',                       'url' => route('home') . '#vision',        'page' => 'Home'],
-        ['label' => 'Mission',                      'url' => route('home') . '#mission',       'page' => 'Home'],
-        ['label' => 'TPC Updates',                  'url' => route('home') . '#tpc-updates',   'page' => 'Home'],
-        ['label' => 'Latest News & Announcements',  'url' => route('home') . '#latest-news',   'page' => 'Home'],
-        ['label' => 'Academic Programs',            'url' => route('home') . '#academic-programs', 'page' => 'Home'],
-        ['label' => 'All Programs',                 'url' => route('academics'),               'page' => 'Academics'],
-        ['label' => 'Organizational Chart',         'url' => route('org-chart'),               'page' => 'Academics'],
-        ['label' => 'Enrollment & Requirements',    'url' => route('admission'),               'page' => 'Admission'],
-        ['label' => 'Admission Requirements',       'url' => route('admission') . '#admission-requirements', 'page' => 'Admission'],
-        ['label' => 'Enrollment Process',           'url' => route('admission') . '#enrollment-process',     'page' => 'Admission'],
-        ['label' => 'Office Hours',                 'url' => route('admission') . '#office-hours',           'page' => 'Admission'],
-        ['label' => 'News & Announcements',         'url' => route('news.index'),              'page' => 'News'],
-        ['label' => 'Latest Posts',                 'url' => route('news.index') . '#latest-posts', 'page' => 'News'],
-        ['label' => 'Get in Touch',                 'url' => route('contact') . '#get-in-touch',   'page' => 'Contact'],
-        ['label' => 'Contact',                      'url' => route('contact'),                 'page' => 'Contact'],
-        ['label' => 'Send a Message',               'url' => route('contact') . '#send-message',   'page' => 'Contact'],
-        ['label' => 'Contact Information',          'url' => route('contact') . '#contact-information', 'page' => 'Contact'],
-        ['label' => 'Campus Map',                   'url' => route('contact') . '#campus-map',     'page' => 'Contact'],
+        ['label' => 'About',                        'url' => route('home')          . '#about',                     'page' => 'Home'],
+        ['label' => 'Vision',                       'url' => route('home')          . '#vision',                    'page' => 'Home'],
+        ['label' => 'Mission',                      'url' => route('home')          . '#mission',                   'page' => 'Home'],
+        ['label' => 'TPC Updates',                  'url' => route('home')          . '#tpc-updates',               'page' => 'Home'],
+        ['label' => 'Latest News & Announcements',  'url' => route('home')          . '#latest-news',               'page' => 'Home'],
+        ['label' => 'Academic Programs',            'url' => route('home')          . '#academic-programs',         'page' => 'Home'],
+        ['label' => 'All Programs',                 'url' => route('academics')     . '#all-programs',              'page' => 'Academics'],
+        ['label' => 'Organizational Chart',         'url' => route('org-chart'),                                    'page' => 'Academics'],
+        ['label' => 'Enrollment & Requirements',    'url' => route('admission'),                                    'page' => 'Admission'],
+        ['label' => 'Admission Requirements',       'url' => route('admission')     . '#admission-requirements',    'page' => 'Admission'],
+        ['label' => 'Enrollment Process',           'url' => route('admission')     . '#enrollment-process',        'page' => 'Admission'],
+        ['label' => 'Office Hours',                 'url' => route('admission')     . '#office-hours',              'page' => 'Admission'],
+        ['label' => 'News & Announcements',         'url' => route('news.index'),                                   'page' => 'News'],
+        ['label' => 'Latest Posts',                 'url' => route('news.index')    . '#latest-posts',              'page' => 'News'],
+        ['label' => 'Get in Touch',                 'url' => route('contact')       . '#get-in-touch',              'page' => 'Contact'],
+        ['label' => 'Contact',                      'url' => route('contact'),                                      'page' => 'Contact'],
+        ['label' => 'Send a Message',               'url' => route('contact')       . '#send-message',              'page' => 'Contact'],
+        ['label' => 'Contact Information',          'url' => route('contact')       . '#contact-information',       'page' => 'Contact'],
+        ['label' => 'Campus Map',                   'url' => route('contact')       . '#campus-map',                'page' => 'Contact'],
     ];
 @endphp
 
@@ -44,237 +44,204 @@
     {{-- Green top stripe --}}
     <div class="h-1 w-full bg-tpc-primary"></div>
 
-    <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4 sm:grid sm:grid-cols-[auto_1fr_auto] sm:gap-6">
 
-        {{-- Brand --}}
-        <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0" data-tpc-link>
-            <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo"
-                 class="h-10 w-auto" loading="eager" decoding="async">
-            <div class="min-w-0">
-                <p class="text-base font-bold text-tpc-primary leading-tight tracking-tight truncate">
-                    Talibon Polytechnic College
-                </p>
-                <p class="text-[11px] text-gray-500 tracking-widest uppercase hidden sm:block">
-                    Official Website
-                </p>
-            </div>
+    {{-- Brand (left) --}}
+    <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0 shrink-0" data-tpc-link>
+        <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo"
+             class="h-10 w-auto" loading="eager" decoding="async">
+        <div class="min-w-0">
+            <p class="text-base font-bold text-tpc-primary leading-tight tracking-tight truncate">
+                Talibon Polytechnic College
+            </p>
+            <p class="text-[11px] text-gray-500 tracking-widest uppercase hidden sm:block">
+                Official Website
+            </p>
+        </div>
+    </a>
+
+    {{-- Desktop nav (centered) --}}
+    <nav class="hidden sm:flex justify-center items-center gap-1" aria-label="Main navigation">
+        @php
+            $link = fn(bool $active) =>
+                'tpc-navlink px-3 py-2 text-sm font-semibold transition ' .
+                ($active ? 'tpc-active' : '');
+        @endphp
+
+        <a id="nav-home" data-tpc-link class="{{ $link($homeActive) }}"
+           href="{{ route('home') }}" @if($homeActive) aria-current="page" @endif>
+           Home
+        </a>
+        <a id="nav-about" data-tpc-link class="{{ $link(false) }}"
+           href="{{ route('home') }}#about">
+           About
+        </a>
+        <a data-tpc-link class="{{ $link($academicsActive) }}"
+           href="{{ route('academics') }}" @if($academicsActive) aria-current="page" @endif>
+           Academics
         </a>
 
-        {{-- Desktop nav --}}
-        <nav class="hidden sm:flex items-center gap-1" aria-label="Main navigation">
-            @php
-                $link = fn(bool $active) =>
-                    'tpc-navlink px-3 py-2 text-sm font-semibold transition ' .
-                    ($active ? 'tpc-active' : '');
-            @endphp
-
-            <a id="nav-home" data-tpc-link class="{{ $link($homeActive) }}"
-               href="{{ route('home') }}" @if($homeActive) aria-current="page" @endif>
-               Home
-            </a>
-            <a id="nav-about" data-tpc-link class="{{ $link(false) }}"
-               href="{{ route('home') }}#about">
-               About
-            </a>
-            <a data-tpc-link class="{{ $link($academicsActive) }}"
-               href="{{ route('academics') }}" @if($academicsActive) aria-current="page" @endif>
-               Academics
-            </a>
-
-            {{-- ── Services dropdown ────────────────────────────────────── --}}
-            @if ($navServices->isNotEmpty())
-                <div class="relative" x-data="{ open: false }"
-                     @mouseenter="open = true" @mouseleave="open = false"
-                     @keydown.escape.window="open = false">
-
-                    <button type="button"
-                            @click="open = !open"
-                            class="tpc-navlink inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold transition {{ $servicesActive ? 'tpc-active' : '' }}"
-                            :aria-expanded="open.toString()">
-                        Services
-                        <svg class="h-3.5 w-3.5 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
-                        </svg>
-                    </button>
-
-                    <div x-cloak
-                         x-show="open"
-                         x-transition:enter="transition ease-out duration-150"
-                         x-transition:enter-start="opacity-0 translate-y-1 scale-[0.98]"
-                         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                         x-transition:leave="transition ease-in duration-100"
-                         x-transition:leave-start="opacity-100"
-                         x-transition:leave-end="opacity-0"
-                         class="absolute left-0 top-full pt-1 w-64 z-50">
-                        <div class="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
-                            <div class="bg-tpc-primary px-4 py-2.5">
-                                <p class="text-[10px] font-bold uppercase tracking-widest text-white/70">Our Services</p>
-                            </div>
-                            <div class="py-1.5">
-                                @foreach ($navServices as $svc)
-                                    <a href="{{ route('services.show', $svc) }}"
-                                       data-tpc-link
-                                       data-service-href="{{ route('services.show', $svc) }}"
-                                       class="group flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-tpc-primary/6 hover:text-tpc-primary transition {{ request()->routeIs('services.show') && request()->route('service')?->is($svc) ? 'bg-tpc-primary/8 text-tpc-primary font-semibold' : '' }}">
-                                        <span data-service-dot
-                                class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 shrink-0 group-hover:bg-tpc-primary transition"></span>
-                                        <span class="truncate">{{ $svc->title }}</span>
-                                        <svg class="ml-auto h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-tpc-primary/50 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                        </svg>
-                                    </a>
-                                @endforeach
-                            </div>
+        {{-- Services dropdown --}}
+        @if ($navServices->isNotEmpty())
+            <div class="relative" x-data="{ open: false }"
+                 @mouseenter="open = true" @mouseleave="open = false"
+                 @keydown.escape.window="open = false">
+                <button type="button" @click="open = !open"
+                        class="tpc-navlink inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold transition {{ $servicesActive ? 'tpc-active' : '' }}"
+                        :aria-expanded="open.toString()">
+                    Services
+                    <svg class="h-3.5 w-3.5 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+                    </svg>
+                </button>
+                <div x-cloak x-show="open"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 translate-y-1 scale-[0.98]"
+                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="absolute left-0 top-full pt-1 w-64 z-50">
+                    <div class="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
+                        <div class="bg-tpc-primary px-4 py-2.5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-white/70">Our Services</p>
+                        </div>
+                        <div class="py-1.5">
+                            @foreach ($navServices as $svc)
+                                <a href="{{ route('services.show', $svc) }}"
+                                   data-tpc-link data-service-href="{{ route('services.show', $svc) }}"
+                                   class="group flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-tpc-primary/6 hover:text-tpc-primary transition {{ request()->routeIs('services.show') && request()->route('service')?->is($svc) ? 'bg-tpc-primary/8 text-tpc-primary font-semibold' : '' }}">
+                                    <span data-service-dot class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 shrink-0 group-hover:bg-tpc-primary transition"></span>
+                                    <span class="truncate">{{ $svc->title }}</span>
+                                    <svg class="ml-auto h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-tpc-primary/50 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
-            @endif
-            {{-- ── end Services dropdown ────────────────────────────────── --}}
+            </div>
+        @endif
 
-            <a data-tpc-link class="{{ $link($admissionActive) }}"
-               href="{{ route('admission') }}" @if($admissionActive) aria-current="page" @endif>
-               Admission
-            </a>
-            <a data-tpc-link class="{{ $link($newsActive) }}"
-               href="{{ route('news.index') }}" @if($newsActive) aria-current="page" @endif>
-               News
-            </a>
-            <a data-tpc-link class="{{ $link($contactActive) }}"
-               href="{{ route('contact') }}" @if($contactActive) aria-current="page" @endif>
-               Contact
-            </a>
+        <a data-tpc-link class="{{ $link($admissionActive) }}"
+           href="{{ route('admission') }}" @if($admissionActive) aria-current="page" @endif>
+           Admission
+        </a>
+        <a data-tpc-link class="{{ $link($newsActive) }}"
+           href="{{ route('news.index') }}" @if($newsActive) aria-current="page" @endif>
+           News
+        </a>
+        <a data-tpc-link class="{{ $link($contactActive) }}"
+           href="{{ route('contact') }}" @if($contactActive) aria-current="page" @endif>
+           Contact
+        </a>
+    </nav>
 
-            {{-- ── Search bar (desktop) ──────────────────────────────── --}}
-            <div class="relative ml-2 w-36 shrink-0" x-data="tpcSearch()" @keydown.escape.window="close()">
+    {{-- Right: search (desktop) + auth + hamburger (mobile) --}}
+    <div class="flex items-center gap-2">
 
-                {{-- Single input container — always w-36, never reflows --}}
-                <div class="flex items-center gap-2 h-8 px-3 w-36 rounded-full border transition-all duration-200 cursor-text"
-                    :class="expanded
-                        ? 'border-tpc-primary/60 bg-white ring-2 ring-tpc-primary/10'
-                        : 'border-gray-200 bg-gray-50 hover:border-tpc-primary/40 hover:bg-tpc-primary/5'"
-                    @click="!expanded && expand()">
-                    <svg class="h-3.5 w-3.5 shrink-0 transition-colors duration-200"
-                        :class="expanded ? 'text-tpc-primary/70' : 'text-gray-400'"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                        <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
+        {{-- ── Search bar — always visible on desktop ── --}}
+        <div class="hidden sm:block relative shrink-0" x-data="tpcSearch()" @keydown.escape.window="query = ''; results = []; activeIndex = -1;">
+            <div class="flex items-center gap-2 h-8 px-3 w-44 rounded-full border border-tpc-primary/30 bg-tpc-primary/5
+                        focus-within:border-tpc-primary/60 focus-within:bg-white focus-within:ring-2 focus-within:ring-tpc-primary/10 transition-all duration-200">
+                <svg class="h-3.5 w-3.5 shrink-0 text-tpc-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
+                </svg>
+                <input
+                    x-ref="input"
+                    type="text"
+                    placeholder="Search…"
+                    x-model="query"
+                    @input="search()"
+                    @keydown.arrow-down.prevent="moveDown()"
+                    @keydown.arrow-up.prevent="moveUp()"
+                    @keydown.enter.prevent="selectActive()"
+                    class="flex-1 bg-transparent text-xs text-gray-700 placeholder-gray-400 outline-none border-none focus:ring-0 min-w-0 p-0"
+                    autocomplete="off"
+                    aria-label="Search site"
+                    aria-autocomplete="list"
+                    :aria-activedescendant="activeIndex >= 0 ? 'tpc-sr-' + activeIndex : null"
+                />
+                <button x-show="query.length > 0" x-cloak type="button"
+                        @click="query = ''; results = []; activeIndex = -1; $refs.input.focus()"
+                        class="text-gray-300 hover:text-gray-500 transition shrink-0" aria-label="Clear search">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
+                </button>
+            </div>
 
-                    {{-- Placeholder text (collapsed) --}}
-                    <span x-show="!expanded" class="text-xs text-gray-400 flex-1 select-none">Search…</span>
-
-                    {{-- Input (expanded) --}}
-                    <input
-                        x-show="expanded"
-                        x-cloak
-                        x-ref="input"
-                        type="text"
-                        placeholder="Search…"
-                        x-model="query"
-                        @input="search()"
-                        @keydown.arrow-down.prevent="moveDown()"
-                        @keydown.arrow-up.prevent="moveUp()"
-                        @keydown.enter.prevent="selectActive()"
-                        class="flex-1 bg-transparent text-xs text-gray-700 placeholder-gray-400 outline-none border-none focus:ring-0 min-w-0 p-0"
-                        autocomplete="off"
-                        aria-label="Search site"
-                        aria-autocomplete="list"
-                        :aria-activedescendant="activeIndex >= 0 ? 'tpc-sr-' + activeIndex : null"
-                    />
-
-                    {{-- Close button (expanded) --}}
-                    <button
-                        x-show="expanded"
-                        x-cloak
-                        type="button"
-                        @click.stop="close()"
-                        class="text-gray-300 hover:text-gray-500 transition shrink-0"
-                        aria-label="Close search">
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
+            {{-- Results dropdown --}}
+            <div x-show="results.length > 0" x-cloak
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="absolute right-0 top-full mt-2 w-64 z-50 rounded-xl border border-gray-200 bg-white shadow-lg shadow-black/5 overflow-hidden"
+                 role="listbox" aria-label="Search results">
+                <div class="px-3 py-2 border-b border-gray-100">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Results</p>
                 </div>
-
-                {{-- Results dropdown — absolute, never affects layout --}}
-                <div
-                    x-show="expanded && results.length > 0"
-                    x-cloak
-                    x-transition:enter="transition ease-out duration-150"
-                    x-transition:enter-start="opacity-0 translate-y-1"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-100"
-                    x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0"
-                    class="absolute right-0 top-full mt-2 w-64 z-50 rounded-xl border border-gray-200 bg-white shadow-lg shadow-black/5 overflow-hidden"
-                    role="listbox"
-                    aria-label="Search results">
-                    <div class="px-3 py-2 border-b border-gray-100">
-                        <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Results</p>
-                    </div>
-                    <div class="py-1 max-h-64 overflow-y-auto">
-                        <template x-for="(item, i) in results" :key="i">
-                            <button
-                                type="button"
-                                :id="'tpc-sr-' + i"
-                                @click="go(item)"
-                                @mouseenter="activeIndex = i"
-                                role="option"
-                                :aria-selected="activeIndex === i"
+                <div class="py-1 max-h-64 overflow-y-auto">
+                    <template x-for="(item, i) in results" :key="i">
+                        <button type="button" :id="'tpc-sr-' + i"
+                                @click="go(item)" @mouseenter="activeIndex = i"
+                                role="option" :aria-selected="activeIndex === i"
                                 class="w-full flex items-center gap-3 px-3 py-2 text-left transition-colors group"
                                 :class="activeIndex === i ? 'bg-tpc-primary/6 text-tpc-primary' : 'text-gray-600 hover:bg-gray-50'">
-                                <svg class="h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-tpc-primary/50 transition-colors"
-                                    :class="activeIndex === i ? 'text-tpc-primary/50' : ''"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
-                                </svg>
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-xs font-medium truncate" x-text="item.label"></p>
-                                    <p class="text-[10px] text-gray-400 truncate" x-text="item.page"></p>
-                                </div>
-                            </button>
-                        </template>
-                    </div>
-                </div>
-
-                {{-- No results --}}
-                <div
-                    x-show="expanded && query.length > 0 && results.length === 0"
-                    x-cloak
-                    class="absolute right-0 top-full mt-2 w-56 z-50 rounded-xl border border-gray-200 bg-white shadow-lg shadow-black/5">
-                    <div class="px-3 py-3 text-xs text-gray-400 text-center">
-                        No results for "<span x-text="query" class="font-medium text-gray-600"></span>"
-                    </div>
+                            <svg class="h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-tpc-primary/50 transition-colors"
+                                 :class="activeIndex === i ? 'text-tpc-primary/50' : ''"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
+                            </svg>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-xs font-medium truncate" x-text="item.label"></p>
+                                <p class="text-[10px] text-gray-400 truncate" x-text="item.page"></p>
+                            </div>
+                        </button>
+                    </template>
                 </div>
             </div>
-            {{-- ── end Search bar ──────────────────────────────────────── --}}
 
-            @auth
-                @if($isAdmin)
-                    <span class="mx-2 h-5 w-px bg-tpc-primary/50"></span>
-                    <a id="nav-messages" data-tpc-link
-                       href="{{ route('admin.messages.index') }}"
-                       class="{{ $link($messagesActive) }} inline-flex items-center gap-1.5"
-                       title="Messages" @if($messagesActive) aria-current="page" @endif>
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16v12H4z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6"/>
-                        </svg>
-                        <span class="sr-only">Messages</span>
-                    </a>
-                    <a id="nav-admin" data-tpc-link
-                       href="{{ route('admin.dashboard') }}"
-                       class="{{ $link($adminActive) }} inline-flex items-center gap-1.5"
-                       title="Admin" data-no-pjax="true"
-                       @if($adminActive) aria-current="page" @endif>
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 1 0-16 0"/>
-                            <circle cx="12" cy="8" r="4"/>
-                        </svg>
-                        <span class="sr-only">Admin</span>
-                    </a>
-                @endif
-            @endauth
-        </nav>
+            {{-- No results --}}
+            <div x-show="query.length > 0 && results.length === 0" x-cloak
+                 class="absolute right-0 top-full mt-2 w-56 z-50 rounded-xl border border-gray-200 bg-white shadow-lg shadow-black/5">
+                <div class="px-3 py-3 text-xs text-gray-400 text-center">
+                    No results for "<span x-text="query" class="font-medium text-gray-600"></span>"
+                </div>
+            </div>
+        </div>
+
+        {{-- Admin links (desktop) --}}
+        @auth
+            @if($isAdmin)
+                <span class="hidden sm:block mx-1 h-5 w-px bg-tpc-primary/50"></span>
+                <a id="nav-messages" data-tpc-link
+                   href="{{ route('admin.messages.index') }}"
+                   class="hidden sm:inline-flex {{ $link($messagesActive) }} items-center gap-1.5"
+                   title="Messages" @if($messagesActive) aria-current="page" @endif>
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16v12H4z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6"/>
+                    </svg>
+                    <span class="sr-only">Messages</span>
+                </a>
+                <a id="nav-admin" data-tpc-link
+                   href="{{ route('admin.dashboard') }}"
+                   class="hidden sm:inline-flex {{ $link($adminActive) }} items-center gap-1.5"
+                   title="Admin" data-no-pjax="true"
+                   @if($adminActive) aria-current="page" @endif>
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 1 0-16 0"/>
+                        <circle cx="12" cy="8" r="4"/>
+                    </svg>
+                    <span class="sr-only">Admin</span>
+                </a>
+            @endif
+        @endauth
 
         {{-- Mobile: hamburger + search icon --}}
         <div class="flex items-center gap-2 sm:hidden">

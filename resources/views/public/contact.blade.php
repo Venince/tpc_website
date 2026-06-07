@@ -45,6 +45,7 @@
 
                 {{-- FORM --}}
                 <div class="lg:col-span-2">
+                    <span id="send-message" class="block -mt-24 pt-24 invisible absolute"></span>
 
                     <div class="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                         <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>
@@ -141,6 +142,7 @@
                 <aside class="space-y-5 sm:space-y-6">
 
                     {{-- Contact Info --}}
+                    <span id="contact-information" class="block -mt-24 pt-24 invisible absolute"></span>
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                         <div class="h-1.5 bg-tpc-primary"></div>
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
@@ -189,6 +191,7 @@
                     </div>
 
                     {{-- Map --}}
+                    <span id="campus-map" class="block -mt-24 pt-24 invisible absolute"></span>
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                         <div class="h-1.5 bg-tpc-primary"></div>
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
