@@ -39,17 +39,17 @@
     ];
 @endphp
 
-<header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm overflow-x-clip">
+<header class="sticky top-0 z-50 bg-white overflow-x-clip border-b-2 border-tpc-primary">
 
     {{-- Green top stripe --}}
-    <div class="h-1 w-full bg-tpc-primary"></div>
+    <div class="h-[2px] w-full bg-tpc-primary"></div>
 
-    <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4 sm:grid sm:grid-cols-[auto_1fr_auto] sm:gap-6">
+    <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4 sm:relative sm:flex sm:items-center sm:justify-center sm:min-h-[56px]">
 
     {{-- Brand (left) --}}
-    <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0 shrink-0" data-tpc-link>
+    <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0 shrink-0 sm:absolute sm:left-4" data-tpc-link>
         <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo"
-             class="h-10 w-auto" loading="eager" decoding="async">
+            class="h-10 w-auto" loading="eager" decoding="async">
         <div class="min-w-0">
             <p class="text-base font-bold text-tpc-primary leading-tight tracking-tight truncate">
                 Talibon Polytechnic College
@@ -61,7 +61,7 @@
     </a>
 
     {{-- Desktop nav (centered) --}}
-    <nav class="hidden sm:flex justify-center items-center gap-1" aria-label="Main navigation">
+     <nav class="hidden sm:flex sm:absolute sm:left-1/2 sm:-translate-x-1/2 justify-center items-center gap-1" aria-label="Main navigation">
         @php
             $link = fn(bool $active) =>
                 'tpc-navlink px-3 py-2 text-sm font-semibold transition ' .
@@ -139,7 +139,7 @@
     </nav>
 
     {{-- Right: search (desktop) + auth + hamburger (mobile) --}}
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 sm:absolute sm:right-4">
 
         {{-- ── Search bar — always visible on desktop ── --}}
         <div class="hidden sm:block relative shrink-0" x-data="tpcSearch()" @keydown.escape.window="query = ''; results = []; activeIndex = -1;">
