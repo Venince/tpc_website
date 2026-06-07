@@ -6,7 +6,7 @@
     <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">Full Name <span class="text-red-500">*</span></label>
     <input type="text" id="name" name="name"
            value="{{ old('name', $node?->name) }}"
-           placeholder="e.g. Dr. Maria Santos"
+           placeholder="e.g. Venince Dave Q. Autida"
            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-sm
                   focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/20 focus:outline-none
                   @error('name') border-red-400 @enderror"

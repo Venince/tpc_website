@@ -59,8 +59,8 @@
 
 /* ------- Page crossfade (content + footer) ------- */
 :root {
-  --tpc-page-dur: 240ms;
-  --tpc-page-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tpc-page-dur: 350ms;
+  --tpc-page-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /*
@@ -87,8 +87,7 @@ body {
 
 html.tpc-init #tpc-content {
   opacity: 0;
-  transform: translateY(8px);
-  filter: blur(1px);
+  transform: translateY(6px);
 }
 
 /*
@@ -98,20 +97,21 @@ html.tpc-init #tpc-content {
 #tpc-content {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
   overflow-x: clip;
   transition:
     opacity var(--tpc-page-dur) var(--tpc-page-ease),
-    transform var(--tpc-page-dur) var(--tpc-page-ease),
-    filter var(--tpc-page-dur) var(--tpc-page-ease);
-  will-change: opacity, transform, filter;
+    transform var(--tpc-page-dur) var(--tpc-page-ease);
+  will-change: opacity, transform;
 }
 
-#tpc-content.tpc-leave,
+#tpc-content.tpc-leave {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
 #tpc-content.tpc-enter {
   opacity: 0;
-  transform: translateY(8px);
-  filter: blur(1px);
+  transform: translateY(6px);
 }
 
 /* About highlight pulse */
@@ -133,7 +133,6 @@ html.tpc-init #tpc-content {
   #tpc-content.tpc-enter {
     opacity: 1 !important;
     transform: none !important;
-    filter: none !important;
   }
 }
 
