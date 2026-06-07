@@ -55,6 +55,9 @@ const shouldHandleLink = (a) => {
 };
 
 function initPageComponents() {
+
+  initLikeButtons();
+
   // About carousel
   if (typeof window.initAboutCarousel === 'function' && document.getElementById('about-track')) {
     window.initAboutCarousel();
@@ -629,6 +632,91 @@ document.addEventListener('submit', async (e) => {
 });
 
 /* ---------------------------
+   Like buttons (localStorage persistence)
+---------------------------- */
+const LIKED_KEY = 'tpc_liked_posts';
+
+function getLikedPosts() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(LIKED_KEY) || '[]'));
+  } catch (_) {
+    return new Set();
+  }
+}
+
+function saveLikedPosts(set) {
+  try {
+    localStorage.setItem(LIKED_KEY, JSON.stringify([...set]));
+  } catch (_) {}
+}
+
+function applyLikeState(btn, active) {
+  const icon = btn.querySelector('.like-icon');
+  if (active) {
+    btn.classList.add('border-tpc-primary', 'text-tpc-primary', 'bg-tpc-primary/10');
+    btn.classList.remove('border-gray-200', 'text-gray-500');
+    if (icon) { icon.setAttribute('fill', 'currentColor'); icon.setAttribute('stroke', 'none'); }
+  } else {
+    btn.classList.remove('border-tpc-primary', 'text-tpc-primary', 'bg-tpc-primary/10');
+    btn.classList.add('border-gray-200', 'text-gray-500');
+    if (icon) { icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); }
+  }
+}
+
+function initLikeButtons() {
+  const liked = getLikedPosts();
+  document.querySelectorAll('.like-btn[data-post-id]').forEach((btn) => {
+    applyLikeState(btn, liked.has(String(btn.dataset.postId)));
+  });
+}
+
+async function handleLike(btn) {
+  const id      = String(btn.dataset.postId);
+  const liked   = getLikedPosts();
+  const isLiked = liked.has(id);
+
+  const countEl = btn.querySelector('.like-count');
+  const labelEl = btn.querySelector('.like-label');
+  const current = parseInt(countEl?.textContent || btn.dataset.likes || '0', 10);
+
+  // Optimistic UI update
+  if (isLiked) {
+    liked.delete(id);
+    applyLikeState(btn, false);
+    if (countEl) countEl.textContent = Math.max(0, current - 1);
+    if (labelEl) labelEl.textContent = 'Like';
+  } else {
+    liked.add(id);
+    applyLikeState(btn, true);
+    if (countEl) countEl.textContent = current + 1;
+    if (labelEl) labelEl.textContent = 'Liked';
+  }
+  saveLikedPosts(liked);
+
+  // Sync with server
+  try {
+    const endpoint = isLiked ? 'unlike' : 'like';
+    const res = await fetch(`/news/${id}/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      credentials: 'same-origin',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // Reconcile with server's true count
+      if (countEl) countEl.textContent = data.likes_count;
+    }
+  } catch (_) {
+    // Network failure — optimistic state stays, server will drift, acceptable for anonymous likes
+  }
+}
+
+window.handleLike = handleLike;
+
+/* ---------------------------
    Boot
 ---------------------------- */
 window.addEventListener('DOMContentLoaded', () => {
@@ -650,6 +738,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (typeof window.initAdmissionSortable === 'function') {
     window.initAdmissionSortable();
   }
+
+  initLikeButtons();
 });
 
 // Click intercept
