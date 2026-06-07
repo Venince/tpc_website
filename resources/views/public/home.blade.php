@@ -225,7 +225,7 @@
         {{-- Vision / Mission --}}
         <div class="max-w-7xl mx-auto px-4 pb-12">
             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div id="vision" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                     <div class="h-1.5 bg-tpc-primary"></div>
                     <div class="p-5 sm:p-7">
                         <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Vision</p>
@@ -235,7 +235,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div id="mission" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                     <div class="h-1.5 bg-tpc-primary"></div>
                     <div class="p-5 sm:p-7">
                         <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Mission</p>
@@ -253,8 +253,8 @@
     {{-- ══════════════════════════════════════
          NEWS
     ══════════════════════════════════════ --}}
-    <section class="bg-gray-50 border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-10 sm:py-14">
+    <section id="tpc-updates" class="bg-gray-50 border-b border-gray-200">
+        <div id="latest-news" class="max-w-7xl mx-auto px-4 py-10 sm:py-14">
 
             {{-- Section header --}}
             <div class="flex items-end justify-between gap-4 mb-8 sm:mb-10">
@@ -406,7 +406,7 @@
     {{-- ══════════════════════════════════════
          PROGRAMS
     ══════════════════════════════════════ --}}
-    <section class="bg-white border-b border-gray-200">
+     <section id="academic-programs" class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-10 sm:py-14">
 
             <div class="flex items-center gap-4 mb-8 sm:mb-10">

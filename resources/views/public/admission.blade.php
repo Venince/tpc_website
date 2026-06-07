@@ -53,6 +53,7 @@
                     @if (($sections->has('freshmen') && $sections['freshmen']->is_visible) ||
                          ($sections->has('transferee') && $sections['transferee']->is_visible))
                         <div id="requirements" class="scroll-mt-20 sm:scroll-mt-24">
+                            <span id="admission-requirements" class="block -mt-24 pt-24 invisible absolute"></span>
 
                             <div class="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                                 <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>
@@ -180,7 +181,7 @@
                     {{-- Office Hours --}}
                     @if ($sections->has('office_hours') && $sections['office_hours']->is_visible)
                         @php $oh = $sections['office_hours']; @endphp
-                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div id="office-hours" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                             <div class="h-1.5 bg-tpc-primary"></div>
                             <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                                 <p class="text-[10px] sm:text-xs font-bold text-tpc-primary uppercase tracking-widest">{{ $oh->label }}</p>

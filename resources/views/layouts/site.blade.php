@@ -18,8 +18,15 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- ─── Scroll-reveal animations ─────────────────────── --}}
     <style>
+        /* ── Page load fade: content only, nav stays ── */
+        html.tpc-init #tpc-content {
+            opacity: 0;
+        }
+        #tpc-content {
+            transition: opacity .35s ease;
+        }
+
         /* Base: hidden + pushed down */
         .tpc-anim {
             opacity: 0;
@@ -29,16 +36,13 @@
             transition-delay: var(--tpc-d, 0ms);
             will-change: opacity, transform;
         }
-        /* Direction variants — applied alongside .tpc-anim */
         .tpc-anim.tpc-l { transform: translateX(-20px); }
         .tpc-anim.tpc-r { transform: translateX(20px);  }
-        .tpc-anim.tpc-f { transform: none; }             /* fade only, no slide */
-        /* Revealed */
+        .tpc-anim.tpc-f { transform: none; }
         .tpc-anim.tpc-vis {
             opacity: 1 !important;
             transform: none !important;
         }
-        /* Honour system-level preference */
         @media (prefers-reduced-motion: reduce) {
             .tpc-anim {
                 opacity: 1 !important;
@@ -47,10 +51,9 @@
             }
         }
 
-        /* ─── Prevent scrollbar-induced layout shift on page load ── */
         html {
-            scrollbar-gutter: stable;          /* modern: reserves gutter without forcing scrollbar */
-            overflow-y: scroll;                /* fallback for older browsers */
+            scrollbar-gutter: stable;
+            overflow-y: scroll;
         }
     </style>
 

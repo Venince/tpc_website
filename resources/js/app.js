@@ -77,6 +77,22 @@ function initPageComponents() {
   if (typeof window.tpcScrollRevealBoot === 'function') {
     window.tpcScrollRevealBoot();
   }
+
+  // ── Handle post-PJAX anchor scroll (from search navigation) ──
+  var anchor = sessionStorage.getItem('tpc_scroll_to');
+  if (anchor) {
+    sessionStorage.removeItem('tpc_scroll_to');
+    // Snap to top of page instantly first, then smoothly scroll to section
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setTimeout(function () {
+      if (typeof tpcScrollToAnchor === 'function') tpcScrollToAnchor(anchor);
+    }, 500);
+  }
+
+  // ── Sync mobile search panel top to actual header height ──
+  var header = document.querySelector('header');
+  var panel  = document.querySelector('[data-mob-search-panel]');
+  if (header && panel) panel.style.top = header.offsetHeight + 'px';
 }
 
 /* ---------------------------
