@@ -19,8 +19,7 @@
 
 @section('content')
     <form action="{{ route('admin.services.contents.update', [$service, $content]) }}" method="POST"
-          enctype="multipart/form-data" class="max-w-2xl space-y-6"
-          x-data="{ type: '{{ old('type', $content->type) }}' }">
+          enctype="multipart/form-data" class="max-w-2xl space-y-6" id="edit-content-section-form">
         @csrf @method('PATCH')
 
         {{-- Type selector --}}
@@ -28,9 +27,11 @@
             <label class="block text-xs font-bold text-gray-600 mb-2">Section Type</label>
             <div class="grid grid-cols-2 gap-3">
                 <label class="relative cursor-pointer">
-                    <input type="radio" name="type" value="text" x-model="type" class="sr-only peer">
-                    <div class="flex items-center gap-3 rounded-2xl border-2 border-gray-200 px-4 py-3 transition
-                                peer-checked:border-tpc-primary peer-checked:bg-tpc-primary/5">
+                    <input type="radio" name="type" value="text" class="sr-only peer"
+                           {{ old('type', $content->type) === 'text' ? 'checked' : '' }}>
+                    <div class="flex items-center gap-3 rounded-2xl border-2 px-4 py-3 transition
+                                {{ old('type', $content->type) === 'text' ? 'border-tpc-primary bg-tpc-primary/5' : 'border-gray-200' }}"
+                         id="edit-card-text">
                         <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-gray-50">
                             <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/>
@@ -43,9 +44,11 @@
                     </div>
                 </label>
                 <label class="relative cursor-pointer">
-                    <input type="radio" name="type" value="image" x-model="type" class="sr-only peer">
-                    <div class="flex items-center gap-3 rounded-2xl border-2 border-gray-200 px-4 py-3 transition
-                                peer-checked:border-tpc-primary peer-checked:bg-tpc-primary/5">
+                    <input type="radio" name="type" value="image" class="sr-only peer"
+                           {{ old('type', $content->type) === 'image' ? 'checked' : '' }}>
+                    <div class="flex items-center gap-3 rounded-2xl border-2 px-4 py-3 transition
+                                {{ old('type', $content->type) === 'image' ? 'border-tpc-primary bg-tpc-primary/5' : 'border-gray-200' }}"
+                         id="edit-card-image">
                         <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-gray-50">
                             <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
@@ -68,14 +71,14 @@
         </div>
 
         {{-- Text body --}}
-        <div x-show="type === 'text'" x-transition>
+        <div id="edit-field-text" class="{{ old('type', $content->type) === 'image' ? 'hidden' : '' }}">
             <label class="block text-xs font-bold text-gray-600 mb-1.5">Content</label>
             <textarea name="body" rows="8"
                       class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-y">{{ old('body', $content->body) }}</textarea>
         </div>
 
         {{-- Image --}}
-        <div x-show="type === 'image'" x-transition class="space-y-3">
+        <div id="edit-field-image" class="space-y-3 {{ old('type', $content->type) === 'text' ? 'hidden' : '' }}">
             @if ($content->image_path)
                 <div>
                     <p class="text-xs font-bold text-gray-600 mb-2">Current Image</p>
@@ -115,4 +118,39 @@
                class="text-sm font-semibold text-gray-400 hover:text-gray-600 transition">Cancel</a>
         </div>
     </form>
+
+    <script>
+    (function () {
+        var radios     = document.querySelectorAll('#edit-content-section-form input[name="type"]');
+        var fieldText  = document.getElementById('edit-field-text');
+        var fieldImage = document.getElementById('edit-field-image');
+        var cardText   = document.getElementById('edit-card-text');
+        var cardImage  = document.getElementById('edit-card-image');
+
+        function applyType(val) {
+            var isImage = val === 'image';
+
+            fieldText.classList.toggle('hidden', isImage);
+            fieldImage.classList.toggle('hidden', !isImage);
+
+            cardText.classList.remove('border-tpc-primary', 'bg-tpc-primary/5', 'border-gray-200');
+            cardImage.classList.remove('border-tpc-primary', 'bg-tpc-primary/5', 'border-gray-200');
+
+            if (isImage) {
+                cardImage.classList.add('border-tpc-primary', 'bg-tpc-primary/5');
+                cardText.classList.add('border-gray-200');
+            } else {
+                cardText.classList.add('border-tpc-primary', 'bg-tpc-primary/5');
+                cardImage.classList.add('border-gray-200');
+            }
+        }
+
+        radios.forEach(function (r) {
+            r.addEventListener('change', function () { applyType(this.value); });
+        });
+
+        var checked = document.querySelector('#edit-content-section-form input[name="type"]:checked');
+        applyType(checked ? checked.value : 'text');
+    })();
+    </script>
 @endsection

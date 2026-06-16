@@ -39,7 +39,7 @@
     ];
 @endphp
 
-<header class="sticky top-0 z-50 bg-white overflow-x-clip border-b-2 border-tpc-primary">
+<header class="sticky top-0 z-50 bg-white border-b-2 border-tpc-primary">
 
     {{-- Green top stripe --}}
     <div class="h-[2px] w-full bg-tpc-primary"></div>

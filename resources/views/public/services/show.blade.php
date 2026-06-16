@@ -56,14 +56,14 @@
             <div class="grid gap-8 lg:grid-cols-3">
 
                 {{-- Main content column --}}
-                <div class="lg:col-span-2 space-y-6">
+                <div class="lg:col-span-2 space-y-6 min-w-0">
 
                     @if ($service->featured_image_path)
-                        <div class="rounded-3xl overflow-hidden border border-gray-200 shadow-sm">
+                        <div class="rounded-3xl overflow-hidden border border-gray-200 shadow-sm w-full">
                             <img src="{{ asset('storage/' . $service->featured_image_path) }}"
-                                 alt="{{ $service->title }}"
-                                 class="w-full object-cover"
-                                 loading="eager">
+                                alt="{{ $service->title }}"
+                                class="w-full max-h-72 object-cover"
+                                loading="eager">
                         </div>
                     @endif
 
@@ -119,7 +119,7 @@
                 </div>
 
                 {{-- ── SIDEBAR ──────────────────────────────────────────── --}}
-                <aside class="space-y-5 sm:space-y-6">
+                <aside class="space-y-5 sm:space-y-6 min-w-0 overflow-hidden">
 
                     {{-- Social Media Card (shown when links exist) --}}
                     @if (!empty($service->social_links))
