@@ -80,8 +80,19 @@
                                     @endif
                                     <div class="prose prose-sm sm:prose-base prose-gray max-w-none
                                                 prose-p:leading-relaxed prose-p:text-gray-600
-                                                prose-headings:font-bold prose-headings:text-gray-900">
-                                        {!! nl2br(e($block->body)) !!}
+                                                prose-headings:font-bold prose-headings:text-gray-900
+                                                prose-ul:pl-5 prose-ol:pl-5">
+                                        @php
+                                            $isHtml = $block->body !== strip_tags($block->body);
+                                        @endphp
+                                        @if ($isHtml)
+                                            {!! $block->body !!}
+                                        @else
+                                            {!! collect(preg_split('/\n{2,}/', e($block->body)))
+                                                ->filter()
+                                                ->map(fn($p) => '<p>' . str_replace("\n", ' ', $p) . '</p>')
+                                                ->join('') !!}
+                                        @endif
                                     </div>
                                 </div>
 

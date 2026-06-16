@@ -74,8 +74,51 @@
             <label class="block text-xs font-bold text-gray-600 mb-1.5">
                 Content <span class="text-red-500">*</span>
             </label>
-            <textarea name="body" rows="8" placeholder="Write your content here…"
-                      class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-y @error('body') border-red-300 @enderror">{{ old('body') }}</textarea>
+
+            <input type="hidden" name="body" id="body-input" value="{{ old('body') }}">
+
+            <style>
+                #quill-wrap .ql-toolbar { border: none; border-bottom: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0; }
+                #quill-wrap .ql-container { border: none; font-family: inherit; font-size: 14px; }
+                #quill-wrap .ql-editor { min-height: 180px; padding: 12px 16px; }
+                #quill-wrap .ql-editor.ql-blank::before { font-style: normal; color: #9ca3af; }
+                #quill-wrap:focus-within { border-color: var(--color-tpc-primary, #16a34a); box-shadow: 0 0 0 3px rgb(22 163 74 / 0.15); }
+                #quill-wrap .ql-snow .ql-picker { color: #374151; }
+                #quill-wrap .ql-snow .ql-stroke { stroke: #6b7280; }
+                #quill-wrap .ql-snow .ql-fill { fill: #6b7280; }
+                #quill-wrap .ql-snow.ql-toolbar button:hover .ql-stroke,
+                #quill-wrap .ql-snow.ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-tpc-primary, #16a34a); }
+                #quill-wrap .ql-snow.ql-toolbar button:hover .ql-fill,
+                #quill-wrap .ql-snow.ql-toolbar button.ql-active .ql-fill { fill: var(--color-tpc-primary, #16a34a); }
+                #quill-wrap .ql-snow.ql-toolbar button.ql-active,
+                #quill-wrap .ql-snow.ql-toolbar .ql-picker-label.ql-active { color: var(--color-tpc-primary, #16a34a); }
+            </style>
+
+            <div id="quill-wrap" class="rounded-xl border overflow-hidden transition @error('body') border-red-300 @else border-gray-200 @enderror">
+                <div id="quill-toolbar">
+                    <span class="ql-formats">
+                        <button class="ql-bold" title="Bold"></button>
+                        <button class="ql-italic" title="Italic"></button>
+                        <button class="ql-underline" title="Underline"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered" title="Numbered List"></button>
+                        <button class="ql-list" value="bullet" title="Bullet List"></button>
+                        <button class="ql-indent" value="-1" title="Decrease Indent"></button>
+                        <button class="ql-indent" value="+1" title="Increase Indent"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-align" title="Alignment">
+                            <option selected title="Left"></option>
+                            <option value="center" title="Center"></option>
+                            <option value="right" title="Right"></option>
+                            <option value="justify" title="Justify"></option>
+                        </select>
+                    </span>
+                </div>
+                <div id="quill-editor"></div>
+            </div>
+
             @error('body')
                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
             @enderror
@@ -115,39 +158,50 @@
 
     <script>
     (function () {
-        var radios   = document.querySelectorAll('#content-section-form input[name="type"]');
-        var fieldText  = document.getElementById('field-text');
-        var fieldImage = document.getElementById('field-image');
-        var cardText   = document.getElementById('card-text');
-        var cardImage  = document.getElementById('card-image');
+        function initCreateQuill() {
+            if (document.getElementById('quill-editor')._quill) return;
 
-        function applyType(val) {
-            var isImage = val === 'image';
+            var AlignStyle = Quill.import('attributors/style/align');
+            Quill.register(AlignStyle, true);
 
-            fieldText.classList.toggle('hidden', isImage);
-            fieldImage.classList.toggle('hidden', !isImage);
+            var editor = new Quill('#quill-editor', {
+                theme: 'snow',
+                placeholder: 'Write your content here…',
+                modules: {
+                    toolbar: '#quill-toolbar',
+                },
+            });
 
-            cardText.className  = cardText.className
-                .replace(/border-tpc-primary|bg-tpc-primary\/5|border-gray-200/g, '').trim();
-            cardImage.className = cardImage.className
-                .replace(/border-tpc-primary|bg-tpc-primary\/5|border-gray-200/g, '').trim();
+            editor.root._quill = editor; // mark as initialized
 
-            if (isImage) {
-                cardImage.classList.add('border-tpc-primary', 'bg-tpc-primary/5');
-                cardText.classList.add('border-gray-200');
-            } else {
-                cardText.classList.add('border-tpc-primary', 'bg-tpc-primary/5');
-                cardImage.classList.add('border-gray-200');
-            }
+            // Pre-fill on validation failure
+            var old = document.getElementById('body-input').value;
+            if (old) editor.root.innerHTML = old;
+
+            // Copy HTML to hidden input on submit
+            var form = document.getElementById('content-section-form');
+            form.addEventListener('submit', function () {
+                var html = editor.root.innerHTML;
+                document.getElementById('body-input').value =
+                    (html === '<p><br></p>' || html.trim() === '') ? '' : html;
+            });
         }
 
-        radios.forEach(function (r) {
-            r.addEventListener('change', function () { applyType(this.value); });
-        });
+        function loadQuillThen(cb) {
+            if (typeof Quill !== 'undefined') { cb(); return; }
 
-        // Apply initial state (handles old() repopulation on validation failure)
-        var checked = document.querySelector('#content-section-form input[name="type"]:checked');
-        applyType(checked ? checked.value : 'text');
+            var link = document.createElement('link');
+            link.rel  = 'stylesheet';
+            link.href = 'https://cdn.quilljs.com/1.3.7/quill.snow.css';
+            document.head.appendChild(link);
+
+            var script  = document.createElement('script');
+            script.src  = 'https://cdn.quilljs.com/1.3.7/quill.min.js';
+            script.onload = cb;
+            document.head.appendChild(script);
+        }
+
+        loadQuillThen(initCreateQuill);
     })();
     </script>
 @endsection
