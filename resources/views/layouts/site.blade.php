@@ -64,7 +64,7 @@
 
     @include('partials.nav')
 
-    <div id="tpc-content" class="relative tpc-prose min-h-screen flex flex-col overflow-x-hidden">
+    <div id="tpc-content" class="relative tpc-prose min-h-screen flex flex-col">
         <main class="flex-1">
             @yield('content')
         </main>
@@ -142,8 +142,6 @@
             var root = document.getElementById('tpc-content');
             if (!root) return;
 
-            var isMobile = window.innerWidth < 1024;
-
             /* ── 1. Grid children — staggered fade-up ───── */
             root.querySelectorAll('.grid').forEach(function (grid) {
                 if (inHero(grid)) return;
@@ -158,8 +156,8 @@
                      grid.className.indexOf('lg:grid-cols-2') !== -1);
 
                 kids.forEach(function (child, i) {
-                    if (is2col && !isMobile) {
-                        add(child, 0, i === 0 ? 'l' : 'r');
+                    if (is2col) {
+                        add(child, 0,  i === 0 ? 'l' : 'r');
                     } else {
                         add(child, Math.min(i * 80, 400));
                     }
@@ -174,9 +172,9 @@
                 add(el, Math.min(i * 65, 390));
             });
 
-            /* ── 3. Aside / sidebar cards — slide from right (desktop only) */
+            /* ── 3. Aside / sidebar cards — slide from right */
             root.querySelectorAll('aside > *').forEach(function (el, i) {
-                add(el, i * 90, isMobile ? null : 'r');
+                add(el, i * 90, 'r');
             });
 
             /* ── 4. Section title rows — fade only ───────── */

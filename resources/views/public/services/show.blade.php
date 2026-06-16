@@ -62,7 +62,7 @@
                         <div class="rounded-3xl overflow-hidden border border-gray-200 shadow-sm w-full">
                             <img src="{{ asset('storage/' . $service->featured_image_path) }}"
                                 alt="{{ $service->title }}"
-                                class="w-full max-h-72 object-cover"
+                                class="w-full object-contain"
                                 loading="eager">
                         </div>
                     @endif
