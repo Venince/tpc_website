@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\NewsPost;
+use App\Models\NewsPostImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,6 @@ class NewsPostController extends Controller
     public function index()
     {
         $posts = NewsPost::orderByDesc('created_at')->paginate(10);
-
         return view('admin.news-posts.index', compact('posts'));
     }
 
@@ -26,16 +26,18 @@ class NewsPostController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'    => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'max:60'],
-            'excerpt'  => ['nullable', 'string', 'max:255'],
-            'body'     => ['required', 'string'],
-            'image' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
+            'title'              => ['required', 'string', 'max:255'],
+            'category'           => ['required', 'string', 'max:60'],
+            'excerpt'            => ['nullable', 'string', 'max:255'],
+            'body'               => ['required', 'string'],
+            'image'              => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120',
+                                    'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
+            'gallery_images'     => ['nullable', 'array', 'max:20'],
+            'gallery_images.*'   => ['file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
         ]);
 
         $data['slug'] = $this->uniqueSlug($data['title']);
 
-        // Superadmin publishes directly; regular admin goes to pending
         if (Auth::user()->is_super_admin) {
             $data['status']       = NewsPost::STATUS_APPROVED;
             $data['is_published'] = true;
@@ -52,38 +54,48 @@ class NewsPostController extends Controller
             $data['image_path'] = $request->file('image')->store('news-images', 'public');
         }
 
-        NewsPost::create($data);
+        $post = NewsPost::create($data);
+
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $i => $file) {
+                $post->galleryImages()->create([
+                    'image_path' => $file->store('news-gallery', 'public'),
+                    'order'      => $i,
+                ]);
+            }
+        }
 
         $message = Auth::user()->is_super_admin
             ? 'News post published successfully.'
             : 'News post submitted for superadmin review.';
 
-        return redirect()
-            ->route('admin.news-posts.index')
-            ->with('success', $message);
+        return redirect()->route('admin.news-posts.index')->with('success', $message);
     }
 
     public function edit(NewsPost $newsPost)
     {
+        $newsPost->load('galleryImages');
         return view('admin.news-posts.edit', compact('newsPost'));
     }
 
     public function update(Request $request, NewsPost $newsPost)
     {
         $data = $request->validate([
-            'title'        => ['required', 'string', 'max:255'],
-            'category'     => ['required', 'string', 'max:60'],
-            'excerpt'      => ['nullable', 'string', 'max:255'],
-            'body'         => ['required', 'string'],
-            'remove_image' => ['nullable', 'boolean'],
-            'image' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120', 'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
+            'title'              => ['required', 'string', 'max:255'],
+            'category'           => ['required', 'string', 'max:60'],
+            'excerpt'            => ['nullable', 'string', 'max:255'],
+            'body'               => ['required', 'string'],
+            'remove_image'       => ['nullable', 'boolean'],
+            'image'              => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120',
+                                    'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
+            'gallery_images'     => ['nullable', 'array', 'max:20'],
+            'gallery_images.*'   => ['file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
         ]);
 
         if ($newsPost->title !== $data['title']) {
             $data['slug'] = $this->uniqueSlug($data['title'], $newsPost->id);
         }
 
-        // Superadmin edits stay published; regular admin edits reset to pending
         if (Auth::user()->is_super_admin) {
             $data['status']       = NewsPost::STATUS_APPROVED;
             $data['is_published'] = true;
@@ -114,13 +126,29 @@ class NewsPostController extends Controller
 
         $newsPost->update($data);
 
+        if ($request->hasFile('gallery_images')) {
+            $nextOrder = ($newsPost->galleryImages()->max('order') ?? -1) + 1;
+            foreach ($request->file('gallery_images') as $i => $file) {
+                $newsPost->galleryImages()->create([
+                    'image_path' => $file->store('news-gallery', 'public'),
+                    'order'      => $nextOrder + $i,
+                ]);
+            }
+        }
+
         $message = Auth::user()->is_super_admin
             ? 'News post updated and published.'
             : 'News post updated and re-submitted for review.';
 
-        return redirect()
-            ->route('admin.news-posts.index')
-            ->with('success', $message);
+        return redirect()->route('admin.news-posts.index')->with('success', $message);
+    }
+
+    public function destroyGalleryImage(NewsPost $newsPost, NewsPostImage $image)
+    {
+        abort_unless($image->news_post_id === $newsPost->id, 404);
+        Storage::disk('public')->delete($image->image_path);
+        $image->delete();
+        return back()->with('success', 'Photo removed from gallery.');
     }
 
     public function destroy(NewsPost $newsPost)
@@ -129,11 +157,13 @@ class NewsPostController extends Controller
             Storage::disk('public')->delete($newsPost->image_path);
         }
 
+        foreach ($newsPost->galleryImages as $img) {
+            Storage::disk('public')->delete($img->image_path);
+        }
+        $newsPost->galleryImages()->delete();
         $newsPost->delete();
 
-        return redirect()
-            ->route('admin.news-posts.index')
-            ->with('success', 'News post deleted.');
+        return redirect()->route('admin.news-posts.index')->with('success', 'News post deleted.');
     }
 
     private function uniqueSlug(string $title, ?int $ignoreId = null): string
@@ -160,27 +190,29 @@ class NewsPostController extends Controller
             'ids.*' => ['integer'],
         ]);
 
-        $posts = NewsPost::whereIn('id', $request->ids)->get();
+        $posts = NewsPost::with('galleryImages')->whereIn('id', $request->ids)->get();
 
         foreach ($posts as $post) {
             if ($post->image_path) {
                 Storage::disk('public')->delete($post->image_path);
             }
+            foreach ($post->galleryImages as $img) {
+                Storage::disk('public')->delete($img->image_path);
+            }
+            $post->galleryImages()->delete();
             $post->delete();
         }
 
-        return redirect()
-            ->route('admin.news-posts.index')
+        return redirect()->route('admin.news-posts.index')
             ->with('success', count($request->ids) . ' post(s) deleted.');
     }
 
     public function repost(NewsPost $newsPost)
     {
-        // Copy the image so each post owns its own file
         $newImagePath = null;
         if ($newsPost->image_path && Storage::disk('public')->exists($newsPost->image_path)) {
             $extension    = pathinfo($newsPost->image_path, PATHINFO_EXTENSION);
-            $newImagePath = 'news-images/' . \Illuminate\Support\Str::random(40) . '.' . $extension;
+            $newImagePath = 'news-images/' . Str::random(40) . '.' . $extension;
             Storage::disk('public')->copy($newsPost->image_path, $newImagePath);
         }
 
@@ -192,21 +224,31 @@ class NewsPostController extends Controller
             'body'         => $newsPost->body,
             'image_path'   => $newImagePath,
             'is_published' => Auth::user()->is_super_admin,
-            'status'       => Auth::user()->is_super_admin
-                                ? NewsPost::STATUS_APPROVED
-                                : NewsPost::STATUS_PENDING,
+            'status'       => Auth::user()->is_super_admin ? NewsPost::STATUS_APPROVED : NewsPost::STATUS_PENDING,
             'published_at' => Auth::user()->is_super_admin ? now() : null,
             'reviewed_at'  => Auth::user()->is_super_admin ? now() : null,
             'reviewed_by'  => Auth::user()->is_super_admin ? Auth::id() : null,
             'review_note'  => Auth::user()->is_super_admin ? 'Reposted by superadmin.' : null,
         ]);
 
+        // Copy gallery images to the new post
+        foreach ($newsPost->galleryImages as $i => $img) {
+            if (Storage::disk('public')->exists($img->image_path)) {
+                $ext     = pathinfo($img->image_path, PATHINFO_EXTENSION);
+                $newPath = 'news-gallery/' . Str::random(40) . '.' . $ext;
+                Storage::disk('public')->copy($img->image_path, $newPath);
+                $newPost->galleryImages()->create([
+                    'image_path' => $newPath,
+                    'caption'    => $img->caption,
+                    'order'      => $i,
+                ]);
+            }
+        }
+
         $message = Auth::user()->is_super_admin
             ? 'Post reposted and published.'
             : 'Post reposted and submitted for review.';
 
-        return redirect()
-            ->route('admin.news-posts.index')
-            ->with('success', $message);
+        return redirect()->route('admin.news-posts.index')->with('success', $message);
     }
 }

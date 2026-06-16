@@ -103,6 +103,31 @@
                 @error('image') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Gallery Images --}}
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
+                    Photo Gallery
+                    <span class="normal-case font-normal text-tpc-ink/40">(optional · up to 20 photos)</span>
+                </label>
+
+                {{-- Selected previews --}}
+                <div id="gallery-preview-grid"
+                     class="hidden grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3"></div>
+
+                <label for="gallery-input"
+                       class="inline-flex items-center gap-2 cursor-pointer rounded-xl border-2 border-dashed
+                              border-tpc-primary/30 bg-tpc-primary/3 px-4 py-2.5 text-sm font-semibold
+                              text-tpc-primary hover:border-tpc-primary/60 hover:bg-tpc-primary/8 transition">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span id="gallery-btn-label">Add Photos</span>
+                </label>
+                <input type="file" name="gallery_images[]" id="gallery-input"
+                       multiple accept="image/png,image/jpeg,image/webp" class="sr-only">
+                <p class="mt-1.5 text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB each</p>
+            </div>
+
             {{-- Actions --}}
             <div class="pt-2 border-t border-tpc-primary/8 flex flex-wrap gap-3">
                 <button type="submit"
@@ -175,6 +200,65 @@
                     };
                     img.src = objectUrl;
                 });
+
+                (function () {
+                    const input    = document.getElementById('gallery-input');
+                    const grid     = document.getElementById('gallery-preview-grid');
+                    const btnLabel = document.getElementById('gallery-btn-label');
+                    let fileList   = new DataTransfer();
+
+                    input.addEventListener('change', function () {
+                        Array.from(this.files).forEach(file => {
+                            // Skip duplicates by name+size
+                            const exists = Array.from(fileList.files)
+                                .some(f => f.name === file.name && f.size === file.size);
+                            if (!exists) fileList.items.add(file);
+                        });
+                        this.files = fileList.files;
+                        renderPreviews();
+                    });
+
+                    function renderPreviews() {
+                        grid.innerHTML = '';
+                        const files = Array.from(fileList.files);
+                        if (!files.length) {
+                            grid.classList.add('hidden');
+                            btnLabel.textContent = 'Add Photos';
+                            return;
+                        }
+                        grid.classList.remove('hidden');
+                        btnLabel.textContent = `Add More (${files.length} selected)`;
+
+                        files.forEach((file, index) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                const wrap = document.createElement('div');
+                                wrap.className = 'relative group rounded-xl overflow-hidden border border-tpc-primary/15 aspect-square bg-gray-100';
+                                wrap.innerHTML = `
+                                    <img src="${e.target.result}" class="w-full h-full object-cover" alt="">
+                                    <button type="button" data-index="${index}"
+                                            class="remove-gallery-btn absolute top-1 right-1 h-5 w-5 rounded-full
+                                                bg-black/60 text-white flex items-center justify-center
+                                                opacity-0 group-hover:opacity-100 transition text-xs font-bold">
+                                        ×
+                                    </button>`;
+                                wrap.querySelector('.remove-gallery-btn').addEventListener('click', function () {
+                                    removeFile(parseInt(this.dataset.index));
+                                });
+                                grid.appendChild(wrap);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    }
+
+                    function removeFile(index) {
+                        const dt = new DataTransfer();
+                        Array.from(fileList.files).forEach((f, i) => { if (i !== index) dt.items.add(f); });
+                        fileList = dt;
+                        input.files = fileList.files;
+                        renderPreviews();
+                    }
+                })();
             </script>
 
 @endsection

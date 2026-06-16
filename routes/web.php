@@ -103,6 +103,9 @@ Route::middleware(['auth', 'admin'])
         Route::delete('news-posts/bulk-destroy', [NewsPostController::class, 'bulkDestroy'])
             ->name('news-posts.bulkDestroy');
 
+        Route::delete('news-posts/{newsPost}/gallery/{image}', [NewsPostController::class, 'destroyGalleryImage'])
+            ->name('news-posts.gallery.destroy');
+
         Route::post('news-posts/{newsPost}/repost', [NewsPostController::class, 'repost'])
             ->name('news-posts.repost');
         Route::resource('news-posts', NewsPostController::class)

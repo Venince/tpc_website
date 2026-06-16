@@ -13,11 +13,12 @@ class NewsController extends Controller
         $category = $request->query('category');
 
         $posts = NewsPost::query()
-            ->published()   // scope: status=approved, is_published=true, published_at not null
+            ->published()
+            ->with('galleryImages')
             ->when($q, fn($query) => $query->where(function ($qq) use ($q) {
                 $qq->where('title',   'like', "%{$q}%")
-                   ->orWhere('excerpt', 'like', "%{$q}%")
-                   ->orWhere('body',    'like', "%{$q}%");
+                ->orWhere('excerpt', 'like', "%{$q}%")
+                ->orWhere('body',    'like', "%{$q}%");
             }))
             ->when($category, fn($query) => $query->where('category', $category))
             ->orderByDesc('published_at')
@@ -29,11 +30,12 @@ class NewsController extends Controller
 
     public function show(NewsPost $newsPost)
     {
-        // Only approved + published posts are visible to the public
         abort_unless(
             $newsPost->isApproved() && $newsPost->is_published && $newsPost->published_at,
             404
         );
+
+        $newsPost->load('galleryImages');
 
         return view('public.news.show', ['post' => $newsPost]);
     }

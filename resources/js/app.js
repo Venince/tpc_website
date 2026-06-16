@@ -5,6 +5,39 @@ import Collapse from '@alpinejs/collapse';
 
 window.Alpine = Alpine;
 Alpine.plugin(Collapse);
+
+Alpine.store('gallery', {
+    isOpen:     false,
+    current:    0,
+    images:     [],
+    currentUrl: '',
+    init(paths) {
+        const raw = typeof paths === 'string' ? JSON.parse(paths) : paths;
+        this.images = Array.isArray(raw)
+            ? raw.map(p => window._tpcStorageBase + '/' + p)
+            : [];
+        if (this.images.length) this.currentUrl = this.images[0];
+    },
+    open(index) {
+        this.current    = index;
+        this.currentUrl = this.images[index];
+        this.isOpen     = true;
+        document.body.style.overflow = 'hidden';
+    },
+    close() {
+        this.isOpen = false;
+        document.body.style.overflow = '';
+    },
+    prev() {
+        this.current    = (this.current - 1 + this.images.length) % this.images.length;
+        this.currentUrl = this.images[this.current];
+    },
+    next() {
+        this.current    = (this.current + 1) % this.images.length;
+        this.currentUrl = this.images[this.current];
+    },
+});
+
 Alpine.start();
 
 /* ---------------------------

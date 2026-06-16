@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class NewsPost extends Model
 {
@@ -33,6 +34,11 @@ class NewsPost extends Model
         'published_at' => 'datetime',
         'reviewed_at'  => 'datetime',
     ];
+
+    public function galleryImages(): HasMany
+    {
+        return $this->hasMany(NewsPostImage::class)->orderBy('order');
+    }
 
     // ── Relationships ──────────────────────────────────────────────
 

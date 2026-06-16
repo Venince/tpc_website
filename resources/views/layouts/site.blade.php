@@ -12,6 +12,8 @@
 
     <link rel="preload" as="image" href="{{ asset('images/TPC-Logo.png') }}">
 
+    <script>window._tpcStorageBase = '{{ asset('storage') }}';</script>
+
     <script>
         document.documentElement.classList.add('tpc-init');
     </script>

@@ -149,6 +149,71 @@
                         </div>
                     @endif
 
+                    {{-- ── Photo Gallery ── --}}
+                    @if($post->galleryImages->isNotEmpty())
+                        @php $gallery = $post->galleryImages; @endphp
+                        <div class="mt-8 sm:mt-10"
+                            x-data
+                            x-init="Alpine.store('gallery').init($el.closest('[data-paths]').dataset.paths ?? $el.dataset.paths)"
+                            data-paths="{{ $gallery->pluck('image_path')->toJson() }}">
+
+                            {{-- Section header --}}
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>
+                                <h3 class="text-sm font-bold text-gray-900">Photo Gallery</h3>
+                                <span class="inline-flex items-center gap-1 bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
+                                    </svg>
+                                    {{ $gallery->count() }} {{ Str::plural('photo', $gallery->count()) }}
+                                </span>
+                            </div>
+
+                            {{-- Grid --}}
+                            @php
+                                $count = $gallery->count();
+                                $gridClass = match(true) {
+                                    $count === 1 => 'grid-cols-1',
+                                    $count === 2 => 'grid-cols-2',
+                                    default      => 'grid-cols-2 sm:grid-cols-3',
+                                };
+                            @endphp
+                            <div class="grid {{ $gridClass }} gap-2">
+                                @foreach($gallery as $i => $img)
+                                    @php
+                                        // Make first image span 2 cols when there are 3+ images
+                                        $spanClass = ($i === 0 && $count >= 3) ? 'col-span-2 sm:col-span-1' : '';
+                                        $aspectClass = ($i === 0 && $count >= 3) ? 'aspect-video sm:aspect-square' : 'aspect-square';
+                                    @endphp
+                                    <button type="button"
+                                            @click="$store.gallery.open({{ $i }})"
+                                            class="group relative {{ $spanClass }} {{ $aspectClass }}
+                                                   rounded-xl overflow-hidden border border-gray-200
+                                                   bg-gray-100 focus:outline-none focus:ring-2 focus:ring-tpc-primary/40">
+                                        <img src="{{ asset('storage/' . $img->image_path) }}"
+                                             alt="{{ $img->caption ?? ($post->title . ' photo ' . ($i + 1)) }}"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                             loading="lazy">
+                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300 flex items-center justify-center">
+                                            <svg class="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg"
+                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6"/>
+                                            </svg>
+                                        </div>
+                                        @if($img->caption)
+                                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <p class="text-white text-xs leading-snug">{{ $img->caption }}</p>
+                                            </div>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+
+                        </div>
+                    @endif
+
+                    {{-- Divider --}}
+
                     {{-- Like button --}}
                     <div class="mt-4 sm:mt-6 flex items-center gap-3">
                         <button
@@ -228,5 +293,61 @@
 
         </div>
     </section>
+
+    {{-- ── Lightbox Portal ── --}}
+    @if($post->galleryImages->isNotEmpty())
+        @push('portal')
+        <div x-data
+             x-show="$store.gallery.isOpen"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+             @click.self="$store.gallery.close()"
+             @keydown.escape.window="$store.gallery.close()"
+             @keydown.arrow-left.window="$store.gallery.prev()"
+             @keydown.arrow-right.window="$store.gallery.next()"
+             style="display:none">
+
+            <button @click="$store.gallery.close()" type="button"
+                    class="absolute top-4 right-4 z-10 h-9 w-9 rounded-full bg-white/10 hover:bg-white/20
+                           text-white flex items-center justify-center transition">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <div class="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-white/10 text-white text-xs font-bold px-3 py-1 rounded-full">
+                <span x-text="$store.gallery.current + 1"></span> / <span x-text="$store.gallery.images.length"></span>
+            </div>
+
+            <button @click="$store.gallery.prev()" type="button" x-show="$store.gallery.images.length > 1"
+                    class="absolute left-3 sm:left-6 z-10 h-10 w-10 rounded-full bg-white/10 hover:bg-white/25
+                           text-white flex items-center justify-center transition">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+            <img :src="$store.gallery.currentUrl"
+                 :alt="'Photo ' + ($store.gallery.current + 1)"
+                 class="max-h-[85vh] max-w-full rounded-xl object-contain shadow-2xl select-none"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100">
+
+            <button @click="$store.gallery.next()" type="button" x-show="$store.gallery.images.length > 1"
+                    class="absolute right-3 sm:right-6 z-10 h-10 w-10 rounded-full bg-white/10 hover:bg-white/25
+                           text-white flex items-center justify-center transition">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+        @endpush
+    @endif
 
 @endsection
