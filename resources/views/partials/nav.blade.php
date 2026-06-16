@@ -39,10 +39,7 @@
     ];
 @endphp
 
-<header class="sticky top-0 z-50 bg-white overflow-x-clip border-b-2 border-tpc-primary">
-
-    {{-- Green top stripe --}}
-    <div class="h-[2px] w-full bg-tpc-primary"></div>
+<header class="sticky top-0 z-50 bg-white overflow-x-clip border-b border-gray-100 shadow-sm">
 
     <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4 sm:relative sm:flex sm:items-center sm:justify-center sm:min-h-[56px]">
 
