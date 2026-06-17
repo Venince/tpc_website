@@ -88,35 +88,35 @@
 
                             <div class="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
                                 <div class="p-4 sm:p-5">
-                                    <label class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
+                                    <label for="contact-name" class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
                                         Full Name <span class="text-red-400">*</span>
                                     </label>
-                                    <input name="name" value="{{ old('name') }}" placeholder="Your full name"
-                                           class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition placeholder-gray-300" />
+                                    <input id="contact-name" name="name" value="{{ old('name') }}" placeholder="Your full name" autocomplete="name"
+                                        class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition placeholder-gray-300" />
                                 </div>
                                 <div class="p-4 sm:p-5">
-                                    <label class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
+                                    <label for="contact-email" class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
                                         Email Address <span class="text-red-400">*</span>
                                     </label>
-                                    <input name="email" value="{{ old('email') }}" placeholder="you@example.com"
-                                           class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition placeholder-gray-300" />
+                                    <input id="contact-email" type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" autocomplete="email"
+                                        class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition placeholder-gray-300" />
                                 </div>
                             </div>
 
                             <div class="p-4 sm:p-5">
-                                <label class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
+                                <label for="contact-subject" class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
                                     Subject <span class="text-red-400">*</span>
                                 </label>
-                                <input name="subject" value="{{ old('subject') }}" placeholder="Admission inquiry / Program info / etc."
-                                       class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition placeholder-gray-300" />
+                                <input id="contact-subject" name="subject" value="{{ old('subject') }}" placeholder="Admission inquiry / Program info / etc." autocomplete="off"
+                                    class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition placeholder-gray-300" />
                             </div>
 
                             <div class="p-4 sm:p-5">
-                                <label class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
+                                <label for="contact-message" class="block text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
                                     Message <span class="text-red-400">*</span>
                                 </label>
-                                <textarea name="message" rows="6" placeholder="Write your message here..."
-                                          class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition resize-none placeholder-gray-300">{{ old('message') }}</textarea>
+                                <textarea id="contact-message" name="message" rows="6" placeholder="Write your message here..." autocomplete="off"
+                                        class="w-full rounded-lg border border-gray-200 px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 focus:border-tpc-primary focus:ring-0 focus:outline-none transition resize-none placeholder-gray-300">{{ old('message') }}</textarea>
                             </div>
 
                             <div class="bg-gray-50 px-4 sm:px-5 py-3 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-b-2xl">

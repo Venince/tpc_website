@@ -12,10 +12,8 @@
     $messagesActive  = $isRoute('admin.messages.*');
     $adminActive     = $isRoute('admin.*') && !$messagesActive;
 
-    // Load active services once for the dropdown
     $navServices = \App\Models\Service::active()->ordered()->get();
 
-    // Search destinations — label => [route/url, optional #anchor]
     $searchItems = [
         ['label' => 'About',                        'url' => route('home')          . '#about',                     'page' => 'Home'],
         ['label' => 'Vision',                       'url' => route('home')          . '#vision',                    'page' => 'Home'],
@@ -43,46 +41,27 @@
 
     <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4 sm:relative sm:flex sm:items-center sm:justify-center sm:min-h-[56px]">
 
-    {{-- Brand (left) --}}
+    {{-- Brand --}}
     <a href="{{ route('home') }}" class="flex items-center gap-3 group min-w-0 shrink-0 sm:absolute sm:left-4" data-tpc-link>
-        <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo"
-            class="h-10 w-auto" loading="eager" decoding="async">
+        <img src="{{ asset('images/TPC-Logo.png') }}" alt="TPC Logo" class="h-10 w-auto" loading="eager" decoding="async">
         <div class="min-w-0">
-            <p class="text-base font-bold text-tpc-primary leading-tight tracking-tight truncate">
-                Talibon Polytechnic College
-            </p>
-            <p class="text-[11px] text-gray-500 tracking-widest uppercase hidden sm:block">
-                Official Website
-            </p>
+            <p class="text-base font-bold text-tpc-primary leading-tight tracking-tight truncate">Talibon Polytechnic College</p>
+            <p class="text-[11px] text-gray-500 tracking-widest uppercase hidden sm:block">Official Website</p>
         </div>
     </a>
 
-    {{-- Desktop nav (centered) --}}
-     <nav class="hidden sm:flex sm:absolute sm:left-1/2 sm:-translate-x-1/2 justify-center items-center gap-1" aria-label="Main navigation">
+    {{-- Desktop nav --}}
+    <nav class="hidden sm:flex sm:absolute sm:left-1/2 sm:-translate-x-1/2 justify-center items-center gap-1" aria-label="Main navigation">
         @php
-            $link = fn(bool $active) =>
-                'tpc-navlink px-3 py-2 text-sm font-semibold transition ' .
-                ($active ? 'tpc-active' : '');
+            $link = fn(bool $active) => 'tpc-navlink px-3 py-2 text-sm font-semibold transition ' . ($active ? 'tpc-active' : '');
         @endphp
 
-        <a id="nav-home" data-tpc-link class="{{ $link($homeActive) }}"
-           href="{{ route('home') }}" @if($homeActive) aria-current="page" @endif>
-           Home
-        </a>
-        <a id="nav-about" data-tpc-link class="{{ $link(false) }}"
-           href="{{ route('home') }}#about">
-           About
-        </a>
-        <a data-tpc-link class="{{ $link($academicsActive) }}"
-           href="{{ route('academics') }}" @if($academicsActive) aria-current="page" @endif>
-           Academics
-        </a>
+        <a id="nav-home" data-tpc-link class="{{ $link($homeActive) }}" href="{{ route('home') }}" @if($homeActive) aria-current="page" @endif>Home</a>
+        <a id="nav-about" data-tpc-link class="{{ $link(false) }}" href="{{ route('home') }}#about">About</a>
+        <a data-tpc-link class="{{ $link($academicsActive) }}" href="{{ route('academics') }}" @if($academicsActive) aria-current="page" @endif>Academics</a>
 
-        {{-- Services dropdown --}}
         @if ($navServices->isNotEmpty())
-            <div class="relative" x-data="{ open: false }"
-                 @mouseenter="open = true" @mouseleave="open = false"
-                 @keydown.escape.window="open = false">
+            <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" @keydown.escape.window="open = false">
                 <button type="button" @click="open = !open"
                         class="tpc-navlink inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold transition {{ $servicesActive ? 'tpc-active' : '' }}"
                         :aria-expanded="open.toString()">
@@ -92,12 +71,8 @@
                     </svg>
                 </button>
                 <div x-cloak x-show="open"
-                     x-transition:enter="transition ease-out duration-150"
-                     x-transition:enter-start="opacity-0 translate-y-1 scale-[0.98]"
-                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave="transition ease-in duration-100"
-                     x-transition:leave-start="opacity-100"
-                     x-transition:leave-end="opacity-0"
+                     x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1 scale-[0.98]" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                     x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                      class="absolute left-0 top-full pt-1 w-64 z-50">
                     <div class="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
                         <div class="bg-tpc-primary px-4 py-2.5">
@@ -105,8 +80,7 @@
                         </div>
                         <div class="py-1.5">
                             @foreach ($navServices as $svc)
-                                <a href="{{ route('services.show', $svc) }}"
-                                   data-tpc-link data-service-href="{{ route('services.show', $svc) }}"
+                                <a href="{{ route('services.show', $svc) }}" data-tpc-link data-service-href="{{ route('services.show', $svc) }}"
                                    class="group flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-tpc-primary/6 hover:text-tpc-primary transition {{ request()->routeIs('services.show') && request()->route('service')?->is($svc) ? 'bg-tpc-primary/8 text-tpc-primary font-semibold' : '' }}">
                                     <span data-service-dot class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 shrink-0 group-hover:bg-tpc-primary transition"></span>
                                     <span class="truncate">{{ $svc->title }}</span>
@@ -121,49 +95,54 @@
             </div>
         @endif
 
-        <a data-tpc-link class="{{ $link($admissionActive) }}"
-           href="{{ route('admission') }}" @if($admissionActive) aria-current="page" @endif>
-           Admission
-        </a>
-        <a data-tpc-link class="{{ $link($newsActive) }}"
-           href="{{ route('news.index') }}" @if($newsActive) aria-current="page" @endif>
-           News
-        </a>
-        <a data-tpc-link class="{{ $link($contactActive) }}"
-           href="{{ route('contact') }}" @if($contactActive) aria-current="page" @endif>
-           Contact
-        </a>
+        <a data-tpc-link class="{{ $link($admissionActive) }}" href="{{ route('admission') }}" @if($admissionActive) aria-current="page" @endif>Admission</a>
+        <a data-tpc-link class="{{ $link($newsActive) }}" href="{{ route('news.index') }}" @if($newsActive) aria-current="page" @endif>News</a>
+        <a data-tpc-link class="{{ $link($contactActive) }}" href="{{ route('contact') }}" @if($contactActive) aria-current="page" @endif>Contact</a>
     </nav>
 
-    {{-- Right: search (desktop) + auth + hamburger (mobile) --}}
+    {{-- Right side --}}
     <div class="flex items-center gap-2 sm:absolute sm:right-4">
 
-        {{-- ── Search bar — always visible on desktop ── --}}
-        <div class="hidden sm:block relative shrink-0" x-data="tpcSearch()" @keydown.escape.window="query = ''; results = []; activeIndex = -1;">
-            <div class="flex items-center gap-2 h-8 px-3 w-44 rounded-full border border-tpc-primary/30 bg-tpc-primary/5
-                        focus-within:border-tpc-primary/60 focus-within:bg-white focus-within:ring-2 focus-within:ring-tpc-primary/10 transition-all duration-200">
-                <svg class="h-3.5 w-3.5 shrink-0 text-tpc-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                    <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
+        {{-- ── Desktop search — expanding pill ── --}}
+        <div class="hidden sm:block relative shrink-0"
+             x-data="tpcSearch()"
+             @keydown.escape.window="query = ''; results = []; activeIndex = -1;">
+
+            {{-- Pill: expands on focus/query --}}
+            <div class="flex items-center gap-2 h-9 px-3 rounded-full border transition-all duration-300 ease-out cursor-text"
+                 :class="query.length > 0 || document.activeElement === $refs.input
+                     ? 'w-56 border-tpc-primary/60 bg-white ring-2 ring-tpc-primary/12 shadow-sm'
+                     : 'w-44 border-tpc-primary/25 bg-tpc-primary/5 hover:border-tpc-primary/40 hover:bg-tpc-primary/8'"
+                 @click="$refs.input.focus()">
+
+                <svg class="h-3.5 w-3.5 shrink-0 transition-colors duration-200"
+                     :class="query.length > 0 ? 'text-tpc-primary' : 'text-tpc-primary/40'"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path stroke-linecap="round" d="M20 20l-3-3"/>
                 </svg>
-                <input
-                    x-ref="input"
-                    type="text"
-                    placeholder="Search…"
-                    x-model="query"
-                    @input="search()"
-                    @keydown.arrow-down.prevent="moveDown()"
-                    @keydown.arrow-up.prevent="moveUp()"
-                    @keydown.enter.prevent="selectActive()"
-                    class="flex-1 bg-transparent text-xs text-gray-700 placeholder-gray-400 outline-none border-none focus:ring-0 min-w-0 p-0"
-                    autocomplete="off"
-                    aria-label="Search site"
-                    aria-autocomplete="list"
-                    :aria-activedescendant="activeIndex >= 0 ? 'tpc-sr-' + activeIndex : null"
-                />
+
+                <input x-ref="input"
+                       id="tpc-search-desktop"
+                       name="search"
+                       type="text"
+                       placeholder="Search…"
+                       x-model="query"
+                       @input="search()"
+                       @keydown.arrow-down.prevent="moveDown()"
+                       @keydown.arrow-up.prevent="moveUp()"
+                       @keydown.enter.prevent="selectActive()"
+                       class="flex-1 bg-transparent text-xs text-gray-700 placeholder-gray-400/70 outline-none border-none focus:ring-0 min-w-0 p-0"
+                       autocomplete="off"
+                       aria-label="Search site"
+                       aria-autocomplete="list"
+                       :aria-activedescendant="activeIndex >= 0 ? 'tpc-sr-' + activeIndex : null"/>
+
                 <button x-show="query.length > 0" x-cloak type="button"
-                        @click="query = ''; results = []; activeIndex = -1; $refs.input.focus()"
-                        class="text-gray-300 hover:text-gray-500 transition shrink-0" aria-label="Clear search">
-                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        @click.stop="query = ''; results = []; activeIndex = -1; $refs.input.focus()"
+                        class="flex items-center justify-center h-4 w-4 rounded-full bg-gray-200/80 hover:bg-gray-300 transition shrink-0"
+                        aria-label="Clear search">
+                    <svg class="h-2.5 w-2.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
@@ -171,53 +150,81 @@
 
             {{-- Results dropdown --}}
             <div x-show="results.length > 0" x-cloak
-                 x-transition:enter="transition ease-out duration-150"
-                 x-transition:enter-start="opacity-0 translate-y-1"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 x-transition:leave="transition ease-in duration-100"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="absolute right-0 top-full mt-2 w-64 z-50 rounded-xl border border-gray-200 bg-white shadow-lg shadow-black/5 overflow-hidden"
+                 x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1 scale-[0.98]" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-[0.98]"
+                 class="absolute right-0 top-full mt-2 w-72 z-50 rounded-2xl border border-gray-200/80 bg-white shadow-xl shadow-black/8 ring-1 ring-black/4 overflow-hidden"
                  role="listbox" aria-label="Search results">
-                <div class="px-3 py-2 border-b border-gray-100">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Results</p>
+
+                <div class="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Results</p>
+                    <p class="text-[10px] text-gray-400" x-text="results.length + ' found'"></p>
                 </div>
-                <div class="py-1 max-h-64 overflow-y-auto">
+
+                <div class="py-1.5 max-h-72 overflow-y-auto">
                     <template x-for="(item, i) in results" :key="i">
                         <button type="button" :id="'tpc-sr-' + i"
                                 @click="go(item)" @mouseenter="activeIndex = i"
                                 role="option" :aria-selected="activeIndex === i"
-                                class="w-full flex items-center gap-3 px-3 py-2 text-left transition-colors group"
-                                :class="activeIndex === i ? 'bg-tpc-primary/6 text-tpc-primary' : 'text-gray-600 hover:bg-gray-50'">
-                            <svg class="h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-tpc-primary/50 transition-colors"
-                                 :class="activeIndex === i ? 'text-tpc-primary/50' : ''"
-                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
-                            </svg>
+                                class="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors"
+                                :class="activeIndex === i ? 'bg-tpc-primary/8 text-tpc-primary' : 'text-gray-600 hover:bg-gray-50/80'">
+
+                            <span class="flex items-center justify-center h-6 w-6 rounded-lg shrink-0 transition-colors"
+                                  :class="activeIndex === i ? 'bg-tpc-primary/12' : 'bg-gray-100'">
+                                <svg class="h-3.5 w-3.5 transition-colors"
+                                     :class="activeIndex === i ? 'text-tpc-primary' : 'text-gray-400'"
+                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="7"/>
+                                    <path stroke-linecap="round" d="M20 20l-3-3"/>
+                                </svg>
+                            </span>
+
                             <div class="min-w-0 flex-1">
-                                <p class="text-xs font-medium truncate" x-text="item.label"></p>
-                                <p class="text-[10px] text-gray-400 truncate" x-text="item.page"></p>
+                                <p class="text-xs font-semibold truncate leading-snug" x-text="item.label"></p>
+                                <p class="text-[10px] leading-snug mt-0.5 transition-colors"
+                                   :class="activeIndex === i ? 'text-tpc-primary/60' : 'text-gray-400'"
+                                   x-text="item.page"></p>
                             </div>
+
+                            <svg class="h-3.5 w-3.5 shrink-0 transition-colors"
+                                 :class="activeIndex === i ? 'text-tpc-primary/50' : 'text-gray-300'"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
                         </button>
                     </template>
+                </div>
+
+                <div class="px-4 py-2 border-t border-gray-100 flex items-center gap-3">
+                    <span class="text-[10px] text-gray-400">↑↓ navigate</span>
+                    <span class="text-gray-200 select-none">·</span>
+                    <span class="text-[10px] text-gray-400">Enter to go</span>
+                    <span class="text-gray-200 select-none">·</span>
+                    <span class="text-[10px] text-gray-400">Esc to close</span>
                 </div>
             </div>
 
             {{-- No results --}}
             <div x-show="query.length > 0 && results.length === 0" x-cloak
-                 class="absolute right-0 top-full mt-2 w-56 z-50 rounded-xl border border-gray-200 bg-white shadow-lg shadow-black/5">
-                <div class="px-3 py-3 text-xs text-gray-400 text-center">
-                    No results for "<span x-text="query" class="font-medium text-gray-600"></span>"
+                 x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+                 class="absolute right-0 top-full mt-2 w-64 z-50 rounded-2xl border border-gray-200/80 bg-white shadow-xl shadow-black/8 overflow-hidden">
+                <div class="px-4 py-4 text-center">
+                    <div class="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 mx-auto mb-2">
+                        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="7"/>
+                            <path stroke-linecap="round" d="M20 20l-3-3"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs font-medium text-gray-600">No results for "<span x-text="query" class="text-tpc-primary"></span>"</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Try a page name or section</p>
                 </div>
             </div>
         </div>
 
-        {{-- Admin links (desktop) --}}
+        {{-- Admin links --}}
         @auth
             @if($isAdmin)
                 <span class="hidden sm:block mx-1 h-5 w-px bg-tpc-primary/50"></span>
-                <a id="nav-messages" data-tpc-link
-                   href="{{ route('admin.messages.index') }}"
+                <a id="nav-messages" data-tpc-link href="{{ route('admin.messages.index') }}"
                    class="hidden sm:inline-flex {{ $link($messagesActive) }} items-center gap-1.5"
                    title="Messages" @if($messagesActive) aria-current="page" @endif>
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -226,11 +233,9 @@
                     </svg>
                     <span class="sr-only">Messages</span>
                 </a>
-                <a id="nav-admin" data-tpc-link
-                   href="{{ route('admin.dashboard') }}"
+                <a id="nav-admin" data-tpc-link href="{{ route('admin.dashboard') }}"
                    class="hidden sm:inline-flex {{ $link($adminActive) }} items-center gap-1.5"
-                   title="Admin" data-no-pjax="true"
-                   @if($adminActive) aria-current="page" @endif>
+                   title="Admin" data-no-pjax="true" @if($adminActive) aria-current="page" @endif>
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 1 0-16 0"/>
                         <circle cx="12" cy="8" r="4"/>
@@ -240,18 +245,14 @@
             @endif
         @endauth
 
-        {{-- Mobile: hamburger + search icon --}}
+        {{-- Mobile hamburger --}}
         <div class="flex items-center gap-2 sm:hidden">
-
-            {{-- Hamburger --}}
             <div x-data="{ open: false }" @close-hamburger.window="open = false">
 
-                <button
-                    type="button"
-                    @click="open = !open"
-                    class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg text-tpc-primary transition-all duration-200"
-                    :class="open ? 'bg-tpc-primary text-white shadow-md' : 'bg-tpc-primary/8 hover:bg-tpc-primary/15'"
-                    aria-label="Toggle menu">
+                <button type="button" @click="open = !open"
+                        class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg text-tpc-primary transition-all duration-200"
+                        :class="open ? 'bg-tpc-primary text-white shadow-md' : 'bg-tpc-primary/8 hover:bg-tpc-primary/15'"
+                        aria-label="Toggle menu">
                     <svg x-show="!open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h16"/>
                     </svg>
@@ -261,22 +262,14 @@
                 </button>
 
                 <div x-cloak x-show="open"
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0"
-                     x-transition:enter-end="opacity-100"
-                     x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100"
-                     x-transition:leave-end="opacity-0"
+                     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                      class="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]"
                      @click="open = false" aria-hidden="true"></div>
 
                 <div x-cloak x-show="open"
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 -translate-y-2 scale-[0.98]"
-                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave-end="opacity-0 -translate-y-2 scale-[0.98]"
+                     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2 scale-[0.98]" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 -translate-y-2 scale-[0.98]"
                      class="absolute left-0 right-0 top-full z-50 px-3 pt-2 pb-3"
                      @click.outside="open = false">
 
@@ -302,99 +295,100 @@
                             ];
                         @endphp
 
-                        {{-- ── Search inside hamburger menu ── --}}
-                        <div class="px-2 pt-2" x-data="tpcSearch()">
-                            <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 h-9
-                                        focus-within:border-tpc-primary/50 focus-within:bg-white focus-within:ring-2 focus-within:ring-tpc-primary/10 transition-all">
-                                <svg class="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
+                        {{-- ── Mobile search ── --}}
+                        <div class="px-2 pt-2.5 pb-1" x-data="tpcSearch()">
+                            <div class="flex items-center gap-2 rounded-xl border px-3 h-10 transition-all duration-200"
+                                 :class="query.length > 0
+                                     ? 'border-tpc-primary/50 bg-white ring-2 ring-tpc-primary/10'
+                                     : 'border-gray-200 bg-gray-50/80 hover:border-gray-300'">
+                                <svg class="h-4 w-4 shrink-0 transition-colors duration-200"
+                                     :class="query.length > 0 ? 'text-tpc-primary' : 'text-gray-400'"
+                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="7"/>
+                                    <path stroke-linecap="round" d="M20 20l-3-3"/>
                                 </svg>
-                                <input
-                                    x-ref="input"
-                                    type="text"
-                                    placeholder="Search pages & sections…"
-                                    x-model="query"
-                                    @input="search()"
-                                    @keydown.arrow-down.prevent="moveDown()"
-                                    @keydown.arrow-up.prevent="moveUp()"
-                                    @keydown.enter.prevent="selectActive()"
-                                    class="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none border-none focus:ring-0 p-0"
-                                    autocomplete="off"
-                                    aria-label="Search site"
-                                />
-                                <button
-                                    type="button"
-                                    x-show="query.length > 0"
-                                    x-cloak
-                                    @click="close()"
-                                    class="text-gray-300 hover:text-gray-500 transition shrink-0"
-                                    aria-label="Clear search">
-                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <input x-ref="input"
+                                       id="tpc-search-mobile"
+                                       name="search"
+                                       type="text"
+                                       placeholder="Search pages & sections…"
+                                       x-model="query"
+                                       @input="search()"
+                                       @keydown.arrow-down.prevent="moveDown()"
+                                       @keydown.arrow-up.prevent="moveUp()"
+                                       @keydown.enter.prevent="selectActive()"
+                                       class="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400/70 outline-none border-none focus:ring-0 p-0"
+                                       autocomplete="off"
+                                       aria-label="Search site"/>
+                                <button type="button" x-show="query.length > 0" x-cloak @click="close()"
+                                        class="flex items-center justify-center h-5 w-5 rounded-full bg-gray-200/80 hover:bg-gray-300 transition shrink-0"
+                                        aria-label="Clear search">
+                                    <svg class="h-3 w-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
                                 </button>
                             </div>
 
-                            {{-- Results --}}
-                            <div x-show="results.length > 0" class="mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white">
+                            <div x-show="results.length > 0"
+                                 x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+                                 class="mt-1.5 max-h-52 overflow-y-auto rounded-xl border border-gray-200/80 bg-white shadow-sm">
                                 <template x-for="(item, i) in results" :key="i">
-                                    <button
-                                        type="button"
-                                        @click="go(item)"
-                                        @mouseenter="activeIndex = i"
-                                        class="w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors group"
-                                        :class="activeIndex === i ? 'bg-tpc-primary/6 text-tpc-primary' : 'text-gray-600 hover:bg-gray-50'">
-                                        <svg class="h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-tpc-primary/40 transition-colors"
-                                            :class="activeIndex === i ? 'text-tpc-primary/40' : ''"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3-3"/>
-                                        </svg>
+                                    <button type="button" @click="go(item)" @mouseenter="activeIndex = i"
+                                            class="w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors border-b border-gray-100/80 last:border-0"
+                                            :class="activeIndex === i ? 'bg-tpc-primary/8 text-tpc-primary' : 'text-gray-600 hover:bg-gray-50'">
+                                        <span class="flex items-center justify-center h-6 w-6 rounded-lg shrink-0 transition-colors"
+                                              :class="activeIndex === i ? 'bg-tpc-primary/12' : 'bg-gray-100'">
+                                            <svg class="h-3.5 w-3.5 transition-colors"
+                                                 :class="activeIndex === i ? 'text-tpc-primary' : 'text-gray-400'"
+                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <circle cx="11" cy="11" r="7"/>
+                                                <path stroke-linecap="round" d="M20 20l-3-3"/>
+                                            </svg>
+                                        </span>
                                         <div class="min-w-0 flex-1">
-                                            <p class="text-sm font-medium truncate" x-text="item.label"></p>
-                                            <p class="text-xs text-gray-400 truncate" x-text="item.page"></p>
+                                            <p class="text-sm font-semibold truncate leading-snug" x-text="item.label"></p>
+                                            <p class="text-xs leading-snug mt-0.5 transition-colors"
+                                               :class="activeIndex === i ? 'text-tpc-primary/60' : 'text-gray-400'"
+                                               x-text="item.page"></p>
                                         </div>
+                                        <svg class="h-3.5 w-3.5 shrink-0 transition-colors"
+                                             :class="activeIndex === i ? 'text-tpc-primary/50' : 'text-gray-300'"
+                                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
                                     </button>
                                 </template>
                             </div>
 
-                            {{-- No results --}}
-                            <div x-show="query.length > 0 && results.length === 0" class="mt-1 px-3 py-2.5 text-xs text-gray-400 text-center rounded-lg border border-gray-200 bg-white">
-                                No results for "<span x-text="query" class="font-medium text-gray-600"></span>"
+                            <div x-show="query.length > 0 && results.length === 0"
+                                 class="mt-1.5 px-4 py-3 text-center rounded-xl border border-gray-200/80 bg-white">
+                                <p class="text-sm font-medium text-gray-600">No results for "<span x-text="query" class="text-tpc-primary"></span>"</p>
+                                <p class="text-xs text-gray-400 mt-0.5">Try a page name or section</p>
                             </div>
                         </div>
 
                         <div class="p-2">
-                            {{-- Top items: Home, About, Academics --}}
                             @foreach ($navItemsTop as $item)
                                 <a id="{{ $item['id'] }}" data-tpc-link href="{{ $item['href'] }}"
                                    @click="open = false" @if($item['active']) aria-current="page" @endif
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group
-                                       {{ $item['active'] ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150
-                                        {{ $item['active'] ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                            {!! $item['icon'] !!}
-                                        </svg>
+                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $item['active'] ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
+                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $item['active'] ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">{!! $item['icon'] !!}</svg>
                                     </span>
                                     <span class="flex-1">{{ $item['label'] }}</span>
                                     @if($item['active'])
                                         <span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
                                     @else
-                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                        </svg>
+                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                                     @endif
                                 </a>
                             @endforeach
 
-                            {{-- Services (mobile — expandable sub-list) --}}
                             @if ($navServices->isNotEmpty())
                                 <div x-data="{ servOpen: false }" x-init="servOpen = {{ $servicesActive ? 'true' : 'false' }}">
                                     <button type="button" id="mob-services" @click="servOpen = !servOpen"
-                                            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group
-                                                   {{ $servicesActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150
-                                                     {{ $servicesActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
+                                            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $servicesActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
+                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $servicesActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
                                             </svg>
@@ -404,22 +398,15 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
                                         </svg>
                                     </button>
-
                                     <div x-show="servOpen"
-                                        x-transition:enter="transition ease-out duration-150"
-                                        x-transition:enter-start="opacity-0 -translate-y-1"
-                                        x-transition:enter-end="opacity-100 translate-y-0"
-                                        x-transition:leave="transition ease-in duration-100"
-                                        x-transition:leave-start="opacity-100 translate-y-0"
-                                        x-transition:leave-end="opacity-0 -translate-y-1"
-                                        class="mt-1 ml-10 space-y-0.5">
+                                         x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+                                         x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1"
+                                         class="mt-1 ml-10 space-y-0.5">
                                         @foreach ($navServices as $svc)
-                                            <a href="{{ route('services.show', $svc) }}"
-                                            data-tpc-link @click="open = false"
-                                            data-service-href="{{ route('services.show', $svc) }}"
-                                            class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-tpc-primary/8 hover:text-tpc-primary transition group">
-                                                <span data-service-dot
-                                                    class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 group-hover:bg-tpc-primary shrink-0 transition"></span>
+                                            <a href="{{ route('services.show', $svc) }}" data-tpc-link @click="open = false"
+                                               data-service-href="{{ route('services.show', $svc) }}"
+                                               class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-tpc-primary/8 hover:text-tpc-primary transition group">
+                                                <span data-service-dot class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 group-hover:bg-tpc-primary shrink-0 transition"></span>
                                                 {{ $svc->title }}
                                             </a>
                                         @endforeach
@@ -427,25 +414,18 @@
                                 </div>
                             @endif
 
-                            {{-- Bottom items: Admission, News, Contact --}}
                             @foreach ($navItemsBottom as $item)
                                 <a id="{{ $item['id'] }}" data-tpc-link href="{{ $item['href'] }}"
                                    @click="open = false" @if($item['active']) aria-current="page" @endif
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group
-                                       {{ $item['active'] ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150
-                                        {{ $item['active'] ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                            {!! $item['icon'] !!}
-                                        </svg>
+                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $item['active'] ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
+                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $item['active'] ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">{!! $item['icon'] !!}</svg>
                                     </span>
                                     <span class="flex-1">{{ $item['label'] }}</span>
                                     @if($item['active'])
                                         <span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
                                     @else
-                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                        </svg>
+                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                                     @endif
                                 </a>
                             @endforeach
@@ -456,12 +436,9 @@
                                 <div class="mx-4 my-1 border-t border-gray-100"></div>
                                 <div class="px-2 pb-2">
                                     <p class="px-3 pt-1 pb-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Admin</p>
-
                                     <a id="mob-messages" data-tpc-link href="{{ route('admin.messages.index') }}" @click="open=false"
-                                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group
-                                           {{ $messagesActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150
-                                            {{ $messagesActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
+                                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $messagesActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
+                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $messagesActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
                                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16v12H4z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6"/>
@@ -469,12 +446,9 @@
                                         </span>
                                         <span class="flex-1">Messages</span>
                                     </a>
-
                                     <a href="{{ route('admin.dashboard') }}" data-no-pjax="true" @click="open=false"
-                                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group
-                                           {{ $adminActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all
-                                            {{ $adminActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
+                                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $adminActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
+                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all {{ $adminActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
                                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 1 0-16 0"/>
                                                 <circle cx="12" cy="8" r="4"/>
@@ -491,7 +465,7 @@
         </div>
     </div>
 
-    {{-- ── Search data + Alpine component ────────────────────────────── --}}
+    {{-- ── Search Alpine component + scroll helpers ── --}}
     <script>
     (function () {
         var TPC_SEARCH_ITEMS = @json($searchItems);
@@ -505,9 +479,7 @@
 
                 expand() {
                     this.expanded = true;
-                    this.$nextTick(() => {
-                        if (this.$refs.input) this.$refs.input.focus();
-                    });
+                    this.$nextTick(() => { if (this.$refs.input) this.$refs.input.focus(); });
                 },
 
                 close() {
@@ -570,28 +542,18 @@
             };
         }
 
-        // Make it globally available for Alpine
         window.tpcSearch = tpcSearch;
 
-        // Smooth scroll helper — tries id first, then data-section, then heading text match
         function tpcScrollToAnchor(anchor) {
             var el = document.getElementById(anchor);
-
-            if (!el) {
-                el = document.querySelector('[data-section="' + anchor + '"]');
-            }
-
+            if (!el) el = document.querySelector('[data-section="' + anchor + '"]');
             if (!el) {
                 var words = anchor.replace(/-/g, ' ').toLowerCase();
                 var headings = document.querySelectorAll('h1, h2, h3, h4, section');
                 for (var i = 0; i < headings.length; i++) {
-                    if (headings[i].textContent.trim().toLowerCase().indexOf(words) !== -1) {
-                        el = headings[i];
-                        break;
-                    }
+                    if (headings[i].textContent.trim().toLowerCase().indexOf(words) !== -1) { el = headings[i]; break; }
                 }
             }
-
             if (el) {
                 var headerHeight = document.querySelector('header') ? document.querySelector('header').offsetHeight : 80;
                 var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
@@ -599,17 +561,14 @@
             }
         }
 
-        // On page load — check if we need to scroll to a stored anchor
         document.addEventListener('DOMContentLoaded', function () {
             var anchor = sessionStorage.getItem('tpc_scroll_to');
             if (anchor) {
                 sessionStorage.removeItem('tpc_scroll_to');
-                // Small delay to let the page render
                 setTimeout(function () { tpcScrollToAnchor(anchor); }, 300);
             }
         });
 
-        // Expose for PJAX re-runs
         window.tpcScrollToAnchor = tpcScrollToAnchor;
     })();
     </script>
@@ -629,8 +588,6 @@
                 }
             });
         });
-
-        // ── Sync mobile search panel top to actual header height ──
         var header = document.querySelector('header');
         var panel  = document.querySelector('[data-mob-search-panel]');
         if (header && panel) panel.style.top = header.offsetHeight + 'px';

@@ -44,21 +44,6 @@
                 A student-centered institution committed to quality education, research, and community development in Talibon, Bohol.
             </p>
 
-            {{-- Explore Programs and Admission Guide buttons --}}
-            {{-- <div class="mt-4 sm:mt-8 flex flex-col xs:flex-row flex-wrap gap-2 sm:gap-3 justify-center w-full max-w-xs xs:max-w-none">
-                <a href="{{ route('academics') }}"
-                class="inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-white bg-white/95 backdrop-blur-sm px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-tpc-primary shadow-lg transition hover:bg-tpc-primary hover:border-tpc-primary hover:text-white">
-                    Explore Programs
-                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-                <a href="{{ route('admission') }}"
-                class="inline-flex items-center justify-center rounded-full border-2 border-white/90 bg-black/25 backdrop-blur-sm px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-lg transition hover:bg-tpc-primary hover:border-tpc-primary hover:text-white">
-                    Admission Guide
-                </a>
-            </div> --}}
-
         </div>
 
         {{-- Wave divider --}}
@@ -515,3 +500,74 @@
     </section>
 
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    'use strict';
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Elements to animate — each entry: [selector, base-delay-ms, stagger-ms]
+    var groups = [
+        { sel: '#vision, #mission',                            delay: 0,   stagger: 150 },
+        { sel: '#latest-news > div:first-child',               delay: 0,   stagger: 0   },
+        { sel: '.news-featured-card',                          delay: 60,  stagger: 0   },
+        { sel: '.news-card',                                   delay: 0,   stagger: 100 },
+        { sel: '#academic-programs .flex.items-center.gap-4',  delay: 0,   stagger: 0   },
+        { sel: '.program-card',                                delay: 0,   stagger: 100 },
+        { sel: '#academic-programs .mt-6 > div',               delay: 60,  stagger: 0   },
+    ];
+
+    var DURATION  = '0.75s';
+    var EASING    = 'cubic-bezier(0.16, 1, 0.3, 1)'; // expo-out: fast start, very smooth landing
+    var TRANSLATE = '18px';                            // subtle — not too dramatic
+
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            io.unobserve(el);
+            setTimeout(function () {
+                el.style.transition = 'opacity ' + DURATION + ' ' + EASING + ', transform ' + DURATION + ' ' + EASING;
+                el.style.opacity    = '1';
+                el.style.transform  = 'translateY(0)';
+                // Remove inline styles after animation so hover effects work normally
+                setTimeout(function () {
+                    el.style.transition = '';
+                    el.style.opacity    = '';
+                    el.style.transform  = '';
+                }, 900);
+            }, el._tpcDelay || 0);
+        });
+    }, { threshold: 0.06, rootMargin: '0px 0px -20px 0px' });
+
+    function register(el, delay) {
+        if (!el || el._tpcReveal) return;
+        el._tpcReveal = true;
+        el._tpcDelay  = delay;
+        el.style.opacity   = '0';
+        el.style.transform = 'translateY(' + TRANSLATE + ')';
+        // No will-change here — let the browser decide, avoids compositing overhead
+        io.observe(el);
+    }
+
+    function boot() {
+        groups.forEach(function (group) {
+            Array.from(document.querySelectorAll(group.sel)).forEach(function (el, i) {
+                register(el, group.delay + group.stagger * i);
+            });
+        });
+    }
+
+    // Delay boot so it doesn't clash with the page-load slide-in animation
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 450); });
+    } else {
+        setTimeout(boot, 450);
+    }
+
+    window.tpcHomeScrollReveal = boot;
+})();
+</script>
+@endpush

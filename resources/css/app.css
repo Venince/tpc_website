@@ -57,16 +57,16 @@
   width: 100%;
 }
 
-/* ------- Page crossfade (content + footer) ------- */
+/* ------- Page layout ------- */
 :root {
   --tpc-page-dur: 350ms;
   --tpc-page-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /*
-  FIX 1: Reserve scrollbar width at all times so the layout never shifts
+  Reserve scrollbar width at all times so the layout never shifts
   when content is swapped and the page momentarily becomes non-scrollable.
-  overflow-x: hidden on html (not body) prevents horizontal overflow
+  overflow-x: clip on html prevents horizontal overflow
   without breaking position: sticky on the nav.
 */
 html {
@@ -74,44 +74,55 @@ html {
   scrollbar-gutter: stable;
 }
 
-/*
-  FIX 2: Do NOT put overflow-x: hidden on body — it destroys position: sticky
-  for all child elements including the nav header. Keep body clean.
-  The old "overflow-x: hidden; max-width: 100%" block on html,body is replaced
-  by the html rule above and the #tpc-content rule below.
-*/
 body {
   max-width: 100%;
   width: 100%;
 }
 
-html.tpc-init #tpc-content {
+/*
+  Clip overflow on the content wrapper so no horizontal scrollbar
+  ever appears during any layout change.
+*/
+/* Home page: slide up from bottom on initial hard load */
+html.tpc-home-init #tpc-content {
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateY(28px);
 }
 
-/*
-  FIX 3: Clip overflow on the content wrapper itself so that during the
-  translateY transition no horizontal scrollbar/slider ever appears.
-*/
 #tpc-content {
-  opacity: 1;
-  transform: translateY(0);
   overflow-x: clip;
-  transition:
-    opacity var(--tpc-page-dur) var(--tpc-page-ease),
-    transform var(--tpc-page-dur) var(--tpc-page-ease);
+  transform: translateY(0);
+  transition: opacity 220ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 
 #tpc-content.tpc-leave {
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(0);
 }
 
 #tpc-content.tpc-enter {
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateY(0);
+}
+
+/* Home page: slide up from bottom on enter */
+#tpc-content.tpc-enter-home {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #tpc-content {
+    transition: none !important;
+  }
+  html.tpc-home-init #tpc-content,
+  #tpc-content.tpc-leave,
+  #tpc-content.tpc-enter,
+  #tpc-content.tpc-enter-home {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
 }
 
 /* About highlight pulse */
@@ -122,18 +133,6 @@ html.tpc-init #tpc-content {
   0%   { box-shadow: 0 0 0 0 rgba(0, 128, 0, 0.35); }
   35%  { box-shadow: 0 0 0 10px rgba(0, 128, 0, 0.18); }
   100% { box-shadow: 0 0 0 0 rgba(0, 128, 0, 0); }
-}
-
-/* Respect accessibility */
-@media (prefers-reduced-motion: reduce) {
-  #tpc-content {
-    transition: none !important;
-  }
-  #tpc-content.tpc-leave,
-  #tpc-content.tpc-enter {
-    opacity: 1 !important;
-    transform: none !important;
-  }
 }
 
 /* Learn more arrow animation */

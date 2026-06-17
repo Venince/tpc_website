@@ -61,7 +61,7 @@ const getDurFor = (container) => {
   if (!container) return 400;
   return container.id === 'tpc-admin-main'
     ? cssVarNumber('--tpc-admin-dur', 220)
-    : cssVarNumber('--tpc-page-dur', 240);
+    : 0;
 };
 
 const isSameOrigin = (url) => url.origin === window.location.origin;
@@ -106,16 +106,10 @@ function initPageComponents() {
     window.initAdmissionSortable();
   }
 
-  // Scroll-reveal — re-scan new DOM after PJAX swap
-  if (typeof window.tpcScrollRevealBoot === 'function') {
-    window.tpcScrollRevealBoot();
-  }
-
   // ── Handle post-PJAX anchor scroll (from search navigation) ──
   var anchor = sessionStorage.getItem('tpc_scroll_to');
   if (anchor) {
     sessionStorage.removeItem('tpc_scroll_to');
-    // Snap to top of page instantly first, then smoothly scroll to section
     window.scrollTo({ top: 0, behavior: 'instant' });
     setTimeout(function () {
       if (typeof tpcScrollToAnchor === 'function') tpcScrollToAnchor(anchor);
@@ -500,41 +494,59 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
   const isAdminMain = container.id === 'tpc-admin-main';
   const dur = getDurFor(container);
 
-  // Start fetch immediately in parallel with the fade-out animation
+  // Start fetch immediately in parallel with the fade-out
   const fetchPromise = fetch(url.href, {
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     credentials: 'same-origin',
   });
 
-  // Scroll to top BEFORE fade so the user sees the top of the new page
+  // Scroll to top before swap
   if (!url.hash && !window._scrollToAboutAfterNav) {
     window.scrollTo({ top: 0 });
   }
 
-  // Lock height BEFORE fade starts so viewport doesn't collapse mid-transition
-  container.style.minHeight = container.offsetHeight + 'px';
-
-  if (isAdminMain) container.classList.add('tpc-admin-leave');
-  else container.classList.add('tpc-leave');
-
-  await sleep(dur);
-
-  container.innerHTML = '';
-
+  // ── Fade out + fetch in parallel ─────────────────────────────────────
+  // For public pages: fade out while fetching. We destructure the settled
+  // values from Promise.all so the Response is only consumed once — reading
+  // .text() on a Response that was already awaited via fetchPromise a second
+  // time throws "body already used".
   let html;
-  try {
-    const res = await fetchPromise;
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    html = await res.text();
-  } catch (_) {
-    navigating = false;
-    window.location.href = url.href;
-    return;
+
+  if (isAdminMain) {
+    container.style.minHeight = container.offsetHeight + 'px';
+    container.classList.add('tpc-admin-leave');
+    await sleep(dur);
+    try {
+      const res = await fetchPromise;
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      html = await res.text();
+    } catch (_) {
+      container.classList.remove('tpc-admin-leave');
+      container.style.minHeight = '';
+      navigating = false;
+      window.location.href = url.href;
+      return;
+    }
+    container.innerHTML = '';
+  } else {
+    container.classList.add('tpc-leave');
+    let res;
+    try {
+      [res] = await Promise.all([fetchPromise, sleep(220)]);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      html = await res.text();
+    } catch (_) {
+      container.classList.remove('tpc-leave');
+      navigating = false;
+      window.location.href = url.href;
+      return;
+    }
+    container.innerHTML = '';
   }
 
+  // ── Parse + validate ──────────────────────────────────────────────────
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  const containerId  = container.id;
-  const newContainer = doc.getElementById(containerId);
+  const newContainer = doc.getElementById(container.id);
 
   if (!newContainer) {
     navigating = false;
@@ -542,6 +554,7 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
     return;
   }
 
+  // ── Admin sidebar / header sync ───────────────────────────────────────
   if (isAdminMain) {
     const newH1  = doc.querySelector('header h1');
     const curH1  = document.querySelector('header h1');
@@ -555,22 +568,30 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
     }
   }
 
-  // Clear carousel before swap
+  // ── Clear page-specific state before swap ─────────────────────────────
   if (window._aboutCarouselTimer) {
     clearInterval(window._aboutCarouselTimer);
     window._aboutCarouselTimer = null;
   }
   window.initAboutCarousel = null;
-
-  // Clear org chart init so it doesn't linger on non-org-chart pages
   window.initOrgChart = null;
 
-  // Swap content
+  // ── Swap content ──────────────────────────────────────────────────────
   container.innerHTML = newContainer.innerHTML;
   container.style.minHeight = '';
 
-  // Re-execute inline scripts (this is what registers window.initOrgChart
-  // when navigating to the org chart page)
+  // ── Enter animation ───────────────────────────────────────────────────
+  // Applied immediately after innerHTML swap, before Alpine init or script
+  // re-execution, so nothing interferes with the transition start state.
+  if (!isAdminMain) {
+    const enterClass = isHomePath(url.pathname) ? 'tpc-enter-home' : 'tpc-enter';
+    container.classList.remove('tpc-leave');
+    container.classList.add(enterClass);
+    void container.offsetHeight;
+    setTimeout(() => container.classList.remove(enterClass), 0);
+  }
+
+  // ── Re-execute inline scripts ─────────────────────────────────────────
   container.querySelectorAll('script').forEach((oldScript) => {
     const newScript = document.createElement('script');
     [...oldScript.attributes].forEach((attr) => newScript.setAttribute(attr.name, attr.value));
@@ -589,7 +610,7 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
     if (window.Alpine) window.Alpine.initTree(container);
   } catch (_) {}
 
-  // Scroll handling
+  // ── Scroll handling ───────────────────────────────────────────────────
   if (window._scrollToAboutAfterNav) {
     window._scrollToAboutAfterNav = false;
     requestAnimationFrame(() => {
@@ -607,30 +628,15 @@ async function pjaxNavigate(urlStr, { replace = false, fromPopstate = false } = 
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       else window.scrollTo({ top: 0 });
     });
-  } else {
+  }
 
+  if (isAdminMain) {
+    container.classList.remove('tpc-admin-leave');
   }
 
   setNavActiveByUrl(url.href);
   initHomeNav();
-
-  if (isAdminMain) {
-    container.classList.remove('tpc-admin-leave');
-  } else {
-    // FIX: double rAF ensures the browser paints one frame at opacity-0
-    // before removing tpc-enter, so the CSS transition from 0→1 actually fires.
-    // A single rAF collapses both operations into the same paint, skipping the transition.
-    container.classList.remove('tpc-leave');
-    container.classList.add('tpc-enter');
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => container.classList.remove('tpc-enter'));
-    });
-  }
-
   refreshUnreadBadge({ force: true });
-
-  // Run page-specific component init after the fade-in settles,
-  // so scroll-reveal elements aren't already in view when observed.
   setTimeout(initPageComponents, 60);
 
   navigating = false;
@@ -755,11 +761,10 @@ async function handleLike(btn) {
     });
     if (res.ok) {
       const data = await res.json();
-      // Reconcile with server's true count
       if (countEl) countEl.textContent = data.likes_count;
     }
   } catch (_) {
-    // Network failure — optimistic state stays, server will drift, acceptable for anonymous likes
+    // Network failure — optimistic state stays
   }
 }
 
@@ -769,21 +774,12 @@ window.handleLike = handleLike;
    Boot
 ---------------------------- */
 window.addEventListener('DOMContentLoaded', () => {
-  requestAnimationFrame(() => {
-    document.documentElement.classList.remove('tpc-init');
-    document.documentElement.classList.remove('tpc-admin-init');
-  });
-
   setNavActiveByUrl(window.location.href);
   initHomeNav();
   refreshUnreadBadge({ force: true });
   startBadgePolling();
   initPageComponents();
 
-  // Hard-refresh safety: inline script in admission/index runs before
-  // SortableJS (in layout) is parsed, so Sortable is undefined at that point.
-  // DOMContentLoaded fires after ALL scripts are loaded, so this second call
-  // succeeds and initialises the lists properly.
   if (typeof window.initAdmissionSortable === 'function') {
     window.initAdmissionSortable();
   }
