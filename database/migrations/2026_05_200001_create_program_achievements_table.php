@@ -14,7 +14,7 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('year')->nullable();          // stored as string: "2024", "A.Y. 2023–2024"
+            $table->string('year')->nullable();
             $table->string('photo_path')->nullable();
             $table->unsignedSmallInteger('order')->default(0);
             $table->timestamps();

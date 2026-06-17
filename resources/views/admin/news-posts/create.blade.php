@@ -90,7 +90,7 @@
                 <div id="preview-wrap" class="hidden mb-3 rounded-xl border border-tpc-primary/12 bg-tpc-primary/3 p-3">
                     <p class="text-xs font-semibold text-tpc-ink/60 mb-2">Preview</p>
                     <img id="preview-img" src="" alt="Preview"
-                        class="w-full max-h-64 rounded-xl border border-tpc-primary/10 object-contain">
+                        class="w-full rounded-xl border border-tpc-primary/10 object-contain">
                     <p id="preview-meta" class="mt-1.5 text-xs text-tpc-ink/40"></p>
                 </div>
 

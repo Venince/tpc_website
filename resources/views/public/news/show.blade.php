@@ -154,7 +154,7 @@
                         @php $gallery = $post->galleryImages; @endphp
                         <div class="mt-8 sm:mt-10"
                             x-data
-                            x-init="Alpine.store('gallery').init($el.closest('[data-paths]').dataset.paths ?? $el.dataset.paths)"
+                            x-init="Alpine.store('gallery').init(JSON.parse($el.dataset.paths))"
                             data-paths="{{ $gallery->pluck('image_path')->toJson() }}">
 
                             {{-- Section header --}}
