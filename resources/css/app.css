@@ -59,16 +59,10 @@
 
 /* ------- Page layout ------- */
 :root {
-  --tpc-page-dur: 350ms;
-  --tpc-page-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --tpc-page-dur: 600ms;
+  --tpc-page-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/*
-  Reserve scrollbar width at all times so the layout never shifts
-  when content is swapped and the page momentarily becomes non-scrollable.
-  overflow-x: clip on html prevents horizontal overflow
-  without breaking position: sticky on the nav.
-*/
 html {
   overflow-x: clip;
   scrollbar-gutter: stable;
@@ -79,20 +73,17 @@ body {
   width: 100%;
 }
 
-/*
-  Clip overflow on the content wrapper so no horizontal scrollbar
-  ever appears during any layout change.
-*/
 /* Home page: slide up from bottom on initial hard load */
 html.tpc-home-init #tpc-content {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(36px);
 }
 
 #tpc-content {
   overflow-x: clip;
   transform: translateY(0);
-  transition: opacity 220ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity var(--tpc-page-dur) var(--tpc-page-ease),
+              transform var(--tpc-page-dur) var(--tpc-page-ease);
   will-change: opacity, transform;
 }
 
@@ -109,7 +100,7 @@ html.tpc-home-init #tpc-content {
 /* Home page: slide up from bottom on enter */
 #tpc-content.tpc-enter-home {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(36px);
 }
 
 @media (prefers-reduced-motion: reduce) {
