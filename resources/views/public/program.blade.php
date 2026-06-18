@@ -159,15 +159,178 @@
                             </div>
                             <div class="space-y-4 sm:space-y-5">
                                 @foreach ($achievements as $achievement)
+                                    @php
+                                        // Collect all images: new gallery + legacy single photo
+                                        $galleryImages = $achievement->images->pluck('path')->toArray();
+                                        if ($achievement->photo_path && empty($galleryImages)) {
+                                            $galleryImages = [$achievement->photo_path];
+                                        }
+                                        $imgCount = count($galleryImages);
+                                    @endphp
+
                                     <div class="achievement-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                                         <div class="h-1.5 bg-tpc-accent"></div>
-                                        @if ($achievement->photo_path)
-                                            <div class="achievement-img bg-gray-50 border-b border-gray-100">
-                                                <img src="{{ asset('storage/' . $achievement->photo_path) }}"
-                                                    class="w-full max-w-full object-cover"
-                                                     alt="{{ $achievement->title }}" loading="lazy">
-                                            </div>
+
+                                        {{-- ── Photo grid ── --}}
+                                        @if ($imgCount > 0)
+                                            @php $gridId = 'ag-' . $achievement->id; @endphp
+
+                                            {{-- Alpine gallery store scoped per achievement --}}
+                                            <div x-data="{
+                                                    open: false,
+                                                    current: 0,
+                                                    images: {{ json_encode(array_map(fn($p) => asset('storage/' . $p), $galleryImages)) }},
+                                                    openAt(i) { this.current = i; this.open = true; document.body.style.overflow='hidden'; },
+                                                    close()   { this.open = false; document.body.style.overflow=''; },
+                                                    prev()    { this.current = (this.current - 1 + this.images.length) % this.images.length; },
+                                                    next()    { this.current = (this.current + 1) % this.images.length; }
+                                                 }"
+                                                 @keydown.escape.window="close()"
+                                            >
+
+                                                {{-- Photo grid layout --}}
+                                                @if ($imgCount === 1)
+                                                    {{-- Single: full-width --}}
+                                                    <div class="achievement-img bg-gray-50 cursor-pointer" @click="openAt(0)">
+                                                        <img src="{{ asset('storage/' . $galleryImages[0]) }}"
+                                                             class="object-cover hover:opacity-95 transition"
+                                                             alt="{{ $achievement->title }}" loading="lazy">
+                                                    </div>
+
+                                                @elseif ($imgCount === 2)
+                                                    {{-- Two: side by side --}}
+                                                    <div class="grid grid-cols-2 gap-0.5 bg-gray-100">
+                                                        @foreach ($galleryImages as $i => $path)
+                                                            <div class="aspect-square overflow-hidden cursor-pointer" @click="openAt({{ $i }})">
+                                                                <img src="{{ asset('storage/' . $path) }}"
+                                                                     class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                                     alt="{{ $achievement->title }}" loading="lazy">
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+
+                                                @elseif ($imgCount === 3)
+                                                    {{-- Three: 1 large left + 2 stacked right --}}
+                                                    <div class="grid grid-cols-2 gap-0.5 bg-gray-100" style="height:240px">
+                                                        <div class="overflow-hidden cursor-pointer h-full" @click="openAt(0)">
+                                                            <img src="{{ asset('storage/' . $galleryImages[0]) }}"
+                                                                 class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                                 alt="{{ $achievement->title }}" loading="lazy">
+                                                        </div>
+                                                        <div class="grid grid-rows-2 gap-0.5 h-full">
+                                                            @foreach ([$galleryImages[1], $galleryImages[2]] as $i => $path)
+                                                                <div class="overflow-hidden cursor-pointer" @click="openAt({{ $i + 1 }})">
+                                                                    <img src="{{ asset('storage/' . $path) }}"
+                                                                         class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                                         alt="{{ $achievement->title }}" loading="lazy">
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+
+                                                @elseif ($imgCount === 4)
+                                                    {{-- Four: 2×2 grid --}}
+                                                    <div class="grid grid-cols-2 gap-0.5 bg-gray-100">
+                                                        @foreach ($galleryImages as $i => $path)
+                                                            <div class="aspect-square overflow-hidden cursor-pointer" @click="openAt({{ $i }})">
+                                                                <img src="{{ asset('storage/' . $path) }}"
+                                                                     class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                                     alt="{{ $achievement->title }}" loading="lazy">
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+
+                                                @else
+                                                    {{-- 5+: 1 big top + row of 4 below, "+N more" overlay on last --}}
+                                                    <div class="flex flex-col gap-0.5 bg-gray-100">
+                                                        {{-- Top large --}}
+                                                        <div class="overflow-hidden cursor-pointer" style="height:200px" @click="openAt(0)">
+                                                            <img src="{{ asset('storage/' . $galleryImages[0]) }}"
+                                                                 class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                                 alt="{{ $achievement->title }}" loading="lazy">
+                                                        </div>
+                                                        {{-- Bottom row of 4 --}}
+                                                        <div class="grid grid-cols-4 gap-0.5" style="height:100px">
+                                                            @foreach (array_slice($galleryImages, 1, 4) as $i => $path)
+                                                                <div class="relative overflow-hidden cursor-pointer" @click="openAt({{ $i + 1 }})">
+                                                                    <img src="{{ asset('storage/' . $path) }}"
+                                                                         class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                                         alt="{{ $achievement->title }}" loading="lazy">
+                                                                    {{-- "+N more" overlay on the 4th thumb if there are more --}}
+                                                                    @if ($i === 3 && $imgCount > 5)
+                                                                        <div class="absolute inset-0 bg-black/55 flex items-center justify-center cursor-pointer"
+                                                                             @click.stop="openAt(4)">
+                                                                            <span class="text-white font-bold text-lg">+{{ $imgCount - 5 }}</span>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                {{-- ── Lightbox ── --}}
+                                                <template x-teleport="body">
+                                                    <div x-show="open"
+                                                         x-transition.opacity.duration.200ms
+                                                         class="fixed inset-0 z-[999] flex items-center justify-center bg-black/90"
+                                                         @click.self="close()"
+                                                         style="display:none">
+
+                                                        {{-- Close --}}
+                                                        <button @click="close()"
+                                                                class="absolute top-4 right-4 text-white/70 hover:text-white transition z-10">
+                                                            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                                            </svg>
+                                                        </button>
+
+                                                        {{-- Prev --}}
+                                                        <button x-show="images.length > 1"
+                                                                @click="prev()"
+                                                                class="absolute left-3 text-white/70 hover:text-white transition z-10 bg-black/30 rounded-full p-2">
+                                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                                                            </svg>
+                                                        </button>
+
+                                                        {{-- Image --}}
+                                                        <img :src="images[current]"
+                                                             class="max-h-[85vh] max-w-[90vw] rounded-lg object-contain shadow-2xl select-none"
+                                                             alt="">
+
+                                                        {{-- Next --}}
+                                                        <button x-show="images.length > 1"
+                                                                @click="next()"
+                                                                class="absolute right-3 text-white/70 hover:text-white transition z-10 bg-black/30 rounded-full p-2">
+                                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                                            </svg>
+                                                        </button>
+
+                                                        {{-- Counter --}}
+                                                        <div x-show="images.length > 1"
+                                                             class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm font-semibold tabular-nums">
+                                                            <span x-text="current + 1"></span> / <span x-text="images.length"></span>
+                                                        </div>
+
+                                                        {{-- Dot indicators --}}
+                                                        <div x-show="images.length > 1 && images.length <= 10"
+                                                             class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                                            <template x-for="(img, i) in images" :key="i">
+                                                                <button @click="current = i"
+                                                                        :class="i === current ? 'bg-white w-4' : 'bg-white/40 w-2'"
+                                                                        class="h-2 rounded-full transition-all duration-200">
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+
+                                            </div>{{-- end x-data --}}
                                         @endif
+
+                                        {{-- Text content --}}
                                         <div class="p-4 sm:p-6">
                                             @if ($achievement->year)
                                                 <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2">

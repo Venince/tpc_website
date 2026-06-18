@@ -36,8 +36,8 @@
 
             {{-- Title --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Title</label>
-                <input type="text" name="title" value="{{ old('title') }}" required
+                <label for="title" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Title</label>
+                <input type="text" name="title" id="title" value="{{ old('title') }}" required
                        placeholder="Enter post title…"
                        class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition placeholder:text-tpc-ink/30" />
                 @error('title') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
@@ -46,9 +46,9 @@
             {{-- Category + Excerpt row --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Category</label>
+                    <label for="category" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Category</label>
                     <div class="relative">
-                        <select name="category"
+                        <select name="category" id="category"
                                 class="w-full appearance-none rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition bg-white pr-9">
                             @foreach (['Announcement','Event','Advisory','Scholarship'] as $cat)
                                 <option value="{{ $cat }}" @selected(old('category','Announcement') === $cat)>{{ $cat }}</option>
@@ -62,10 +62,10 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
+                    <label for="excerpt" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
                         Excerpt <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
                     </label>
-                    <input type="text" name="excerpt" value="{{ old('excerpt') }}"
+                    <input type="text" name="excerpt" id="excerpt" value="{{ old('excerpt') }}"
                            placeholder="Short summary…"
                            class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition placeholder:text-tpc-ink/30" />
                     @error('excerpt') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
@@ -74,58 +74,37 @@
 
             {{-- Body --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Body</label>
-                <textarea name="body" rows="10" required
+                <label for="body" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Body</label>
+                <textarea name="body" id="body" rows="10" required
                           placeholder="Write your post content here…"
                           class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition resize-none placeholder:text-tpc-ink/30">{{ old('body') }}</textarea>
                 @error('body') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Image --}}
+            {{-- Photos --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                    Post Image <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                <label for="photos-input" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
+                    Photos <span class="normal-case font-normal text-tpc-ink/40">(optional · up to 20)</span>
                 </label>
 
-                <div id="preview-wrap" class="hidden mb-3 rounded-xl border border-tpc-primary/12 bg-tpc-primary/3 p-3">
-                    <p class="text-xs font-semibold text-tpc-ink/60 mb-2">Preview</p>
-                    <img id="preview-img" src="" alt="Preview"
-                        class="w-full rounded-xl border border-tpc-primary/10 object-contain">
-                    <p id="preview-meta" class="mt-1.5 text-xs text-tpc-ink/40"></p>
+                {{-- Drop zone --}}
+                <div id="drop-zone"
+                     class="relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-tpc-primary/25 bg-tpc-primary/3 px-4 py-8 text-center cursor-pointer hover:border-tpc-primary/50 hover:bg-tpc-primary/5 transition">
+                    <svg class="h-8 w-8 text-tpc-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 20.25h18M9.75 9.75a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"/>
+                    </svg>
+                    <p class="text-sm font-semibold text-tpc-primary/70">Click to select or drag &amp; drop images</p>
+                    <p class="text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB each · up to 20 images</p>
+                    <input type="file" name="photos[]" id="photos-input" accept="image/png,image/jpeg,image/webp"
+                           multiple class="absolute inset-0 opacity-0 cursor-pointer" />
                 </div>
 
-                <input type="file" name="image" id="image-input" accept="image/png,image/jpeg,image/webp"
-                    class="w-full rounded-xl border border-tpc-primary/20 bg-white px-3 py-2 text-sm
-                            file:mr-3 file:rounded-lg file:border-0 file:bg-tpc-primary/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-tpc-primary
-                            hover:file:bg-tpc-primary/15 transition @error('image') border-red-400 @enderror" />
-                <p class="mt-1.5 text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB · 100×100 – 4000×4000 px</p>
-                <p id="image-error" class="mt-1 text-xs text-red-600 hidden"></p>
-                @error('image') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
+                @error('photos')   <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                @error('photos.*') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
 
-            {{-- Gallery Images --}}
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                    Photo Gallery
-                    <span class="normal-case font-normal text-tpc-ink/40">(optional · up to 20 photos)</span>
-                </label>
-
-                {{-- Selected previews --}}
-                <div id="gallery-preview-grid"
-                     class="hidden grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3"></div>
-
-                <label for="gallery-input"
-                       class="inline-flex items-center gap-2 cursor-pointer rounded-xl border-2 border-dashed
-                              border-tpc-primary/30 bg-tpc-primary/3 px-4 py-2.5 text-sm font-semibold
-                              text-tpc-primary hover:border-tpc-primary/60 hover:bg-tpc-primary/8 transition">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    <span id="gallery-btn-label">Add Photos</span>
-                </label>
-                <input type="file" name="gallery_images[]" id="gallery-input"
-                       multiple accept="image/png,image/jpeg,image/webp" class="sr-only">
-                <p class="mt-1.5 text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB each</p>
+                {{-- Preview grid --}}
+                <div id="preview-grid" class="hidden mt-3 grid grid-cols-3 sm:grid-cols-4 gap-2"></div>
+                <p id="preview-count" class="hidden mt-1.5 text-xs font-semibold text-tpc-primary"></p>
             </div>
 
             {{-- Actions --}}
@@ -142,123 +121,82 @@
                     Cancel
                 </a>
             </div>
-            </form>
-            </div>
+        </form>
+    </div>
 
-            <script>
-                document.getElementById('image-input').addEventListener('change', function () {
-                    const wrap       = document.getElementById('preview-wrap');
-                    const previewImg = document.getElementById('preview-img');
-                    const meta       = document.getElementById('preview-meta');
-                    const errorEl    = document.getElementById('image-error');
+    <script>
+    (function () {
+        const input     = document.getElementById('photos-input');
+        const dropZone  = document.getElementById('drop-zone');
+        const grid      = document.getElementById('preview-grid');
+        const countEl   = document.getElementById('preview-count');
+        const MAX       = 20;
 
-                    // Reset
-                    wrap.classList.add('hidden');
-                    errorEl.classList.add('hidden');
-                    errorEl.textContent = '';
-                    this.setCustomValidity('');
+        let selectedFiles = [];
 
-                    const file = this.files?.[0];
-                    if (!file) return;
+        function renderPreviews() {
+            grid.innerHTML = '';
+            if (selectedFiles.length === 0) {
+                grid.classList.add('hidden');
+                countEl.classList.add('hidden');
+                return;
+            }
+            grid.classList.remove('hidden');
+            countEl.classList.remove('hidden');
+            countEl.textContent = selectedFiles.length + ' image' + (selectedFiles.length > 1 ? 's' : '') + ' selected';
 
-                    const MAX_BYTES = 5 * 1024 * 1024;
-                    const MIN_PX    = 100;
-                    const MAX_PX    = 4000;
+            selectedFiles.forEach((file, idx) => {
+                const wrap = document.createElement('div');
+                wrap.className = 'relative rounded-xl overflow-hidden border border-tpc-primary/15 bg-gray-50 aspect-square';
 
-                    if (file.size > MAX_BYTES) {
-                        const sizeMB = (file.size / 1024 / 1024).toFixed(2);
-                        errorEl.textContent = `File is too large (${sizeMB} MB). Maximum allowed size is 5 MB.`;
-                        errorEl.classList.remove('hidden');
-                        this.setCustomValidity('File too large.');
-                        return;
-                    }
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'w-full h-full object-cover';
+                wrap.appendChild(img);
 
-                    const objectUrl = URL.createObjectURL(file);
-                    const img = new Image();
-                    img.onload = () => {
-                        const w = img.naturalWidth;
-                        const h = img.naturalHeight;
-                        URL.revokeObjectURL(objectUrl);
-
-                        const errors = [];
-                        if (w < MIN_PX || h < MIN_PX)
-                            errors.push(`Too small (${w}×${h} px). Minimum is ${MIN_PX}×${MIN_PX} px.`);
-                        if (w > MAX_PX || h > MAX_PX)
-                            errors.push(`Too large (${w}×${h} px). Maximum is ${MAX_PX}×${MAX_PX} px.`);
-
-                        if (errors.length) {
-                            errorEl.textContent = errors.join(' ');
-                            errorEl.classList.remove('hidden');
-                            this.setCustomValidity(errors.join(' '));
-                            return;
-                        }
-
-                        this.setCustomValidity('');
-                        previewImg.src = URL.createObjectURL(file);
-                        meta.textContent = `${w}×${h} px · ${(file.size / 1024).toFixed(0)} KB`;
-                        wrap.classList.remove('hidden');
-                    };
-                    img.src = objectUrl;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'absolute top-1 right-1 rounded-full bg-black/60 text-white w-5 h-5 flex items-center justify-center hover:bg-red-600 transition text-xs leading-none';
+                btn.innerHTML = '&times;';
+                btn.addEventListener('click', () => {
+                    selectedFiles.splice(idx, 1);
+                    syncInput();
+                    renderPreviews();
                 });
+                wrap.appendChild(btn);
 
-                (function () {
-                    const input    = document.getElementById('gallery-input');
-                    const grid     = document.getElementById('gallery-preview-grid');
-                    const btnLabel = document.getElementById('gallery-btn-label');
-                    let fileList   = new DataTransfer();
+                grid.appendChild(wrap);
+            });
+        }
 
-                    input.addEventListener('change', function () {
-                        Array.from(this.files).forEach(file => {
-                            // Skip duplicates by name+size
-                            const exists = Array.from(fileList.files)
-                                .some(f => f.name === file.name && f.size === file.size);
-                            if (!exists) fileList.items.add(file);
-                        });
-                        this.files = fileList.files;
-                        renderPreviews();
-                    });
+        function syncInput() {
+            const dt = new DataTransfer();
+            selectedFiles.forEach(f => dt.items.add(f));
+            input.files = dt.files;
+        }
 
-                    function renderPreviews() {
-                        grid.innerHTML = '';
-                        const files = Array.from(fileList.files);
-                        if (!files.length) {
-                            grid.classList.add('hidden');
-                            btnLabel.textContent = 'Add Photos';
-                            return;
-                        }
-                        grid.classList.remove('hidden');
-                        btnLabel.textContent = `Add More (${files.length} selected)`;
+        function addFiles(newFiles) {
+            const combined = [...selectedFiles, ...Array.from(newFiles)];
+            selectedFiles  = combined.slice(0, MAX);
+            syncInput();
+            renderPreviews();
+        }
 
-                        files.forEach((file, index) => {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                const wrap = document.createElement('div');
-                                wrap.className = 'relative group rounded-xl overflow-hidden border border-tpc-primary/15 aspect-square bg-gray-100';
-                                wrap.innerHTML = `
-                                    <img src="${e.target.result}" class="w-full h-full object-cover" alt="">
-                                    <button type="button" data-index="${index}"
-                                            class="remove-gallery-btn absolute top-1 right-1 h-5 w-5 rounded-full
-                                                bg-black/60 text-white flex items-center justify-center
-                                                opacity-0 group-hover:opacity-100 transition text-xs font-bold">
-                                        ×
-                                    </button>`;
-                                wrap.querySelector('.remove-gallery-btn').addEventListener('click', function () {
-                                    removeFile(parseInt(this.dataset.index));
-                                });
-                                grid.appendChild(wrap);
-                            };
-                            reader.readAsDataURL(file);
-                        });
-                    }
+        input.addEventListener('change', () => addFiles(input.files));
 
-                    function removeFile(index) {
-                        const dt = new DataTransfer();
-                        Array.from(fileList.files).forEach((f, i) => { if (i !== index) dt.items.add(f); });
-                        fileList = dt;
-                        input.files = fileList.files;
-                        renderPreviews();
-                    }
-                })();
-            </script>
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-tpc-primary/60', 'bg-tpc-primary/8');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-tpc-primary/60', 'bg-tpc-primary/8');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-tpc-primary/60', 'bg-tpc-primary/8');
+            addFiles(e.dataTransfer.files);
+        });
+    })();
+    </script>
 
 @endsection

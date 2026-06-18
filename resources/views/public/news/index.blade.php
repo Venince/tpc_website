@@ -37,7 +37,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
                     </svg>
                     <input name="q" value="{{ request('q') }}" placeholder="Search news…"
-                           class="w-full sm:w-60 rounded-full border-2 border-white/30 bg-white/10 text-white
+                           class="w-full sm:w-80 rounded-full border-2 border-white/30 bg-white/10 text-white
                                   placeholder-white/50 pl-9 pr-4 py-2 text-xs sm:text-sm
                                   focus:border-white focus:outline-none backdrop-blur-sm" />
                 </div>
@@ -117,11 +117,30 @@
                 @endif
             </div>
 
+            @if(request('q'))
+                <p class="text-xs text-gray-500 mb-4 -mt-2">
+                    Showing results for
+                    <span class="font-semibold text-tpc-ink">"{{ request('q') }}"</span>
+                    — {{ $posts->total() }} {{ Str::plural('result', $posts->total()) }} found
+                    @if(request('category'))
+                        in <span class="font-semibold text-tpc-ink">{{ request('category') }}</span>
+                    @endif
+                </p>
+            @endif
+
             @if($posts->isNotEmpty())
 
                 {{-- ── FEED ── --}}
                 <div class="space-y-5">
                     @foreach($posts as $post)
+                        @php
+                            // Collect all gallery images, falling back to legacy single image_path
+                            $galleryPaths = $post->galleryImages->pluck('image_path')->toArray();
+                            if (empty($galleryPaths) && $post->image_path) {
+                                $galleryPaths = [$post->image_path];
+                            }
+                            $imgCount = count($galleryPaths);
+                        @endphp
 
                         {{-- Feed card --}}
                         <article class="bg-white rounded-2xl border border-gray-200 shadow-sm
@@ -154,29 +173,96 @@
                             </div>
 
                             {{-- Post title + excerpt --}}
-                            <div class="px-4 pb-3 text-left">
-                                <h2 class="text-sm sm:text-base font-bold text-gray-900 leading-snug mb-1">
+                            <div class="px-4 pb-3 text-left overflow-hidden">
+                                <h2 class="text-sm sm:text-base font-bold text-gray-900 leading-snug mb-1 break-words">
                                     <a href="{{ route('news.show', $post) }}"
-                                       class="hover:text-tpc-primary transition-colors duration-200">
+                                    class="hover:text-tpc-primary transition-colors duration-200">
                                         {{ $post->title }}
                                     </a>
                                 </h2>
                                 @if($post->excerpt || $post->body)
-                                    <p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3">
+                                    <p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 break-words">
                                         {{ $post->excerpt ?: \Illuminate\Support\Str::limit(strip_tags($post->body), 180) }}
                                     </p>
                                 @endif
                             </div>
 
-                            {{-- Post image --}}
-                            @if($post->image_path)
+                            {{-- Cover gallery (Facebook-style grid, matching the Achievements layout) --}}
+                            @if($imgCount > 0)
                                 <a href="{{ route('news.show', $post) }}" class="block">
-                                    <div class="relative overflow-hidden bg-gray-100" style="max-height: 420px;">
-                                        <img src="{{ asset('storage/' . $post->image_path) }}"
-                                             alt="{{ $post->title }}"
-                                             class="w-full object-cover hover:scale-[1.02] transition-transform duration-500"
-                                             loading="lazy" />
-                                    </div>
+
+                                    @if($imgCount === 1)
+                                        <div class="overflow-hidden bg-gray-50" style="max-height: 420px;">
+                                            <img src="{{ asset('storage/' . $galleryPaths[0]) }}"
+                                                alt="{{ $post->title }}"
+                                                class="w-full object-cover hover:scale-[1.02] transition-transform duration-500"
+                                                loading="lazy" />
+                                        </div>
+
+                                    @elseif($imgCount === 2)
+                                        <div class="grid grid-cols-2 gap-1 bg-gray-100 p-1">
+                                            @foreach($galleryPaths as $path)
+                                                <div class="aspect-square overflow-hidden rounded-lg">
+                                                    <img src="{{ asset('storage/' . $path) }}"
+                                                        class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                        alt="{{ $post->title }}" loading="lazy">
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                    @elseif($imgCount === 3)
+                                        <div class="grid grid-cols-2 gap-1 bg-gray-100 p-1" style="height:240px">
+                                            <div class="overflow-hidden rounded-lg h-full">
+                                                <img src="{{ asset('storage/' . $galleryPaths[0]) }}"
+                                                    class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                    alt="{{ $post->title }}" loading="lazy">
+                                            </div>
+                                            <div class="grid grid-rows-2 gap-1 h-full">
+                                                @foreach([$galleryPaths[1], $galleryPaths[2]] as $path)
+                                                    <div class="overflow-hidden rounded-lg">
+                                                        <img src="{{ asset('storage/' . $path) }}"
+                                                            class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                            alt="{{ $post->title }}" loading="lazy">
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+
+                                    @elseif($imgCount === 4)
+                                        <div class="grid grid-cols-2 gap-1 bg-gray-100 p-1">
+                                            @foreach($galleryPaths as $path)
+                                                <div class="aspect-square overflow-hidden rounded-lg">
+                                                    <img src="{{ asset('storage/' . $path) }}"
+                                                        class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                        alt="{{ $post->title }}" loading="lazy">
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                    @else
+                                        <div class="flex flex-col gap-1 bg-gray-100 p-1">
+                                            <div class="overflow-hidden rounded-lg" style="height:200px">
+                                                <img src="{{ asset('storage/' . $galleryPaths[0]) }}"
+                                                    class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                    alt="{{ $post->title }}" loading="lazy">
+                                            </div>
+                                            <div class="grid grid-cols-4 gap-1" style="height:100px">
+                                                @foreach(array_slice($galleryPaths, 1, 4) as $i => $path)
+                                                    <div class="relative overflow-hidden rounded-lg">
+                                                        <img src="{{ asset('storage/' . $path) }}"
+                                                            class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                            alt="{{ $post->title }}" loading="lazy">
+                                                        @if($i === 3 && $imgCount > 5)
+                                                            <div class="absolute inset-0 bg-black/55 flex items-center justify-center rounded-lg">
+                                                                <span class="text-white font-bold text-lg">+{{ $imgCount - 5 }}</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+
                                 </a>
                             @endif
 
@@ -201,17 +287,6 @@
                                         </svg>
                                         <span class="like-count">{{ $post->likes_count }}</span>
                                     </button>
-
-                                    {{-- Photo count badge --}}
-                                    @if($post->galleryImages->isNotEmpty())
-                                        <span class="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold
-                                                    border border-gray-200 text-gray-500">
-                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
-                                            </svg>
-                                            {{ $post->galleryImages->count() }} {{ Str::plural('photo', $post->galleryImages->count()) }}
-                                        </span>
-                                    @endif
 
                                     {{-- Read Article --}}
                                     <a href="{{ route('news.show', $post) }}"

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProgramAchievement extends Model
 {
@@ -19,5 +20,10 @@ class ProgramAchievement extends Model
     public function program(): BelongsTo
     {
         return $this->belongsTo(Program::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProgramAchievementImage::class)->orderBy('order');
     }
 }

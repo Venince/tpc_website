@@ -174,6 +174,7 @@ Route::middleware(['auth', 'admin'])
             Route::get('/{achievement}/edit',    [ProgramAchievementController::class, 'edit'])    ->name('edit');
             Route::patch('/{achievement}',       [ProgramAchievementController::class, 'update'])  ->name('update');
             Route::delete('/{achievement}',      [ProgramAchievementController::class, 'destroy']) ->name('destroy');
+            Route::delete('/{achievement}/images/{image}', [ProgramAchievementController::class, 'destroyImage'])->name('images.destroy');
             Route::post('/reorder',              [ProgramAchievementController::class, 'reorder']) ->name('reorder');
         });
 

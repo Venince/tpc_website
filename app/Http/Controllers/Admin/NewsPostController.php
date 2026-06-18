@@ -26,14 +26,12 @@ class NewsPostController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'              => ['required', 'string', 'max:255'],
-            'category'           => ['required', 'string', 'max:60'],
-            'excerpt'            => ['nullable', 'string', 'max:255'],
-            'body'               => ['required', 'string'],
-            'image'              => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120',
-                                    'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
-            'gallery_images'     => ['nullable', 'array', 'max:20'],
-            'gallery_images.*'   => ['file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
+            'title'       => ['required', 'string', 'max:255'],
+            'category'    => ['required', 'string', 'max:60'],
+            'excerpt'     => ['nullable', 'string', 'max:255'],
+            'body'        => ['required', 'string'],
+            'photos'      => ['nullable', 'array', 'max:20'],
+            'photos.*'    => ['file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
         ]);
 
         $data['slug'] = $this->uniqueSlug($data['title']);
@@ -50,14 +48,12 @@ class NewsPostController extends Controller
             $data['is_published'] = false;
         }
 
-        if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('news-images', 'public');
-        }
+        unset($data['photos']);
 
         $post = NewsPost::create($data);
 
-        if ($request->hasFile('gallery_images')) {
-            foreach ($request->file('gallery_images') as $i => $file) {
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $i => $file) {
                 $post->galleryImages()->create([
                     'image_path' => $file->store('news-gallery', 'public'),
                     'order'      => $i,
@@ -81,15 +77,12 @@ class NewsPostController extends Controller
     public function update(Request $request, NewsPost $newsPost)
     {
         $data = $request->validate([
-            'title'              => ['required', 'string', 'max:255'],
-            'category'           => ['required', 'string', 'max:60'],
-            'excerpt'            => ['nullable', 'string', 'max:255'],
-            'body'               => ['required', 'string'],
-            'remove_image'       => ['nullable', 'boolean'],
-            'image'              => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:5120',
-                                    'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000'],
-            'gallery_images'     => ['nullable', 'array', 'max:20'],
-            'gallery_images.*'   => ['file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
+            'title'       => ['required', 'string', 'max:255'],
+            'category'    => ['required', 'string', 'max:60'],
+            'excerpt'     => ['nullable', 'string', 'max:255'],
+            'body'        => ['required', 'string'],
+            'photos'      => ['nullable', 'array', 'max:20'],
+            'photos.*'    => ['file', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
         ]);
 
         if ($newsPost->title !== $data['title']) {
@@ -112,23 +105,12 @@ class NewsPostController extends Controller
             $data['review_note']  = null;
         }
 
-        if ($request->boolean('remove_image') && $newsPost->image_path) {
-            Storage::disk('public')->delete($newsPost->image_path);
-            $data['image_path'] = null;
-        }
-
-        if ($request->hasFile('image')) {
-            if ($newsPost->image_path) {
-                Storage::disk('public')->delete($newsPost->image_path);
-            }
-            $data['image_path'] = $request->file('image')->store('news-images', 'public');
-        }
-
+        unset($data['photos']);
         $newsPost->update($data);
 
-        if ($request->hasFile('gallery_images')) {
+        if ($request->hasFile('photos')) {
             $nextOrder = ($newsPost->galleryImages()->max('order') ?? -1) + 1;
-            foreach ($request->file('gallery_images') as $i => $file) {
+            foreach ($request->file('photos') as $i => $file) {
                 $newsPost->galleryImages()->create([
                     'image_path' => $file->store('news-gallery', 'public'),
                     'order'      => $nextOrder + $i,
@@ -148,7 +130,7 @@ class NewsPostController extends Controller
         abort_unless($image->news_post_id === $newsPost->id, 404);
         Storage::disk('public')->delete($image->image_path);
         $image->delete();
-        return back()->with('success', 'Photo removed from gallery.');
+        return back()->with('success', 'Photo removed.');
     }
 
     public function destroy(NewsPost $newsPost)
@@ -209,6 +191,7 @@ class NewsPostController extends Controller
 
     public function repost(NewsPost $newsPost)
     {
+        // Legacy single image_path (kept for backward compatibility)
         $newImagePath = null;
         if ($newsPost->image_path && Storage::disk('public')->exists($newsPost->image_path)) {
             $extension    = pathinfo($newsPost->image_path, PATHINFO_EXTENSION);
@@ -231,7 +214,7 @@ class NewsPostController extends Controller
             'review_note'  => Auth::user()->is_super_admin ? 'Reposted by superadmin.' : null,
         ]);
 
-        // Copy gallery images to the new post
+        // Copy gallery images (the actual photo source now) to the new post
         foreach ($newsPost->galleryImages as $i => $img) {
             if (Storage::disk('public')->exists($img->image_path)) {
                 $ext     = pathinfo($img->image_path, PATHINFO_EXTENSION);
