@@ -92,9 +92,10 @@
 
                     {{-- Thumbnail --}}
                     <div class="shrink-0">
-                        @if($post->image_path)
-                            <img src="{{ asset('storage/' . $post->image_path) }}" alt=""
-                                 class="h-16 w-20 rounded-xl border border-tpc-primary/10 object-cover" loading="lazy" />
+                        @php $thumb = $post->image_path ?? optional($post->galleryImages->first())->image_path; @endphp
+                        @if($post->image_path || $post->galleryImages->isNotEmpty())
+                            <img src="{{ asset('storage/' . ($post->image_path ?? $post->galleryImages->first()->image_path)) }}" alt=""
+                                class="h-16 w-20 rounded-xl border border-tpc-primary/10 object-cover" loading="lazy" />
                         @else
                             <div class="h-16 w-20 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 grid place-items-center">
                                 <svg class="h-5 w-5 text-tpc-ink/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -199,9 +200,9 @@
                                        onchange="onPostCheck()">
                             </td>
                             <td class="px-4 py-3">
-                                @if($post->image_path)
-                                    <img src="{{ asset('storage/' . $post->image_path) }}" alt=""
-                                         class="h-10 w-14 rounded-xl border border-tpc-primary/10 object-cover" loading="lazy" />
+                                @if($post->image_path || $post->galleryImages->isNotEmpty())
+                                    <img src="{{ asset('storage/' . ($post->image_path ?? $post->galleryImages->first()->image_path)) }}" alt=""
+                                        class="h-10 w-14 rounded-xl border border-tpc-primary/10 object-cover" loading="lazy" />
                                 @else
                                     <div class="h-10 w-14 rounded-xl bg-tpc-primary/5 border border-tpc-primary/10 grid place-items-center">
                                         <svg class="h-4 w-4 text-tpc-ink/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

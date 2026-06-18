@@ -18,6 +18,7 @@ class HomeController extends Controller
 
             'latestNews' => NewsPost::where('is_published', 1)
                 ->whereNotNull('published_at')
+                ->with('galleryImages')
                 ->orderByDesc('published_at')
                 ->take(3)
                 ->get(),

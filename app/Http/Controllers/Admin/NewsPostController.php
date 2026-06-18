@@ -14,7 +14,7 @@ class NewsPostController extends Controller
 {
     public function index()
     {
-        $posts = NewsPost::orderByDesc('created_at')->paginate(10);
+        $posts = NewsPost::orderByDesc('created_at')->with('galleryImages')->paginate(10);
         return view('admin.news-posts.index', compact('posts'));
     }
 

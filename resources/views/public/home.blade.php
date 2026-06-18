@@ -271,10 +271,10 @@
                     <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tpc-primary via-tpc-primary to-tpc-accent z-10"></div>
 
                     <div class="sm:flex min-h-[220px] sm:min-h-[260px]">
-                        @if($featured->image_path)
+                        @php $featuredImg = $featured->image_path ?? optional($featured->galleryImages->first())->image_path; @endphp
+                        @if($featuredImg)
                             <div class="relative sm:w-[42%] bg-gray-100 overflow-hidden shrink-0">
-                                <img src="{{ asset('storage/' . $featured->image_path) }}"
-                                     alt="{{ $featured->title }}"
+                                <img src="{{ asset('storage/' . $featuredImg) }}"
                                      class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                                      loading="lazy" />
                                 <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/10 hidden sm:block"></div>
@@ -328,10 +328,11 @@
                                         hover:shadow-md hover:border-tpc-primary/30 hover:-translate-y-0.5
                                         transition-all duration-300 overflow-hidden flex flex-col">
 
-                            @if($post->image_path)
+                            @php $postImg = $post->image_path ?? optional($post->galleryImages->first())->image_path; @endphp
+                            @if($postImg)
                                 <a href="{{ route('news.show', $post) }}" class="block shrink-0 bg-gray-50 overflow-hidden relative"
-                                   style="height: 160px;">
-                                    <img src="{{ asset('storage/' . $post->image_path) }}"
+                                style="height: 160px;">
+                                    <img src="{{ asset('storage/' . $postImg) }}"
                                          alt="{{ $post->title }}"
                                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
                                          loading="lazy" />
