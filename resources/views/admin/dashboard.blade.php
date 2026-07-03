@@ -4,7 +4,7 @@
 
 
 {{-- ── Stat Cards ─────────────────────────────────────────────────── --}}
-<div class="grid gap-3 grid-cols-2 lg:grid-cols-4">
+<div class="grid gap-3 grid-cols-2 lg:grid-cols-5">
 
     {{-- Programs --}}
     <a href="{{ route('admin.programs.index') }}"
@@ -84,6 +84,48 @@
         </div>
     </a>
 
+    {{-- Feedback --}}
+    <a href="{{ route('admin.feedback.index') }}"
+       class="group relative overflow-hidden rounded-2xl border border-amber-100 bg-white p-4 sm:p-5 shadow-sm
+              hover:shadow-md hover:border-amber-200 hover:-translate-y-0.5 transition-all duration-200">
+        <div class="absolute left-0 inset-y-0 w-[3px] rounded-r-full bg-amber-400/70"></div>
+        <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-amber-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-amber-100/60"></div>
+        <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 relative">
+                <p class="text-[10px] sm:text-xs text-tpc-ink/50 font-medium uppercase tracking-wider">Feedback</p>
+                <div class="mt-1.5 sm:mt-2 flex items-baseline gap-1.5">
+                    <p class="text-2xl sm:text-3xl font-semibold text-tpc-ink leading-none tabular-nums">{{ $feedbackCount }}</p>
+                    @if($feedbackCount > 0)
+                        <span class="flex items-center gap-0.5 text-xs sm:text-sm font-semibold text-amber-500">
+                            <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.447a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.446a1 1 0 00-1.176 0l-3.367 2.446c-.784.57-1.838-.196-1.539-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/>
+                            </svg>
+                            {{ $avgFeedbackRating }}
+                        </span>
+                    @endif
+                </div>
+                <p class="mt-1 sm:mt-1.5 text-[10px] sm:text-xs text-tpc-ink/50">
+                    @if($unreadFeedbackCount > 0)
+                        <span class="font-semibold text-amber-600">{{ $unreadFeedbackCount }}</span> unread
+                    @else
+                        all read
+                    @endif
+                </p>
+            </div>
+            <div class="relative shrink-0 rounded-xl bg-amber-50 border border-amber-100 p-2 sm:p-2.5 text-amber-500
+                        transition-transform duration-200 group-hover:scale-110">
+                @if($unreadFeedbackCount > 0)
+                    <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-amber-500 text-[8px] font-bold text-white ring-2 ring-white">
+                        {{ $unreadFeedbackCount > 9 ? '9+' : $unreadFeedbackCount }}
+                    </span>
+                @endif
+                <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.914c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.075 9.101c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.95-.69l1.52-4.674z"/>
+                </svg>
+            </div>
+        </div>
+    </a>
+
     {{-- Pending Review --}}
     <a href="{{ route('admin.news-review.index') }}"
        class="group relative overflow-hidden rounded-2xl border border-amber-100 bg-white p-4 sm:p-5 shadow-sm
@@ -112,7 +154,7 @@
 </div>
 
 {{-- ── Charts Row ──────────────────────────────────────────────────── --}}
-<div class="mt-3 sm:mt-4 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+<div class="mt-3 sm:mt-4 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 
     {{-- Programs donut --}}
     <div class="rounded-2xl border border-tpc-primary/15 bg-white p-4 sm:p-5 shadow-sm ring-1 ring-tpc-primary/5">
@@ -213,6 +255,61 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    {{-- Feedback ratings breakdown --}}
+    <div class="rounded-2xl border border-amber-100 bg-white p-4 sm:p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <h2 class="text-xs sm:text-sm font-semibold text-tpc-ink">Ratings Breakdown</h2>
+            <a href="{{ route('admin.feedback.index') }}"
+               class="text-[10px] sm:text-xs font-medium text-tpc-primary hover:text-tpc-secondary transition-colors">
+                Manage →
+            </a>
+        </div>
+
+        @if($feedbackCount > 0)
+            <div class="flex items-center gap-4 sm:gap-6 mb-1">
+                <div class="shrink-0 text-center">
+                    <p class="text-2xl sm:text-3xl font-semibold text-tpc-ink leading-none tabular-nums">{{ $avgFeedbackRating }}</p>
+                    <div class="flex items-center gap-0.5 mt-1.5 justify-center">
+                        @for($i = 1; $i <= 5; $i++)
+                            <svg class="h-3 w-3 {{ $i <= round($avgFeedbackRating) ? 'text-amber-400' : 'text-gray-200' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.447a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.446a1 1 0 00-1.176 0l-3.367 2.446c-.784.57-1.838-.196-1.539-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/>
+                            </svg>
+                        @endfor
+                    </div>
+                    <p class="mt-1 text-[10px] text-tpc-ink/40">{{ $feedbackCount }} total</p>
+                </div>
+
+                <div class="space-y-1.5 sm:space-y-2 flex-1">
+                    @for($r = 5; $r >= 1; $r--)
+                        @php
+                            $c = $ratingCounts[$r] ?? 0;
+                            $pct = $feedbackCount > 0 ? round(($c / $feedbackCount) * 100) : 0;
+                        @endphp
+                        <div class="flex items-center gap-2 text-[10px] sm:text-xs">
+                            <span class="w-2.5 text-tpc-ink/60 tabular-nums">{{ $r }}</span>
+                            <svg class="h-3 w-3 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.447a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.446a1 1 0 00-1.176 0l-3.367 2.446c-.784.57-1.838-.196-1.539-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/>
+                            </svg>
+                            <div class="h-1.5 flex-1 rounded-full bg-tpc-ink/8 overflow-hidden">
+                                <div class="h-full rounded-full bg-amber-400 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" style="width: {{ $pct }}%"></div>
+                            </div>
+                            <span class="w-5 text-right font-semibold text-tpc-ink tabular-nums">{{ $c }}</span>
+                        </div>
+                    @endfor
+                </div>
+            </div>
+        @else
+            <div class="flex flex-col items-center gap-2 py-6">
+                <div class="rounded-2xl bg-amber-50 p-3 text-amber-400/70">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.914c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.075 9.101c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.95-.69l1.52-4.674z"/>
+                    </svg>
+                </div>
+                <p class="text-xs sm:text-sm text-tpc-ink/40">No feedback yet.</p>
+            </div>
+        @endif
     </div>
 </div>
 
@@ -320,11 +417,12 @@
 
             @php
                 $barItems = [
-                    ['label' => 'Programs',   'val' => $programCount,    'max' => max($programCount, 10),  'color' => 'bg-tpc-primary'],
-                    ['label' => 'News',       'val' => $newsCount,       'max' => max($newsCount, 10),     'color' => 'bg-blue-500'],
-                    ['label' => 'Messages',   'val' => $messageCount,    'max' => max($messageCount, 40),  'color' => 'bg-pink-500'],
-                    ['label' => 'Pending',    'val' => $pendingNewsCount,'max' => max($newsCount, 10),    'color' => 'bg-amber-400'],
-                ];
+                ['label' => 'Programs',   'val' => $programCount,     'max' => max($programCount, 10),  'color' => 'bg-tpc-primary'],
+                ['label' => 'News',       'val' => $newsCount,        'max' => max($newsCount, 10),     'color' => 'bg-blue-500'],
+                ['label' => 'Messages',   'val' => $messageCount,     'max' => max($messageCount, 40),  'color' => 'bg-pink-500'],
+                ['label' => 'Feedback',   'val' => $feedbackCount,    'max' => max($feedbackCount, 30), 'color' => 'bg-amber-400'],
+                ['label' => 'Pending',    'val' => $pendingNewsCount, 'max' => max($newsCount, 10),     'color' => 'bg-amber-400'],
+            ];
             @endphp
 
             <div class="space-y-3 sm:space-y-3.5">
@@ -390,6 +488,24 @@
                     @if($unreadMessageCount > 0)
                         <span class="ml-auto shrink-0 rounded-full bg-pink-100 px-1.5 py-0.5 text-[10px] font-bold text-pink-700 group-hover:bg-pink-600 group-hover:text-white transition">
                             {{ $unreadMessageCount }}
+                        </span>
+                    @else
+                        <svg class="h-3 w-3 ml-auto opacity-40 group-hover:opacity-100 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/>
+                        </svg>
+                    @endif
+                </a>
+
+                <a href="{{ route('admin.feedback.index') }}"
+                   class="flex items-center gap-2.5 rounded-xl border border-amber-200 px-3 py-2.5 text-xs font-medium
+                          text-amber-700 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all duration-150 group">
+                    <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.914c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.075 9.101c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.95-.69l1.52-4.674z"/>
+                    </svg>
+                    View feedback
+                    @if($unreadFeedbackCount > 0)
+                        <span class="ml-auto shrink-0 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 group-hover:bg-amber-600 group-hover:text-white transition">
+                            {{ $unreadFeedbackCount }}
                         </span>
                     @else
                         <svg class="h-3 w-3 ml-auto opacity-40 group-hover:opacity-100 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

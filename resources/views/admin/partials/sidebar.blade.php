@@ -11,6 +11,8 @@
     $setActive     = $isActive('admin.settings.*');
     $usersActive   = $isActive('admin.users.*');
     $servicesActive = $isActive('admin.services.*');
+    $feedbackActive = $isActive('admin.feedback.*');
+    $unreadFeedback = \App\Models\Feedback::where('is_read', false)->count();
 
     $pendingCount  = auth()->check() && auth()->user()->is_super_admin
                         ? \App\Models\NewsPost::pending()->count()
@@ -242,6 +244,26 @@
                 @if($unreadMsgs > 0)
                     <span class="ml-auto shrink-0 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700 ring-1 ring-red-200/60">
                         {{ $unreadMsgs > 9 ? '9+' : $unreadMsgs }}
+                    </span>
+                @endif
+            </span>
+        </a>
+
+        {{-- Feedback --}}
+        <a href="{{ route('admin.feedback.index') }}" @click="closeMobileSidebar()" title="Feedback"
+        class="{{ $itemBase }} {{ $feedbackActive ? $itemActive : $itemIdle }} px-3 gap-3"
+        :class="sidebarCollapsed ? 'sm:px-2 sm:gap-0 sm:justify-center' : ''">
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-[3px] rounded-r-full bg-white transition-opacity duration-200 {{ $feedbackActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-30' }}"></span>
+            <span class="{{ $iconBase }} {{ $feedbackActive ? $iconActive : $iconIdle }} overflow-visible">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.914c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.075 9.101c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.95-.69l1.52-4.674z"/>
+                </svg>
+            </span>
+            <span class="{{ $labelBase }} flex items-center gap-2" :class="sidebarCollapsed ? 'sm:opacity-0 sm:max-w-0 sm:-translate-x-2' : ''">
+                Feedback
+                @if($unreadFeedback > 0)
+                    <span class="ml-auto shrink-0 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700 ring-1 ring-red-200/60">
+                        {{ $unreadFeedback > 9 ? '9+' : $unreadFeedback }}
                     </span>
                 @endif
             </span>

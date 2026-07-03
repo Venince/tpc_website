@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\OrgChartController;
+use App\Http\Controllers\FeedbackController;
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProgramController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Admin\NewsReviewController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\ServiceContentController;
 use App\Http\Controllers\Admin\OrgChartController as AdminOrgChartController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 
 use App\Models\User;
 
@@ -49,6 +51,11 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
+
+Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback');
+Route::post('/feedback', [FeedbackController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('feedback.store');
 
 Route::get('/services/{service:slug}', [ServiceController::class, 'show'])
     ->name('services.show');
@@ -120,6 +127,14 @@ Route::middleware(['auth', 'admin'])
         Route::get('messages/{message}', [ContactMessageController::class, 'show'])->name('messages.show');
         Route::patch('messages/{message}/read', [ContactMessageController::class, 'markRead'])->name('messages.read');
         Route::patch('messages/{message}/unread', [ContactMessageController::class, 'markUnread'])->name('messages.unread');
+
+        // Feedback — unread-count MUST be before {feedback} wildcard
+        Route::get('feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
+        Route::get('feedback/unread-count', [AdminFeedbackController::class, 'unreadCount'])->name('feedback.unreadCount');
+        Route::get('feedback/{feedback}', [AdminFeedbackController::class, 'show'])->name('feedback.show');
+        Route::patch('feedback/{feedback}/read', [AdminFeedbackController::class, 'markRead'])->name('feedback.read');
+        Route::patch('feedback/{feedback}/unread', [AdminFeedbackController::class, 'markUnread'])->name('feedback.unread');
+        Route::post('feedback/{feedback}/respond', [AdminFeedbackController::class, 'respond'])->name('feedback.respond');
 
         Route::get('admission', [AdminAdmissionController::class, 'index'])
             ->name('admission.index');
@@ -220,6 +235,11 @@ Route::middleware(['auth', 'admin'])
                 ->name('messages.bulkDestroy');
             Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])
                 ->name('messages.destroy');
+
+            Route::delete('feedback/bulk-destroy', [AdminFeedbackController::class, 'bulkDestroy'])
+                ->name('feedback.bulkDestroy');
+            Route::delete('feedback/{feedback}', [AdminFeedbackController::class, 'destroy'])
+                ->name('feedback.destroy');
 
             Route::prefix('news-review')->name('news-review.')->group(function () {
                 Route::get('/',                    [NewsReviewController::class, 'index'])   ->name('index');
