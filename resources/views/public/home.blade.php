@@ -266,8 +266,6 @@
                    class="news-featured-card group relative block bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden mb-5
                           hover:shadow-lg hover:border-tpc-primary/30 transition-all duration-300">
 
-                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tpc-primary via-tpc-primary to-tpc-accent z-10"></div>
-
                     <div class="sm:flex min-h-[220px] sm:min-h-[260px]">
                         @php $featuredImg = $featured->image_path ?? optional($featured->galleryImages->first())->image_path; @endphp
                         @if($featuredImg)

@@ -125,11 +125,11 @@
                             </div>
                             <div class="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
                                 @foreach ($instructors as $person)
-                                    <div class="person-card bg-white rounded-2xl overflow-hidden">
+                                    <div class="person-card bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
                                         <div class="p-3 sm:p-5 flex flex-col items-center text-center">
                                             @if ($person->photo_path)
                                                 <img src="{{ asset('storage/' . $person->photo_path) }}"
-                                                     class="person-photo h-16 w-16 sm:h-24 sm:w-24 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm mb-2 sm:mb-3"
+                                                     class="person-photo h-16 w-16 sm:h-24 sm:w-24 rounded-full object-cover  mb-2 sm:mb-3"
                                                      alt="{{ $person->name }}">
                                             @else
                                                 <span class="person-photo h-16 w-16 sm:h-24 sm:w-24 rounded-full bg-tpc-primary/10 flex items-center justify-center text-xl sm:text-2xl font-bold text-tpc-primary mb-2 sm:mb-3">

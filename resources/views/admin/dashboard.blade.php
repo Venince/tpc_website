@@ -10,7 +10,6 @@
     <a href="{{ route('admin.programs.index') }}"
        class="group relative overflow-hidden rounded-2xl border border-tpc-primary/20 bg-tpc-primary/5 p-4 sm:p-5 shadow-sm
                 hover:shadow-md hover:border-tpc-primary/30 hover:-translate-y-0.5 transition-all duration-200">
-        <div class="absolute left-0 inset-y-0 w-[3px] rounded-r-full bg-tpc-primary/60"></div>
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-tpc-primary/5 transition-all duration-300 group-hover:scale-150 group-hover:bg-tpc-primary/8"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
@@ -33,7 +32,6 @@
     <a href="{{ route('admin.news-posts.index') }}"
        class="group relative overflow-hidden rounded-2xl border border-blue-100 bg-white p-4 sm:p-5 shadow-sm
               hover:shadow-md hover:border-blue-200 hover:-translate-y-0.5 transition-all duration-200">
-        <div class="absolute left-0 inset-y-0 w-[3px] rounded-r-full bg-blue-500/70"></div>
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-blue-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-blue-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
@@ -56,7 +54,6 @@
     <a href="{{ route('admin.messages.index') }}"
        class="group relative overflow-hidden rounded-2xl border border-pink-100 bg-white p-4 sm:p-5 shadow-sm
               hover:shadow-md hover:border-pink-200 hover:-translate-y-0.5 transition-all duration-200">
-        <div class="absolute left-0 inset-y-0 w-[3px] rounded-r-full bg-pink-500/70"></div>
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-pink-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-pink-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
@@ -88,7 +85,6 @@
     <a href="{{ route('admin.feedback.index') }}"
        class="group relative overflow-hidden rounded-2xl border border-amber-100 bg-white p-4 sm:p-5 shadow-sm
               hover:shadow-md hover:border-amber-200 hover:-translate-y-0.5 transition-all duration-200">
-        <div class="absolute left-0 inset-y-0 w-[3px] rounded-r-full bg-amber-400/70"></div>
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-amber-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-amber-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
@@ -131,7 +127,6 @@
        class="group relative overflow-hidden rounded-2xl border border-amber-100 bg-white p-4 sm:p-5 shadow-sm
               hover:shadow-md hover:border-amber-200 hover:-translate-y-0.5 transition-all duration-200
               {{ $pendingNewsCount > 0 ? 'ring-1 ring-amber-200/60' : '' }}">
-        <div class="absolute left-0 inset-y-0 w-[3px] rounded-r-full bg-amber-400/80"></div>
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-amber-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-amber-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
