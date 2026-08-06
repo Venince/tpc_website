@@ -17,7 +17,7 @@
 </head>
 
 {{-- h-screen + overflow-hidden on body keeps the viewport locked --}}
-<body class="text-tpc-ink bg-tpc-primary/5 relative isolate overflow-hidden h-screen">
+<body class="text-tpc-ink bg-white relative isolate overflow-hidden h-screen">
 
     <div aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 flex items-center justify-center">
         <img

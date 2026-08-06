@@ -15,7 +15,7 @@
 @endphp
 
 <header class="sticky top-0 z-30 border-b border-tpc-primary/10 bg-white/80 backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-4">
 
             {{-- Left: toggle + title --}}

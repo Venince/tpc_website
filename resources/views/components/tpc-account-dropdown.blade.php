@@ -20,33 +20,39 @@
         @click="open = !open"
         :aria-expanded="open"
         aria-haspopup="menu"
-        class="group flex items-center gap-2.5 rounded-2xl border border-tpc-primary/15 bg-white/70
-               px-2.5 py-2 shadow-sm backdrop-blur transition
-               hover:bg-white hover:shadow-md hover:border-tpc-primary/25
-               focus:outline-none focus:ring-2 focus:ring-tpc-primary/25"
+        class="group flex items-center gap-2.5 rounded-2xl border border-tpc-primary/15 bg-white
+            pl-2 pr-3 py-1.5 shadow-sm transition
+            hover:shadow-md hover:border-tpc-primary/30
+            focus:outline-none focus:ring-2 focus:ring-tpc-primary/25
+            active:scale-[0.98]"
     >
         {{-- Avatar --}}
-        <div class="relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-xl
-                    border border-tpc-primary/15 bg-gradient-to-br from-tpc-primary/15 to-tpc-accent/20">
-            <span class="text-xs font-bold tracking-tight text-tpc-primary select-none">
+        <div class="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-xl
+                    ring-2 ring-white shadow-sm bg-gradient-to-br from-tpc-primary to-tpc-secondary">
+            <span class="text-xs font-bold tracking-tight text-white select-none">
                 {{ $initials ?: 'A' }}
             </span>
             {{-- Online dot --}}
-            <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-400 ring-1 ring-white"></span>
+            <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white"></span>
         </div>
 
-        {{-- Name only — no role label --}}
-        <span class="hidden sm:block text-sm font-semibold text-tpc-ink max-w-[140px] truncate">
-            {{ explode(' ', $name)[0] }}
-        </span>
+        {{-- Name + role — two-line --}}
+        <div class="hidden sm:block text-left leading-tight">
+            <p class="text-sm font-semibold text-tpc-ink max-w-[140px] truncate">
+                {{ explode(' ', $name)[0] }}
+            </p>
+            <p class="text-[10px] font-medium text-tpc-primary/70 uppercase tracking-wide">
+                {{ $isAdmin ? 'Admin' : 'Account' }}
+            </p>
+        </div>
 
         {{-- Chevron --}}
         <svg class="h-3.5 w-3.5 text-tpc-ink/40 transition-transform duration-200 group-hover:text-tpc-ink/70"
-             :class="open ? 'rotate-180' : ''"
-             viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            :class="open ? 'rotate-180' : ''"
+            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd"
-                  d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-                  clip-rule="evenodd"/>
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                clip-rule="evenodd"/>
         </svg>
     </button>
 

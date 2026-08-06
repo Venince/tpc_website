@@ -17,7 +17,7 @@
     </div>
 
     <form method="POST" action="{{ route('admin.programs.update', $program) }}" enctype="multipart/form-data"
-          class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm p-5 sm:p-6">
+          class="rounded-2xl border border-tpc-primary/20 bg-white shadow-md p-5 sm:p-6">
         @csrf
         @method('PUT')
 

@@ -20,7 +20,7 @@
     {{-- Mobile cards --}}
     <div class="flex flex-col gap-3 sm:hidden">
         @forelse ($programs as $prog)
-            <div class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm overflow-hidden">
+            <div class="rounded-2xl border border-tpc-primary/20 bg-white shadow-md overflow-hidden">
                 <div class="flex items-center gap-3 p-4 border-b border-tpc-primary/8">
                     @if ($prog->logo_path)
                         <img src="{{ asset('storage/' . $prog->logo_path) }}"
@@ -75,7 +75,7 @@
     </div>
 
     {{-- Desktop table --}}
-    <div class="hidden sm:block rounded-2xl border border-tpc-primary/10 bg-white shadow-sm overflow-hidden">
+    <div class="hidden sm:block rounded-2xl border border-tpc-primary/20 bg-white shadow-md overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-[720px] w-full text-sm">
                 <thead>

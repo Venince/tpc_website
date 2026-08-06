@@ -51,7 +51,7 @@
     <div class="grid gap-5 lg:grid-cols-2">
 
         {{-- PEOPLE --}}
-        <div class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm overflow-hidden">
+        <div class="rounded-2xl border border-tpc-primary/20 bg-white shadow-md overflow-hidden">
             <div class="flex items-center justify-between px-5 py-3.5 border-b border-tpc-primary/8 bg-tpc-primary/4">
                 <p class="text-sm font-bold text-tpc-ink">People</p>
                 <a href="{{ route('admin.programs.people.create', $program) }}"
