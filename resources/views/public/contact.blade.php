@@ -81,7 +81,6 @@
                     @endif
 
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="h-1.5 bg-tpc-primary"></div>
                         <form class="divide-y divide-gray-100" method="POST" action="{{ route('contact.store') }}">
                             @csrf
                             <input type="text" name="website" value="" class="hidden" tabindex="-1" autocomplete="off">
@@ -144,7 +143,6 @@
                     {{-- Contact Info --}}
                     <span id="contact-information" class="block -mt-24 pt-24 invisible absolute"></span>
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="h-1.5 bg-tpc-primary"></div>
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                             <p class="text-[10px] sm:text-xs font-bold text-tpc-primary uppercase tracking-widest">Contact Information</p>
                         </div>
@@ -193,7 +191,6 @@
                     {{-- Map --}}
                     <span id="campus-map" class="block -mt-24 pt-24 invisible absolute"></span>
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="h-1.5 bg-tpc-primary"></div>
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                             <p class="text-[10px] sm:text-xs font-bold text-tpc-primary uppercase tracking-widest">Campus Map</p>
                         </div>

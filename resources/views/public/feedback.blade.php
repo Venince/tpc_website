@@ -60,7 +60,6 @@
             @endif
 
             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden" x-data="{ rating: {{ old('rating', 0) }}, hoverRating: 0, showContact: {{ old('name') || old('email') ? 'true' : 'false' }} }">
-                <div class="h-1.5 bg-tpc-primary"></div>
 
                 <form method="POST" action="{{ route('feedback.store') }}" class="divide-y divide-gray-100">
                     @csrf

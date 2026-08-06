@@ -90,7 +90,6 @@
                             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2">
                                 @foreach ($head->merge($coordinators) as $person)
                                     <div class="person-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                                        <div class="h-1.5 bg-tpc-primary"></div>
                                         <div class="p-4 sm:p-6 flex flex-col items-center text-center">
                                             @if ($person->photo_path)
                                                 <img src="{{ asset('storage/' . $person->photo_path) }}"
@@ -127,7 +126,6 @@
                             <div class="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
                                 @foreach ($instructors as $person)
                                     <div class="person-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                                        <div class="h-1 bg-tpc-primary/30"></div>
                                         <div class="p-3 sm:p-5 flex flex-col items-center text-center">
                                             @if ($person->photo_path)
                                                 <img src="{{ asset('storage/' . $person->photo_path) }}"
@@ -169,7 +167,6 @@
                                     @endphp
 
                                     <div class="achievement-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                                        <div class="h-1.5 bg-tpc-accent"></div>
 
                                         {{-- ── Photo grid ── --}}
                                         @if ($imgCount > 0)
@@ -369,7 +366,6 @@
 
                     {{-- Interested CTA --}}
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="h-1.5 bg-tpc-primary"></div>
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                             <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Interested?</p>
                         </div>
@@ -393,7 +389,6 @@
                     {{-- Other Programs --}}
                     @if ($otherPrograms->isNotEmpty())
                         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                            <div class="h-1.5 bg-tpc-primary"></div>
                             <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                                 <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Other Programs</p>
                             </div>
@@ -436,7 +431,6 @@
 
                     {{-- Org Chart button always visible --}}
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="h-1.5 bg-tpc-primary"></div>
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                             <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Organizational Chart</p>
                         </div>

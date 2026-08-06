@@ -146,7 +146,6 @@
                             ];
                         @endphp
                         <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-                            <div class="h-1.5 bg-tpc-primary"></div>
                             <div class="px-5 py-4 border-b border-gray-100">
                                 <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Follow Us</p>
                             </div>
@@ -178,7 +177,6 @@
 
                     {{-- CTA card --}}
                     <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="h-1.5 bg-tpc-primary"></div>
                         <div class="px-5 py-4 border-b border-gray-100">
                             <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Interested?</p>
                         </div>
@@ -208,7 +206,6 @@
 
                     @if ($otherServices->isNotEmpty())
                         <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-                            <div class="h-1.5 bg-tpc-primary"></div>
                             <div class="px-5 py-4 border-b border-gray-100">
                                 <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Other Services</p>
                             </div>

@@ -133,8 +133,6 @@
                 @click.stop
                 class="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
 
-                <div class="h-1.5 bg-tpc-primary shrink-0"></div>
-
                 {{-- Header --}}
                 <div class="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
                     <div>

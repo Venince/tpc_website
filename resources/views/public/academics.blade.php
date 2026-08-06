@@ -77,9 +77,6 @@
                            class="program-card group relative bg-white rounded-2xl border border-gray-200 shadow-sm
                                   overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
 
-                            {{-- Top accent bar --}}
-                            <div class="program-card-bar h-1.5 w-full bg-tpc-primary transition-colors duration-300"></div>
-
                             <div class="p-4 sm:p-6 flex flex-col flex-1">
 
                                 <div class="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
@@ -135,7 +132,6 @@
                 {{-- CTA Card --}}
                 <div class="mt-6 sm:mt-8 max-w-2xl mx-auto">
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <div class="h-1.5 bg-tpc-accent"></div>
                         <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
                                 <p class="text-sm sm:text-base font-bold text-gray-800">Not sure which program to choose?</p>

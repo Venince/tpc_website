@@ -211,7 +211,6 @@
         <div class="max-w-7xl mx-auto px-4 pb-12">
             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2">
                 <div id="vision" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    <div class="h-1.5 bg-tpc-primary"></div>
                     <div class="p-5 sm:p-7">
                         <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Vision</p>
                         <p class="text-sm sm:text-base leading-relaxed text-gray-700">
@@ -221,7 +220,6 @@
                     </div>
                 </div>
                 <div id="mission" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    <div class="h-1.5 bg-tpc-primary"></div>
                     <div class="p-5 sm:p-7">
                         <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Mission</p>
                         <p class="text-sm sm:text-base leading-relaxed text-gray-700">
@@ -416,9 +414,6 @@
                     <a href="{{ route('academics.show', $program) }}"
                         class="program-card group relative bg-white rounded-2xl border border-gray-200 shadow-sm
                                 overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
-
-                        {{-- Top accent bar --}}
-                        <div class="h-1.5 w-full bg-tpc-primary group-hover:bg-tpc-accent transition-colors duration-300"></div>
 
                         <div class="p-4 sm:p-6 flex flex-col flex-1">
 
