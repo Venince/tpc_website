@@ -74,7 +74,7 @@
     {{-- MAIN --}}
     <section class="bg-gray-50 overflow-x-hidden">
         <div class="max-w-7xl mx-auto px-4 py-8 sm:py-14">
-            <div class="grid gap-6 sm:gap-8 lg:grid-cols-3 w-full min-w-0">
+            <div class="grid gap-6 sm:gap-8 lg:grid-cols-3 w-full min-w-0 lg:items-start">
 
                 {{-- LEFT MAIN --}}
                 <div class="lg:col-span-2 space-y-8 sm:space-y-10 min-w-0 w-full overflow-hidden">
@@ -365,7 +365,7 @@
                 </div>
 
                 {{-- RIGHT SIDEBAR --}}
-                <aside class="space-y-4 sm:space-y-6 min-w-0 w-full overflow-hidden">
+                <aside class="space-y-4 sm:space-y-6 min-w-0 w-full overflow-hidden lg:sticky lg:top-24 lg:self-start">
 
                     {{-- Interested CTA --}}
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
