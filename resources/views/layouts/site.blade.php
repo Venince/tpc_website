@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden overflow-y-visible">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -38,7 +38,7 @@
     @stack('styles')
 </head>
 
-<body class="font-sans text-tpc-ink bg-white">
+<body class="font-sans text-tpc-ink bg-white overflow-x-hidden overflow-y-visible">
 
     @include('partials.nav')
 
