@@ -53,7 +53,7 @@
     {{-- ── BODY ────────────────────────────────────────────────────────── --}}
     <section class="bg-gray-50 py-8 sm:py-14">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="grid gap-8 lg:grid-cols-3">
+            <div class="grid gap-8 lg:grid-cols-3 lg:items-start">
 
                 {{-- Main content column --}}
                 <div class="lg:col-span-2 space-y-6 min-w-0">
@@ -130,7 +130,7 @@
                 </div>
 
                 {{-- ── SIDEBAR ──────────────────────────────────────────── --}}
-                <aside class="space-y-5 sm:space-y-6 min-w-0 overflow-hidden">
+                <aside class="space-y-5 sm:space-y-6 min-w-0 overflow-hidden lg:sticky lg:top-24 lg:self-start">
 
                     {{-- Social Media Card (shown when links exist) --}}
                     @if (!empty($service->social_links))

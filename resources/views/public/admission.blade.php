@@ -44,7 +44,7 @@
     {{-- CONTENT --}}
     <section class="bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 py-10 sm:py-14">
-            <div class="grid gap-6 sm:gap-8 lg:grid-cols-3">
+            <div class="grid gap-6 sm:gap-8 lg:grid-cols-3 lg:items-start">
 
                 {{-- LEFT MAIN --}}
                 <div class="lg:col-span-2 space-y-6 sm:space-y-8">
@@ -154,7 +154,7 @@
                 </div>
 
                 {{-- RIGHT SIDEBAR --}}
-                <aside class="space-y-4 sm:space-y-6">
+                <aside class="space-y-4 sm:space-y-6 lg:sticky lg:top-24 lg:self-start">
 
                     {{-- Office Hours --}}
                     @if ($sections->has('office_hours') && $sections['office_hours']->is_visible)
