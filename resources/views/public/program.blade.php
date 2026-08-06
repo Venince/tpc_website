@@ -72,7 +72,7 @@
     </section>
 
     {{-- MAIN --}}
-    <section class="bg-gray-50 overflow-x-hidden">
+    <section class="bg-gray-50 overflow-x-visible overflow-y-visible">
         <div class="max-w-7xl mx-auto px-4 py-8 sm:py-14">
             <div class="grid gap-6 sm:gap-8 lg:grid-cols-3 w-full min-w-0 lg:items-start">
 
