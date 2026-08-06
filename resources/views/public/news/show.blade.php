@@ -71,9 +71,7 @@
 <section class="bg-gray-50">
     <div class="max-w-4xl mx-auto px-4 py-8 sm:py-12">
 
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-
-            <div class="h-1 bg-gradient-to-r from-tpc-primary via-tpc-primary to-tpc-accent"></div>
+        <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
 
             @php
                 // Unified photo set: gallery photos, falling back to legacy single image_path
@@ -200,7 +198,6 @@
 
                     {{-- ── Footer CTA ── --}}
                     <div class="relative bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-                        <div class="h-1 bg-gradient-to-r from-tpc-primary to-tpc-accent"></div>
                         <div class="p-4 sm:p-6 sm:flex sm:items-center sm:justify-between gap-6">
                             <div>
                                 <p class="text-[10px] sm:text-xs font-bold text-tpc-primary uppercase tracking-widest mb-1">Need Assistance?</p>

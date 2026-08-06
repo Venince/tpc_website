@@ -59,7 +59,7 @@
                 <div class="lg:col-span-2 space-y-6 min-w-0">
 
                     @if ($service->featured_image_path)
-                        <div class="rounded-3xl overflow-hidden border border-gray-200 shadow-sm w-full">
+                        <div class="rounded-3xl overflow-hidden border border-gray-300 shadow-md w-full">
                             <img src="{{ asset('storage/' . $service->featured_image_path) }}"
                                 alt="{{ $service->title }}"
                                 class="w-full object-contain"
@@ -71,7 +71,7 @@
                         @foreach ($service->contents as $block)
 
                             @if ($block->isText())
-                                <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 sm:p-8">
+                                <div class="bg-white rounded-3xl border border-gray-300 shadow-md p-6 sm:p-8">
                                     @if ($block->heading)
                                         <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
                                             <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>
@@ -97,7 +97,7 @@
                                 </div>
 
                             @elseif ($block->isImage() && $block->image_path)
-                                <figure class="rounded-3xl overflow-hidden border border-gray-200 shadow-sm">
+                                <figure class="rounded-3xl overflow-hidden border border-gray-300 shadow-md">
                                     @if ($block->heading)
                                         <div class="bg-white px-6 py-4 border-b border-gray-100">
                                             <div class="flex items-center gap-3">
@@ -145,7 +145,7 @@
                                 'other'     => ['label' => 'Link',      'color' => 'text-tpc-primary', 'bg' => 'bg-tpc-primary/8 hover:bg-tpc-primary/15', 'ring' => 'ring-tpc-primary/20', 'icon' => 'M13.828 10.172a4 4 0 0 0-5.656 0l-4 4a4 4 0 1 0 5.656 5.656l1.102-1.101m-.758-4.899a4 4 0 0 0 5.656 0l4-4a4 4 0 0 0-5.656-5.656l-1.1 1.1'],
                             ];
                         @endphp
-                        <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="bg-white rounded-3xl border border-gray-300 shadow-md overflow-hidden">
                             <div class="px-5 py-4 border-b border-gray-100">
                                 <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Follow Us</p>
                             </div>
@@ -176,7 +176,7 @@
                     @endif
 
                     {{-- CTA card --}}
-                    <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="bg-white rounded-3xl border border-gray-300 shadow-md overflow-hidden">
                         <div class="px-5 py-4 border-b border-gray-100">
                             <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Interested?</p>
                         </div>
@@ -205,7 +205,7 @@
                     @endphp
 
                     @if ($otherServices->isNotEmpty())
-                        <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="bg-white rounded-3xl border border-gray-300 shadow-md overflow-hidden">
                             <div class="px-5 py-4 border-b border-gray-100">
                                 <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Other Services</p>
                             </div>

@@ -79,14 +79,10 @@
     <section class="bg-gray-50 min-h-[60vh]">
         <div class="max-w-4xl mx-auto px-4 py-14">
 
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                <div class="h-1.5 bg-tpc-primary"></div>
+            <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
 
                 {{-- Sender info --}}
                 <div class="px-7 py-5 border-b border-gray-100 flex items-center gap-4">
-                    <span class="shrink-0 flex h-12 w-12 items-center justify-center rounded-full bg-tpc-primary/10 text-tpc-primary text-lg font-bold">
-                        {{ strtoupper(substr($message->name, 0, 1)) }}
-                    </span>
                     <div>
                         <p class="font-bold text-gray-800">{{ $message->name }}</p>
                         <p class="text-sm text-gray-500">{{ $message->email }}</p>

@@ -89,11 +89,11 @@
                             </div>
                             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2">
                                 @foreach ($head->merge($coordinators) as $person)
-                                    <div class="person-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                                    <div class="person-card bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
                                         <div class="p-4 sm:p-6 flex flex-col items-center text-center">
                                             @if ($person->photo_path)
                                                 <img src="{{ asset('storage/' . $person->photo_path) }}"
-                                                     class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover border-4 border-tpc-primary/20 shadow-sm mb-3 sm:mb-4"
+                                                     class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover mb-3 sm:mb-4"
                                                      alt="{{ $person->name }}">
                                             @else
                                                 <span class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-tpc-primary/10 flex items-center justify-center text-2xl sm:text-3xl font-bold text-tpc-primary mb-3 sm:mb-4">
@@ -125,7 +125,7 @@
                             </div>
                             <div class="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
                                 @foreach ($instructors as $person)
-                                    <div class="person-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                                    <div class="person-card bg-white rounded-2xl overflow-hidden">
                                         <div class="p-3 sm:p-5 flex flex-col items-center text-center">
                                             @if ($person->photo_path)
                                                 <img src="{{ asset('storage/' . $person->photo_path) }}"
@@ -166,7 +166,7 @@
                                         $imgCount = count($galleryImages);
                                     @endphp
 
-                                    <div class="achievement-card bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                                    <div class="achievement-card bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
 
                                         {{-- ── Photo grid ── --}}
                                         @if ($imgCount > 0)
@@ -365,7 +365,7 @@
                 <aside class="space-y-4 sm:space-y-6 min-w-0 w-full overflow-hidden lg:sticky lg:top-24 lg:self-start">
 
                     {{-- Interested CTA --}}
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                             <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Interested?</p>
                         </div>
@@ -388,7 +388,7 @@
 
                     {{-- Other Programs --}}
                     @if ($otherPrograms->isNotEmpty())
-                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
                             <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                                 <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Other Programs</p>
                             </div>
@@ -430,7 +430,7 @@
                     @endif
 
                     {{-- Org Chart button always visible --}}
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                             <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest">Organizational Chart</p>
                         </div>

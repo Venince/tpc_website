@@ -110,13 +110,13 @@
 
             {{-- Pill: expands on focus/query --}}
             <div class="flex items-center gap-2 h-9 px-3 rounded-full border transition-all duration-300 ease-out cursor-text"
-                 :class="query.length > 0 || document.activeElement === $refs.input
-                     ? 'w-56 border-tpc-primary/60 bg-white ring-2 ring-tpc-primary/12 shadow-sm'
-                     : 'w-44 border-tpc-primary/25 bg-tpc-primary/5 hover:border-tpc-primary/40 hover:bg-tpc-primary/8'"
-                 @click="$refs.input.focus()">
+                :class="query.length > 0 || document.activeElement === $refs.input
+                    ? 'w-56 border-tpc-primary/60 bg-white ring-2 ring-tpc-primary/12 shadow-sm'
+                    : 'w-44 border-tpc-primary/40 bg-tpc-primary/8 hover:border-tpc-primary/50 hover:bg-tpc-primary/12'"
+                @click="$refs.input.focus()">
 
                 <svg class="h-3.5 w-3.5 shrink-0 transition-colors duration-200"
-                     :class="query.length > 0 ? 'text-tpc-primary' : 'text-tpc-primary/40'"
+                    :class="query.length > 0 ? 'text-tpc-primary' : 'text-tpc-primary/60'"
                      fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                     <circle cx="11" cy="11" r="7"/>
                     <path stroke-linecap="round" d="M20 20l-3-3"/>

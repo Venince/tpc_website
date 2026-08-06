@@ -53,7 +53,6 @@
         <div class="max-w-7xl mx-auto px-4 py-14">
 
             <div class="flex items-center gap-4 mb-8">
-                <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm"></span>
                 <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Messages</h2>
                 <div class="flex-1 h-px bg-gray-200"></div>
                 @if($unreadCount > 0)
@@ -137,13 +136,10 @@
                         @endauth
 
                         <a href="{{ route('admin.messages.show', $m) }}"
-                           class="block bg-white rounded-2xl border border-gray-200 shadow-sm
+                           class="block bg-white rounded-2xl border border-gray-300 shadow-md
                                   hover:shadow-md hover:border-tpc-primary/40 transition-all duration-300
                                   overflow-hidden
                                   @auth @if(auth()->user()->is_super_admin) pl-10 @endif @endauth">
-
-                            {{-- Unread indicator bar --}}
-                            <div class="h-1 w-full {{ $m->is_read ? 'bg-gray-100' : 'bg-tpc-primary' }} group-hover:bg-tpc-accent transition-colors duration-300"></div>
 
                             <div class="p-5">
                                 <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
@@ -167,9 +163,6 @@
 
                                         {{-- Sender --}}
                                         <div class="flex items-center gap-2 mb-2">
-                                            <span class="shrink-0 flex h-7 w-7 items-center justify-center rounded-full bg-tpc-primary/10 text-tpc-primary text-xs font-bold">
-                                                {{ strtoupper(substr($m->name, 0, 1)) }}
-                                            </span>
                                             <p class="text-sm text-gray-500">
                                                 <span class="font-semibold text-gray-700">{{ $m->name }}</span>
                                                 <span class="text-gray-400 ml-1">({{ $m->email }})</span>

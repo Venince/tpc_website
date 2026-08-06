@@ -44,7 +44,7 @@
     </section>
 
     {{-- PROGRAMS --}}
-    <section class="bg-gray-50 border-b border-gray-200">
+    <section class="bg-gray-100 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 py-8 sm:py-14">
 
             <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-10">
@@ -74,7 +74,7 @@
                         @endphp
 
                         <a href="{{ route('academics.show', $program) }}"
-                           class="program-card group relative bg-white rounded-2xl border border-gray-200 shadow-sm
+                           class="program-card group relative bg-white rounded-2xl border border-gray-300 shadow-md
                                   overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
 
                             <div class="p-4 sm:p-6 flex flex-col flex-1">
