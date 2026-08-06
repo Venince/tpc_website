@@ -36,12 +36,12 @@
 
             {{-- Title --}}
             <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">
+                <label for="title" class="block text-xs font-bold text-gray-600 mb-1.5">
                     Service Title <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="title" value="{{ old('title') }}" required
-                       placeholder="e.g. Technical Vocational Training"
-                       class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition @error('title') border-red-300 bg-red-50/30 @enderror">
+                <input type="text" name="title" id="title" value="{{ old('title') }}" required
+                        placeholder="e.g. Technical Vocational Training"
+                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition @error('title') border-red-300 bg-red-50/30 @enderror">
                 @error('title')
                     <p class="mt-1.5 flex items-center gap-1 text-xs text-red-600">
                         <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -54,12 +54,9 @@
 
             {{-- Description --}}
             <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">
-                    Short Description
-                    <span class="ml-1 font-normal text-gray-400">(optional)</span>
-                </label>
-                <textarea name="description" rows="3"
-                            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none text-justify">{{ old('description') }}</textarea>
+                <label for="description" class="block text-xs font-bold text-gray-600 mb-1.5">Short Description</label>
+                <textarea name="description" id="description" rows="3"
+                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none text-justify">{{ old('description') }}</textarea>
                 @error('description')
                     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
                 @enderror
@@ -70,7 +67,7 @@
 
             {{-- Featured Image --}}
             <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <label class="block text-xs font-bold text-gray-600 mb-3">Featured Image</label>
+                <div class="block text-xs font-bold text-gray-600 mb-1.5">Featured Image</div>
 
                 <div x-show="imagePreview" x-transition class="mb-3">
                     <div class="relative inline-block rounded-xl overflow-hidden border border-gray-200 shadow-sm">
@@ -91,8 +88,9 @@
                     @change="handleImage($event)"
                     class="sr-only">
 
-                <label x-show="!imagePreview"
-                    @click="$refs.imageInput.click()"  {{-- trigger the shared input --}}
+                <button type="button"
+                    x-show="!imagePreview"
+                    @click="$refs.imageInput.click()"
                     class="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white px-4 py-8 cursor-pointer hover:border-tpc-primary/40 hover:bg-tpc-primary/[0.02] transition group">
                     <div class="h-10 w-10 rounded-xl bg-gray-100 group-hover:bg-tpc-primary/8 flex items-center justify-center transition">
                         <svg class="h-5 w-5 text-gray-400 group-hover:text-tpc-primary/60 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -103,16 +101,16 @@
                         <p class="text-xs font-semibold text-gray-500 group-hover:text-tpc-primary/70 transition">Click to upload image</p>
                         <p class="text-[11px] text-gray-400 mt-0.5">JPG, PNG or WebP · max 5 MB</p>
                     </div>
-                </label>
+                </button>
 
                 <div x-show="imagePreview" class="mt-2">
-                    <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-tpc-primary/70 hover:text-tpc-primary transition"
+                    <button type="button" x-show="imagePreview" class="mt-2 inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-tpc-primary/70 hover:text-tpc-primary transition"
                         @click="$refs.imageInput.click()">
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
                         </svg>
                         Replace image
-                    </label>
+                    </button>
                 </div>
 
                 @error('featured_image')
@@ -122,7 +120,7 @@
 
             {{-- Active toggle --}}
             <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <label class="block text-xs font-bold text-gray-600 mb-3">Visibility</label>
+                <div class="block text-xs font-bold text-gray-600 mb-3">Visibility</div>
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="hidden" name="is_active" value="0">
                     <div class="relative">

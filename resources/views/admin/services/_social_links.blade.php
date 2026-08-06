@@ -31,10 +31,10 @@
      }">
 
     <div class="flex items-center justify-between mb-3">
-        <label class="text-xs font-bold text-gray-600">
+        <div class="text-xs font-bold text-gray-600">
             Social Media Links
             <span class="ml-1 font-normal text-gray-400">(optional)</span>
-        </label>
+        </div>
         <button type="button" @click="addLink()"
                 class="inline-flex items-center gap-1 rounded-full bg-tpc-primary/10 px-3 py-1 text-[11px] font-bold text-tpc-primary hover:bg-tpc-primary/20 transition">
             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
