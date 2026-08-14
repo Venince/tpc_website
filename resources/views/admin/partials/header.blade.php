@@ -14,9 +14,9 @@
     $unreadMessages = \App\Models\ContactMessage::where('is_read', false)->count();
 @endphp
 
-<header class="sticky top-0 z-30 border-b border-tpc-primary/10 bg-white/80 backdrop-blur-xl">
-    <div class="w-full px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between gap-4">
+<header class="sticky top-0 z-30 bg-neo-bg/90 backdrop-blur-xl">
+    <div class="w-full px-4 sm:px-6 lg:px-8 py-3">
+        <div class="flex h-12 items-center justify-between gap-4 rounded-[22px] bg-neo-surface shadow-neo-sm px-3 sm:px-4">
 
             {{-- Left: toggle + title --}}
             <div class="flex items-center gap-3 min-w-0">
@@ -25,9 +25,8 @@
                 <button
                     type="button"
                     @click="toggleSidebar()"
-                    class="inline-flex items-center justify-center rounded-xl border border-tpc-primary/15
-                           bg-white/70 p-2 text-tpc-primary shadow-sm
-                           hover:bg-white hover:shadow-md transition
+                    class="inline-flex items-center justify-center rounded-xl bg-neo-surface p-2 text-tpc-primary
+                           shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm
                            focus:outline-none focus:ring-2 focus:ring-tpc-primary/25"
                     aria-label="Toggle sidebar"
                     title="Toggle sidebar"
@@ -52,12 +51,12 @@
 
                 {{-- Page title / greeting --}}
                 <div class="min-w-0">
-                    <h1 class="text-lg sm:text-xl font-semibold text-tpc-ink tracking-tight truncate leading-tight">
+                    <h1 class="text-base sm:text-lg font-semibold text-neo-ink tracking-tight truncate leading-tight">
                         {{ $pageTitle }}
                     </h1>
                     {{-- Greeting shown only on dashboard, hidden on small screens --}}
                     @if(($title ?? '') === 'Dashboard')
-                        <p class="hidden sm:block text-xs text-tpc-ink/50 leading-tight mt-0.5">
+                        <p class="hidden sm:block text-[11px] text-neo-ink/45 leading-tight">
                             {{ $greeting }}, {{ $firstName }} 👋
                         </p>
                     @endif
@@ -70,9 +69,9 @@
                 {{-- Quick: New News Post --}}
                 <a
                     href="{{ route('admin.news-posts.create') }}"
-                    class="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-tpc-primary/20
-                           bg-tpc-primary px-3 py-1.5 text-xs font-semibold text-white shadow-sm
-                           hover:bg-tpc-primary/90 hover:shadow-md transition active:scale-[0.97]"
+                    class="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-tpc-primary px-3 py-1.5
+                           text-xs font-semibold text-white shadow-neo-sm
+                           transition hover:shadow-neo-hover active:shadow-neo-inset-sm active:scale-[0.98]"
                     title="Create new post"
                 >
                     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -84,9 +83,9 @@
                 {{-- Notification bell (messages) --}}
                 <a
                     href="{{ route('admin.messages.index') }}"
-                    class="relative inline-flex items-center justify-center rounded-xl border border-tpc-primary/15
-                           bg-white/70 p-2 text-tpc-ink/70 shadow-sm
-                           hover:bg-white hover:text-tpc-primary hover:shadow-md transition
+                    class="relative inline-flex items-center justify-center rounded-xl bg-neo-surface p-2
+                           text-neo-ink/60 shadow-neo-sm
+                           transition hover:text-tpc-primary hover:shadow-neo-hover active:shadow-neo-inset-sm
                            focus:outline-none focus:ring-2 focus:ring-tpc-primary/25"
                     title="Messages{{ $unreadMessages > 0 ? " ($unreadMessages unread)" : '' }}"
                     aria-label="Messages{{ $unreadMessages > 0 ? ", $unreadMessages unread" : '' }}"
@@ -98,14 +97,11 @@
                     @if($unreadMessages > 0)
                         <span class="absolute -top-1 -right-1 flex h-4.5 min-w-[1.1rem] items-center justify-center
                                      rounded-full bg-red-500 px-1 text-[9px] font-bold leading-none text-white
-                                     ring-2 ring-white animate-pulse">
+                                     ring-2 ring-neo-surface animate-pulse">
                             {{ $unreadMessages > 9 ? '9+' : $unreadMessages }}
                         </span>
                     @endif
                 </a>
-
-                {{-- Account dropdown --}}
-                <x-tpc-account-dropdown />
             </div>
 
         </div>

@@ -17,7 +17,7 @@
 </head>
 
 {{-- h-screen + overflow-hidden on body keeps the viewport locked --}}
-<body class="text-tpc-ink bg-white relative isolate overflow-hidden h-screen">
+<body class="text-neo-ink bg-neo-bg relative isolate overflow-hidden h-screen">
 
     <div aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 flex items-center justify-center">
         <img
@@ -79,36 +79,40 @@
         @include('admin.partials.header', ['title' => $title ?? null])
 
         {{-- Only this area scrolls --}}
-        <main id="tpc-admin-main" class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main id="tpc-admin-main" class="tpc-neo-scroll flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
             {{-- Flash success --}}
             @if (session('success'))
-                <div class="mb-5 rounded-2xl border border-tpc-primary/15 bg-white/80 p-4 shadow-sm backdrop-blur">
+                <div class="mb-5 flex items-start gap-3 rounded-2xl bg-neo-bg shadow-neo-inset-sm p-4">
+                    <span class="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-tpc-primary"></span>
                     <p class="text-sm">
                         <span class="font-semibold text-tpc-primary">Success:</span>
-                        <span class="text-tpc-ink/80">{{ session('success') }}</span>
+                        <span class="text-neo-ink/80">{{ session('success') }}</span>
                     </p>
                 </div>
             @endif
 
             {{-- Validation errors --}}
             @if ($errors->any())
-                <div class="mb-5 rounded-2xl border border-red-200 bg-white/80 p-4 shadow-sm backdrop-blur">
-                    <div class="font-semibold text-red-700">Please fix the following:</div>
-                    <ul class="mt-2 list-disc pl-5 text-sm text-red-700/90">
-                        @foreach ($errors->all() as $e)
-                            <li>{{ $e }}</li>
-                        @endforeach
-                    </ul>
+                <div class="mb-5 flex items-start gap-3 rounded-2xl bg-neo-bg shadow-neo-inset-sm p-4">
+                    <span class="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-red-500"></span>
+                    <div class="min-w-0">
+                        <div class="font-semibold text-red-600">Please fix the following:</div>
+                        <ul class="mt-2 list-disc pl-5 text-sm text-red-600/90">
+                            @foreach ($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             @endif
 
             {{-- Content card --}}
-            <div class="rounded-3xl border border-tpc-primary/20 bg-white shadow-sm p-4 sm:p-6">
+            <div class="rounded-[28px] bg-neo-surface shadow-neo p-4 sm:p-6">
                 @hasSection('page_actions')
                     {{-- sticky is now relative to the scrolling <main>, so top-0 pins it to the top of the scroll container --}}
                     <div
                         class="sticky top-0 z-30 -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 mb-4
-                               border-b border-tpc-primary/10 bg-white/80 backdrop-blur-xl px-4 sm:px-6 py-3"
+                               rounded-t-[28px] bg-neo-surface/95 backdrop-blur-xl px-4 sm:px-6 py-3"
                     >
                         @yield('page_actions')
                     </div>

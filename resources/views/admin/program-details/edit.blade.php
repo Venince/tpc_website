@@ -12,15 +12,15 @@
                 {{ $program->code }} Details
             </a>
             <div class="flex items-center gap-2.5">
-                <h1 class="text-lg font-bold text-tpc-ink">Edit Section</h1>
+                <h1 class="text-lg font-semibold text-neo-ink">Edit Section</h1>
                 @php
-                    $typeStyles = ['gallery' => 'bg-purple-50 text-purple-700', 'list' => 'bg-blue-50 text-blue-700', 'text' => 'bg-tpc-primary/8 text-tpc-secondary'];
+                    $typeStyles = ['gallery' => 'bg-purple-50 text-purple-700', 'list' => 'bg-blue-50 text-blue-700', 'text' => 'bg-tpc-primary/10 text-tpc-secondary'];
                 @endphp
-                <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $typeStyles[$detail->type] ?? 'bg-gray-100 text-gray-600' }}">
+                <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $typeStyles[$detail->type] ?? 'bg-neo-bg text-neo-ink/50' }}">
                     {{ $detail->type }}
                 </span>
             </div>
-            <p class="text-xs text-tpc-ink/40 mt-0.5">Section type cannot be changed after creation.</p>
+            <p class="text-xs text-neo-ink/35 mt-0.5">Section type cannot be changed after creation.</p>
         </div>
     </div>
 
@@ -34,16 +34,16 @@
         <form method="POST"
               action="{{ route('admin.programs.details.update', [$program, $detail]) }}"
               enctype="multipart/form-data"
-              class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm p-5 sm:p-6 space-y-5">
+              class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
             @csrf @method('PATCH')
 
             {{-- Heading --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                    Section Heading <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">
+                    Section Heading <span class="text-neo-ink/35 font-normal">(optional)</span>
                 </label>
                 <input type="text" name="heading" value="{{ old('heading', $detail->heading) }}"
-                       class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition"
+                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition"
                        placeholder="e.g. About this Program" />
                 @error('heading') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
@@ -51,9 +51,9 @@
             {{-- TEXT --}}
             @if ($detail->type === 'text')
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Body</label>
+                    <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Body</label>
                     <textarea name="body" rows="6"
-                              class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition resize-none">{{ old('body', $detail->body) }}</textarea>
+                              class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none">{{ old('body', $detail->body) }}</textarea>
                     @error('body') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
             @endif
@@ -61,14 +61,14 @@
             {{-- LIST --}}
             @if ($detail->type === 'list')
                 <div class="space-y-3">
-                    <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60">Items</label>
+                    <label class="block text-sm font-medium text-neo-ink/70">Items</label>
                     <template x-for="(item, index) in items" :key="index">
                         <div class="flex items-center gap-2">
                             <span class="shrink-0 h-1.5 w-1.5 rounded-full bg-tpc-primary"></span>
                             <input type="text" :name="'items[' + index + ']'" x-model="items[index]"
-                                   class="flex-1 rounded-xl border border-tpc-primary/20 px-3 py-2 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition" />
+                                   class="flex-1 rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
                             <button type="button" @click="removeItem(index)"
-                                    class="shrink-0 h-7 w-7 flex items-center justify-center rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition text-lg leading-none"
+                                    class="shrink-0 h-7 w-7 flex items-center justify-center rounded-lg bg-neo-surface shadow-neo-sm text-red-400 hover:text-red-600 hover:shadow-neo-hover active:shadow-neo-inset-sm transition text-lg leading-none"
                                     title="Remove">×</button>
                         </div>
                     </template>
@@ -87,29 +87,29 @@
             @if ($detail->type === 'gallery')
                 <div class="space-y-4">
                     @if ($detail->image_path)
-                        <div class="rounded-xl border border-tpc-primary/12 bg-tpc-primary/3 p-3">
-                            <p class="text-xs font-semibold text-tpc-ink/60 mb-2">Current image</p>
+                        <div class="rounded-xl bg-neo-bg shadow-neo-inset-sm p-3">
+                            <p class="text-xs font-semibold text-neo-ink/55 mb-2">Current image</p>
                             <img src="{{ asset('storage/' . $detail->image_path) }}"
-                                 class="w-full max-h-64 rounded-xl border border-tpc-primary/10 object-contain" alt="current">
+                                 class="w-full max-h-64 rounded-xl object-contain" alt="current">
                         </div>
                     @endif
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                            Replace Image <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                        <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">
+                            Replace Image <span class="text-neo-ink/35 font-normal">(optional)</span>
                         </label>
                         <input type="file" name="image" accept="image/png,image/jpeg,image/webp"
-                               class="w-full rounded-xl border border-tpc-primary/20 bg-white px-3 py-2 text-sm
+                               class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2 text-sm text-neo-ink
                                       file:mr-3 file:rounded-lg file:border-0 file:bg-tpc-primary/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-tpc-primary
                                       hover:file:bg-tpc-primary/15 transition" />
-                        <p class="mt-1.5 text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB</p>
+                        <p class="mt-1.5 text-xs text-neo-ink/35">PNG / JPG / WEBP · max 5 MB</p>
                         @error('image') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                            Caption <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                        <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">
+                            Caption <span class="text-neo-ink/35 font-normal">(optional)</span>
                         </label>
                         <input type="text" name="caption" value="{{ old('caption', $detail->caption) }}"
-                               class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition" />
+                               class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
                         @error('caption') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -117,21 +117,23 @@
 
             {{-- Order --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Display Order</label>
+                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Display Order</label>
                 <input type="number" name="order" value="{{ old('order', $detail->order) }}" min="0"
-                       class="w-28 rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition" />
+                       class="w-28 rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
             </div>
 
-            <div class="pt-2 border-t border-tpc-primary/8 flex flex-wrap gap-3">
+            <div class="pt-2 border-t border-black/[0.06] flex flex-wrap gap-3">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-tpc-secondary transition focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
+                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
+                               shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Save Changes
                 </button>
                 <a href="{{ route('admin.programs.details.index', $program) }}"
-                   class="inline-flex items-center rounded-xl border border-tpc-primary/25 bg-white px-5 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition">
+                   class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
+                          transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
                     Cancel
                 </a>
             </div>

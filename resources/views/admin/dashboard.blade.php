@@ -8,17 +8,17 @@
 
     {{-- Programs --}}
     <a href="{{ route('admin.programs.index') }}"
-       class="group relative overflow-hidden rounded-2xl border border-tpc-primary/30  p-4 shadow-md hover:shadow-lg hover:border-tpc-primary/40 hover:-translate-y-0.5 transition-all duration-200">
+       class="group relative overflow-hidden rounded-[24px] bg-neo-surface p-4 shadow-neo hover:shadow-neo-hover hover:-translate-y-0.5 transition-all duration-200">
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-tpc-primary/5 transition-all duration-300 group-hover:scale-150 group-hover:bg-tpc-primary/8"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
-                <p class="text-[10px] text-tpc-ink/50 font-medium uppercase tracking-wider">Programs</p>
-                <p class="mt-1.5 text-2xl font-semibold text-tpc-ink leading-none tabular-nums">{{ $programCount }}</p>
-                <p class="mt-1 text-[10px] text-tpc-ink/50">
+                <p class="text-[10px] text-neo-ink/50 font-medium uppercase tracking-wider">Programs</p>
+                <p class="mt-1.5 text-2xl font-semibold text-neo-ink leading-none tabular-nums">{{ $programCount }}</p>
+                <p class="mt-1 text-[10px] text-neo-ink/50">
                     <span class="font-semibold text-tpc-primary">{{ $activeProgramCount }}</span> active
                 </p>
             </div>
-            <div class="relative shrink-0 rounded-xl bg-tpc-primary/8 border border-tpc-primary/12 p-2 text-tpc-primary transition-transform duration-200 group-hover:scale-110">
+            <div class="relative shrink-0 rounded-xl bg-tpc-primary/10 shadow-neo-sm p-2 text-tpc-primary transition-transform duration-200 group-hover:scale-110">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>
                 </svg>
@@ -28,17 +28,17 @@
 
     {{-- News Posts --}}
     <a href="{{ route('admin.news-posts.index') }}"
-       class="group relative overflow-hidden rounded-2xl border border-emerald-200 bg-white p-4 shadow-md hover:shadow-lg hover:border-emerald-300 hover:-translate-y-0.5 transition-all duration-200">
+       class="group relative overflow-hidden rounded-[24px] bg-neo-surface p-4 shadow-neo hover:shadow-neo-hover hover:-translate-y-0.5 transition-all duration-200">
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-emerald-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-emerald-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
-                <p class="text-[10px] text-tpc-ink/50 font-medium uppercase tracking-wider">News Posts</p>
-                <p class="mt-1.5 text-2xl font-semibold text-tpc-ink leading-none tabular-nums">{{ $newsCount }}</p>
-                <p class="mt-1 text-[10px] text-tpc-ink/50">
+                <p class="text-[10px] text-neo-ink/50 font-medium uppercase tracking-wider">News Posts</p>
+                <p class="mt-1.5 text-2xl font-semibold text-neo-ink leading-none tabular-nums">{{ $newsCount }}</p>
+                <p class="mt-1 text-[10px] text-neo-ink/50">
                     <span class="font-semibold text-emerald-600">{{ $publishedNewsCount }}</span> published
                 </p>
             </div>
-            <div class="relative shrink-0 rounded-xl bg-emerald-50 border border-emerald-100 p-2 text-emerald-500 transition-transform duration-200 group-hover:scale-110">
+            <div class="relative shrink-0 rounded-xl bg-emerald-50 shadow-neo-sm p-2 text-emerald-500 transition-transform duration-200 group-hover:scale-110">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"/>
                 </svg>
@@ -48,13 +48,13 @@
 
     {{-- Messages --}}
     <a href="{{ route('admin.messages.index') }}"
-       class="group relative overflow-hidden rounded-2xl border border-yellow-200 bg-white p-4 shadow-md hover:shadow-lg hover:border-yellow-300 hover:-translate-y-0.5 transition-all duration-200">
+       class="group relative overflow-hidden rounded-[24px] bg-neo-surface p-4 shadow-neo hover:shadow-neo-hover hover:-translate-y-0.5 transition-all duration-200">
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-yellow-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-yellow-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
-                <p class="text-[10px] text-tpc-ink/50 font-medium uppercase tracking-wider">Messages</p>
-                <p class="mt-1.5 text-2xl font-semibold text-tpc-ink leading-none tabular-nums">{{ $messageCount }}</p>
-                <p class="mt-1 text-[10px] text-tpc-ink/50">
+                <p class="text-[10px] text-neo-ink/50 font-medium uppercase tracking-wider">Messages</p>
+                <p class="mt-1.5 text-2xl font-semibold text-neo-ink leading-none tabular-nums">{{ $messageCount }}</p>
+                <p class="mt-1 text-[10px] text-neo-ink/50">
                     @if($unreadMessageCount > 0)
                         <span class="font-semibold text-yellow-600">{{ $unreadMessageCount }}</span> unread
                     @else
@@ -62,7 +62,7 @@
                     @endif
                 </p>
             </div>
-            <div class="relative shrink-0 rounded-xl bg-yellow-50 border border-yellow-100 p-2 text-yellow-500 transition-transform duration-200 group-hover:scale-110">
+            <div class="relative shrink-0 rounded-xl bg-yellow-50 shadow-neo-sm p-2 text-yellow-500 transition-transform duration-200 group-hover:scale-110">
                 @if($unreadMessageCount > 0)
                     <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-yellow-500 text-[8px] font-bold text-white ring-2 ring-white">
                         {{ $unreadMessageCount > 9 ? '9+' : $unreadMessageCount }}
@@ -77,13 +77,13 @@
 
     {{-- Feedback --}}
     <a href="{{ route('admin.feedback.index') }}"
-       class="group relative overflow-hidden rounded-2xl border border-amber-200 bg-white p-4 shadow-md hover:shadow-lg hover:border-amber-300 hover:-translate-y-0.5 transition-all duration-200">
+       class="group relative overflow-hidden rounded-[24px] bg-neo-surface p-4 shadow-neo hover:shadow-neo-hover hover:-translate-y-0.5 transition-all duration-200">
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-amber-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-amber-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
-                <p class="text-[10px] text-tpc-ink/50 font-medium uppercase tracking-wider">Feedback</p>
+                <p class="text-[10px] text-neo-ink/50 font-medium uppercase tracking-wider">Feedback</p>
                 <div class="mt-1.5 flex items-baseline gap-1.5">
-                    <p class="text-2xl font-semibold text-tpc-ink leading-none tabular-nums">{{ $feedbackCount }}</p>
+                    <p class="text-2xl font-semibold text-neo-ink leading-none tabular-nums">{{ $feedbackCount }}</p>
                     @if($feedbackCount > 0)
                         <span class="flex items-center gap-0.5 text-xs font-semibold text-amber-500">
                             <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -93,7 +93,7 @@
                         </span>
                     @endif
                 </div>
-                <p class="mt-1 text-[10px] text-tpc-ink/50">
+                <p class="mt-1 text-[10px] text-neo-ink/50">
                     @if($unreadFeedbackCount > 0)
                         <span class="font-semibold text-amber-600">{{ $unreadFeedbackCount }}</span> unread
                     @else
@@ -101,7 +101,7 @@
                     @endif
                 </p>
             </div>
-            <div class="relative shrink-0 rounded-xl bg-amber-50 border border-amber-100 p-2 text-amber-500 transition-transform duration-200 group-hover:scale-110">
+            <div class="relative shrink-0 rounded-xl bg-amber-50 shadow-neo-sm p-2 text-amber-500 transition-transform duration-200 group-hover:scale-110">
                 @if($unreadFeedbackCount > 0)
                     <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-amber-500 text-[8px] font-bold text-white ring-2 ring-white">
                         {{ $unreadFeedbackCount > 9 ? '9+' : $unreadFeedbackCount }}
@@ -116,17 +116,17 @@
 
     {{-- Pending Review --}}
     <a href="{{ route('admin.news-review.index') }}"
-       class="group relative overflow-hidden rounded-2xl border border-amber-200 bg-white p-4 shadow-md hover:shadow-lg hover:border-amber-300 hover:-translate-y-0.5 transition-all duration-200 {{ $pendingNewsCount > 0 ? 'ring-1 ring-amber-200/60' : '' }}">
+       class="group relative overflow-hidden rounded-[24px] bg-neo-surface p-4 shadow-neo hover:shadow-neo-hover hover:-translate-y-0.5 transition-all duration-200 {{ $pendingNewsCount > 0 ? 'shadow-neo-hover' : '' }}">
         <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-amber-50 transition-all duration-300 group-hover:scale-150 group-hover:bg-amber-100/60"></div>
         <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 relative">
-                <p class="text-[10px] text-tpc-ink/50 font-medium uppercase tracking-wider">Pending Review</p>
-                <p class="mt-1.5 text-2xl font-semibold {{ $pendingNewsCount > 0 ? 'text-amber-600' : 'text-tpc-ink' }} leading-none tabular-nums">{{ $pendingNewsCount }}</p>
-                <p class="mt-1 text-[10px] text-tpc-ink/50">
+                <p class="text-[10px] text-neo-ink/50 font-medium uppercase tracking-wider">Pending Review</p>
+                <p class="mt-1.5 text-2xl font-semibold {{ $pendingNewsCount > 0 ? 'text-amber-600' : 'text-neo-ink' }} leading-none tabular-nums">{{ $pendingNewsCount }}</p>
+                <p class="mt-1 text-[10px] text-neo-ink/50">
                     {{ $pendingNewsCount > 0 ? 'awaiting approval' : 'all clear ✓' }}
                 </p>
             </div>
-            <div class="relative shrink-0 rounded-xl bg-amber-50 border border-amber-100 p-2 text-amber-500 transition-transform duration-200 group-hover:scale-110 {{ $pendingNewsCount > 0 ? 'animate-pulse' : '' }}">
+            <div class="relative shrink-0 rounded-xl bg-amber-50 shadow-neo-sm p-2 text-amber-500 transition-transform duration-200 group-hover:scale-110 {{ $pendingNewsCount > 0 ? 'animate-pulse' : '' }}">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
                     <circle cx="12" cy="12" r="10"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/>
@@ -140,9 +140,9 @@
 <div class="mt-3 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 
     {{-- Programs donut --}}
-    <div class="rounded-2xl border border-tpc-primary/25 bg-white p-4 shadow-md ring-1 ring-tpc-primary/5">
+    <div class="rounded-[24px] bg-neo-surface p-4 shadow-neo">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-xs font-semibold text-tpc-ink">Programs Breakdown</h2>
+            <h2 class="text-xs font-semibold text-neo-ink">Programs Breakdown</h2>
             <a href="{{ route('admin.programs.index') }}"
                class="text-[10px] font-medium text-tpc-primary hover:text-tpc-secondary transition-colors">
                 Manage →
@@ -151,7 +151,7 @@
         <div class="flex items-center gap-4">
             <div class="relative shrink-0">
                 <svg width="80" height="80" viewBox="0 0 96 96" class="-rotate-90">
-                    <circle cx="48" cy="48" r="36" fill="none" stroke="#f0fdf4" stroke-width="13"/>
+                    <circle cx="48" cy="48" r="36" fill="none" stroke="#E7ECF2" stroke-width="13"/>
                     <circle
                         cx="48" cy="48" r="36" fill="none"
                         stroke="rgb(0,128,0)"
@@ -164,33 +164,33 @@
                     />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span class="text-base font-semibold text-tpc-ink leading-none">{{ $programCount > 0 ? round($progPct * 100) : 0 }}%</span>
-                    <span class="text-[9px] text-tpc-ink/50 mt-0.5">active</span>
+                    <span class="text-base font-semibold text-neo-ink leading-none">{{ $programCount > 0 ? round($progPct * 100) : 0 }}%</span>
+                    <span class="text-[9px] text-neo-ink/50 mt-0.5">active</span>
                 </div>
             </div>
             <div class="space-y-2.5 text-xs flex-1">
                 <div class="flex items-center gap-2">
                     <span class="h-2 w-2 rounded-full bg-tpc-primary shrink-0"></span>
-                    <span class="text-tpc-ink/70">Active</span>
-                    <span class="ml-auto font-semibold text-tpc-ink tabular-nums">{{ $activeProgramCount }}</span>
+                    <span class="text-neo-ink/70">Active</span>
+                    <span class="ml-auto font-semibold text-neo-ink tabular-nums">{{ $activeProgramCount }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="h-2 w-2 rounded-full bg-tpc-primary/15 border border-tpc-primary/20 shrink-0"></span>
-                    <span class="text-tpc-ink/70">Inactive</span>
-                    <span class="ml-auto font-semibold text-tpc-ink tabular-nums">{{ $programCount - $activeProgramCount }}</span>
+                    <span class="text-neo-ink/70">Inactive</span>
+                    <span class="ml-auto font-semibold text-neo-ink tabular-nums">{{ $programCount - $activeProgramCount }}</span>
                 </div>
-                <div class="pt-2 border-t border-tpc-primary/10 flex items-center gap-2">
-                    <span class="text-tpc-ink/50 text-[10px]">Total</span>
-                    <span class="ml-auto font-semibold text-tpc-ink tabular-nums">{{ $programCount }}</span>
+                <div class="pt-2 border-t border-black/[0.06] flex items-center gap-2">
+                    <span class="text-neo-ink/50 text-[10px]">Total</span>
+                    <span class="ml-auto font-semibold text-neo-ink tabular-nums">{{ $programCount }}</span>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- News donut --}}
-    <div class="rounded-2xl border border-tpc-primary/20 bg-white p-4 shadow-md">
+    <div class="rounded-[24px] bg-neo-surface p-4 shadow-neo">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-xs font-semibold text-tpc-ink">News by Status</h2>
+            <h2 class="text-xs font-semibold text-neo-ink">News by Status</h2>
             <a href="{{ route('admin.news-posts.index') }}"
                class="text-[10px] font-medium text-tpc-primary hover:text-tpc-secondary transition-colors">
                 Manage →
@@ -199,7 +199,7 @@
         <div class="flex items-center gap-4">
             <div class="relative shrink-0">
                 <svg width="80" height="80" viewBox="0 0 96 96" class="-rotate-90">
-                    <circle cx="48" cy="48" r="36" fill="none" stroke="#eff6ff" stroke-width="13"/>
+                    <circle cx="48" cy="48" r="36" fill="none" stroke="#E7ECF2" stroke-width="13"/>
                     <circle
                         cx="48" cy="48" r="36" fill="none"
                         stroke="#3b82f6"
@@ -212,38 +212,38 @@
                     />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span class="text-base font-semibold text-tpc-ink leading-none">{{ $newsCount > 0 ? round($newsPct * 100) : 0 }}%</span>
-                    <span class="text-[9px] text-tpc-ink/50 mt-0.5">published</span>
+                    <span class="text-base font-semibold text-neo-ink leading-none">{{ $newsCount > 0 ? round($newsPct * 100) : 0 }}%</span>
+                    <span class="text-[9px] text-neo-ink/50 mt-0.5">published</span>
                 </div>
             </div>
             <div class="space-y-2.5 text-xs flex-1">
                 <div class="flex items-center gap-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-500 shrink-0"></span>
-                    <span class="text-tpc-ink/70">Published</span>
-                    <span class="ml-auto font-semibold text-tpc-ink tabular-nums">{{ $publishedNewsCount }}</span>
+                    <span class="text-neo-ink/70">Published</span>
+                    <span class="ml-auto font-semibold text-neo-ink tabular-nums">{{ $publishedNewsCount }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="h-2 w-2 rounded-full bg-amber-400 shrink-0"></span>
-                    <span class="text-tpc-ink/70">Pending</span>
-                    <span class="ml-auto font-semibold text-tpc-ink tabular-nums">{{ $pendingNewsCount }}</span>
+                    <span class="text-neo-ink/70">Pending</span>
+                    <span class="ml-auto font-semibold text-neo-ink tabular-nums">{{ $pendingNewsCount }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="h-2 w-2 rounded-full bg-tpc-ink/15 border border-tpc-ink/20 shrink-0"></span>
-                    <span class="text-tpc-ink/70">Draft</span>
-                    <span class="ml-auto font-semibold text-tpc-ink tabular-nums">{{ $newsCount - $publishedNewsCount - $pendingNewsCount }}</span>
+                    <span class="h-2 w-2 rounded-full bg-neo-ink/15 border border-neo-ink/20 shrink-0"></span>
+                    <span class="text-neo-ink/70">Draft</span>
+                    <span class="ml-auto font-semibold text-neo-ink tabular-nums">{{ $newsCount - $publishedNewsCount - $pendingNewsCount }}</span>
                 </div>
-                <div class="pt-2 border-t border-tpc-primary/10 flex items-center gap-2">
-                    <span class="text-tpc-ink/50 text-[10px]">Total</span>
-                    <span class="ml-auto font-semibold text-tpc-ink tabular-nums">{{ $newsCount }}</span>
+                <div class="pt-2 border-t border-black/[0.06] flex items-center gap-2">
+                    <span class="text-neo-ink/50 text-[10px]">Total</span>
+                    <span class="ml-auto font-semibold text-neo-ink tabular-nums">{{ $newsCount }}</span>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Feedback ratings breakdown --}}
-    <div class="rounded-2xl border border-amber-200 bg-white p-4 shadow-md">
+    <div class="rounded-[24px] bg-neo-surface p-4 shadow-neo">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-xs font-semibold text-tpc-ink">Ratings Breakdown</h2>
+            <h2 class="text-xs font-semibold text-neo-ink">Ratings Breakdown</h2>
             <a href="{{ route('admin.feedback.index') }}"
                class="text-[10px] font-medium text-tpc-primary hover:text-tpc-secondary transition-colors">
                 Manage →
@@ -253,7 +253,7 @@
         @if($feedbackCount > 0)
             <div class="flex items-center gap-4 mb-1">
                 <div class="shrink-0 text-center">
-                    <p class="text-2xl font-semibold text-tpc-ink leading-none tabular-nums">{{ $avgFeedbackRating }}</p>
+                    <p class="text-2xl font-semibold text-neo-ink leading-none tabular-nums">{{ $avgFeedbackRating }}</p>
                     <div class="flex items-center gap-0.5 mt-1.5 justify-center">
                         @for($i = 1; $i <= 5; $i++)
                             <svg class="h-3 w-3 {{ $i <= round($avgFeedbackRating) ? 'text-amber-400' : 'text-gray-200' }}" fill="currentColor" viewBox="0 0 20 20">
@@ -261,7 +261,7 @@
                             </svg>
                         @endfor
                     </div>
-                    <p class="mt-1 text-[10px] text-tpc-ink/40">{{ $feedbackCount }} total</p>
+                    <p class="mt-1 text-[10px] text-neo-ink/40">{{ $feedbackCount }} total</p>
                 </div>
 
                 <div class="space-y-1.5 flex-1">
@@ -271,14 +271,14 @@
                             $pct = $feedbackCount > 0 ? round(($c / $feedbackCount) * 100) : 0;
                         @endphp
                         <div class="flex items-center gap-2 text-[10px]">
-                            <span class="w-2.5 text-tpc-ink/60 tabular-nums">{{ $r }}</span>
+                            <span class="w-2.5 text-neo-ink/60 tabular-nums">{{ $r }}</span>
                             <svg class="h-3 w-3 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.447a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.446a1 1 0 00-1.176 0l-3.367 2.446c-.784.57-1.838-.196-1.539-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/>
                             </svg>
-                            <div class="h-1.5 flex-1 rounded-full bg-tpc-ink/8 overflow-hidden">
+                            <div class="h-1.5 flex-1 rounded-full bg-neo-bg shadow-neo-inset-sm overflow-hidden">
                                 <div class="h-full rounded-full bg-amber-400 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" style="width: {{ $pct }}%"></div>
                             </div>
-                            <span class="w-5 text-right font-semibold text-tpc-ink tabular-nums">{{ $c }}</span>
+                            <span class="w-5 text-right font-semibold text-neo-ink tabular-nums">{{ $c }}</span>
                         </div>
                     @endfor
                 </div>
@@ -290,7 +290,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.914c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.075 9.101c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.95-.69l1.52-4.674z"/>
                     </svg>
                 </div>
-                <p class="text-xs text-tpc-ink/40">No feedback yet.</p>
+                <p class="text-xs text-neo-ink/40">No feedback yet.</p>
             </div>
         @endif
     </div>
@@ -300,11 +300,11 @@
 <div class="mt-3 grid gap-3 grid-cols-1 lg:grid-cols-3">
 
     {{-- Recent news (2/3 width) --}}
-    <div class="lg:col-span-2 rounded-2xl border border-tpc-primary/20 bg-white p-4 shadow-md">
+    <div class="lg:col-span-2 rounded-[24px] bg-neo-surface p-4 shadow-neo">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-xs font-semibold text-tpc-ink">Recent News Posts</h2>
+            <h2 class="text-xs font-semibold text-neo-ink">Recent News Posts</h2>
             <a href="{{ route('admin.news-posts.create') }}"
-               class="inline-flex items-center gap-1 rounded-xl border border-tpc-primary/20 bg-tpc-primary/8 px-2.5 py-1 text-[10px] font-semibold text-tpc-primary hover:bg-tpc-primary/12 transition-colors">
+               class="inline-flex items-center gap-1 rounded-xl bg-neo-surface shadow-neo-sm px-2.5 py-1 text-[10px] font-semibold text-tpc-primary hover:shadow-neo-hover transition-all">
                 <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
                 </svg>
@@ -312,7 +312,7 @@
             </a>
         </div>
 
-        <div class="divide-y divide-tpc-primary/8">
+        <div class="divide-y divide-black/[0.05]">
             @forelse ($recentNews as $post)
                 <div class="group flex items-center gap-2 py-2.5">
                     {{-- Status indicator --}}
@@ -325,13 +325,13 @@
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
                             </span>
                         @else
-                            <span class="flex h-2 w-2 rounded-full bg-tpc-ink/20"></span>
+                            <span class="flex h-2 w-2 rounded-full bg-neo-ink/20"></span>
                         @endif
                     </div>
 
                     <div class="min-w-0 flex-1">
-                        <p class="truncate text-xs font-medium text-tpc-ink group-hover:text-tpc-primary transition-colors">{{ $post->title }}</p>
-                        <p class="text-[10px] text-tpc-ink/50 mt-0.5">
+                        <p class="truncate text-xs font-medium text-neo-ink group-hover:text-tpc-primary transition-colors">{{ $post->title }}</p>
+                        <p class="text-[10px] text-neo-ink/50 mt-0.5">
                             {{ $post->category }}
                             <span class="mx-1 opacity-50">·</span>
                             {{ $post->created_at->diffForHumans() }}
@@ -347,13 +347,13 @@
                             Pending
                         </span>
                     @else
-                        <span class="shrink-0 rounded-full bg-tpc-ink/8 px-2 py-0.5 text-[10px] font-medium text-tpc-ink/50">
+                        <span class="shrink-0 rounded-full bg-neo-ink/8 px-2 py-0.5 text-[10px] font-medium text-neo-ink/50">
                             Draft
                         </span>
                     @endif
 
                     <a href="{{ route('admin.news-posts.edit', $post) }}"
-                       class="shrink-0 rounded-lg border border-tpc-primary/15 bg-white px-2 py-0.5 text-[10px] font-medium text-tpc-primary opacity-0 group-hover:opacity-100 transition-all hover:bg-tpc-primary/5 touch-manipulation">
+                       class="shrink-0 rounded-lg bg-neo-surface shadow-neo-sm px-2 py-0.5 text-[10px] font-medium text-tpc-primary opacity-0 group-hover:opacity-100 transition-all hover:shadow-neo-hover touch-manipulation">
                         Edit
                     </a>
                 </div>
@@ -364,7 +364,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"/>
                         </svg>
                     </div>
-                    <p class="text-xs text-tpc-ink/40">No news posts yet.</p>
+                    <p class="text-xs text-neo-ink/40">No news posts yet.</p>
                     <a href="{{ route('admin.news-posts.create') }}"
                        class="mt-1 rounded-xl bg-tpc-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-tpc-primary/90 transition">
                         Create first post
@@ -374,9 +374,9 @@
         </div>
 
         @if($recentNews->count() > 0)
-            <div class="mt-3 pt-3 border-t border-tpc-primary/8">
+            <div class="mt-3 pt-3 border-t border-black/[0.06]">
                 <a href="{{ route('admin.news-posts.index') }}"
-                   class="flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-medium text-tpc-ink/50 hover:bg-tpc-primary/5 hover:text-tpc-primary transition-colors">
+                   class="flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-medium text-neo-ink/50 hover:bg-tpc-primary/5 hover:text-tpc-primary transition-colors">
                     View all {{ $newsCount }} posts
                     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/>
@@ -390,8 +390,8 @@
     <div class="space-y-3">
 
         {{-- Content overview bar chart --}}
-        <div class="rounded-2xl border border-tpc-primary/20 bg-white p-4 shadow-md">
-            <h2 class="text-xs font-semibold text-tpc-ink mb-3">Content Overview</h2>
+        <div class="rounded-[24px] bg-neo-surface p-4 shadow-neo">
+            <h2 class="text-xs font-semibold text-neo-ink mb-3">Content Overview</h2>
 
             @php
                 $barItems = [
@@ -408,10 +408,10 @@
                     @php $pct = $item['max'] > 0 ? round(($item['val'] / $item['max']) * 100) : 0; @endphp
                     <div>
                         <div class="flex justify-between text-[10px] mb-1">
-                            <span class="text-tpc-ink/60">{{ $item['label'] }}</span>
-                            <span class="font-semibold text-tpc-ink tabular-nums">{{ $item['val'] }}</span>
+                            <span class="text-neo-ink/60">{{ $item['label'] }}</span>
+                            <span class="font-semibold text-neo-ink tabular-nums">{{ $item['val'] }}</span>
                         </div>
-                        <div class="h-1.5 w-full rounded-full bg-tpc-ink/8 overflow-hidden">
+                        <div class="h-1.5 w-full rounded-full bg-neo-bg shadow-neo-inset-sm overflow-hidden">
                             <div class="h-full rounded-full {{ $item['color'] }} transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
                                  style="width: {{ $pct }}%"></div>
                         </div>
@@ -421,11 +421,11 @@
         </div>
 
         {{-- Quick actions --}}
-        <div class="rounded-2xl border border-tpc-primary/20 bg-white p-4 shadow-md">
-            <h2 class="text-xs font-semibold text-tpc-ink mb-3">Quick Actions</h2>
+        <div class="rounded-[24px] bg-neo-surface p-4 shadow-neo">
+            <h2 class="text-xs font-semibold text-neo-ink mb-3">Quick Actions</h2>
             <div class="space-y-1.5">
                 <a href="{{ route('admin.news-posts.create') }}"
-                   class="flex items-center gap-2.5 rounded-xl border border-tpc-primary/15 px-3 py-2.5 text-xs font-medium text-tpc-primary hover:bg-tpc-primary hover:text-white hover:border-tpc-primary transition-all duration-150 group">
+                   class="flex items-center gap-2.5 rounded-xl bg-neo-surface shadow-neo-sm px-3 py-2.5 text-xs font-medium text-tpc-primary hover:bg-tpc-primary hover:text-white hover:shadow-neo-hover transition-all duration-150 group">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/>
                     </svg>
@@ -437,7 +437,7 @@
 
                 @if(auth()->check() && auth()->user()->is_super_admin)
                 <a href="{{ route('admin.news-review.index') }}"
-                   class="flex items-center gap-2.5 rounded-xl border border-amber-200 px-3 py-2.5 text-xs font-medium text-amber-700 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all duration-150 group">
+                   class="flex items-center gap-2.5 rounded-xl bg-neo-surface shadow-neo-sm px-3 py-2.5 text-xs font-medium text-amber-700 hover:bg-amber-500 hover:text-white hover:shadow-neo-hover transition-all duration-150 group">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/>
                     </svg>
@@ -455,7 +455,7 @@
                 @endif
 
                 <a href="{{ route('admin.messages.index') }}"
-                   class="flex items-center gap-2.5 rounded-xl border border-yellow-100 px-3 py-2.5 text-xs font-medium text-yellow-700 hover:bg-yellow-500 hover:text-white hover:border-yellow-500 transition-all duration-150 group">
+                   class="flex items-center gap-2.5 rounded-xl bg-neo-surface shadow-neo-sm px-3 py-2.5 text-xs font-medium text-yellow-700 hover:bg-yellow-500 hover:text-white hover:shadow-neo-hover transition-all duration-150 group">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
@@ -472,7 +472,7 @@
                 </a>
 
                 <a href="{{ route('admin.feedback.index') }}"
-                   class="flex items-center gap-2.5 rounded-xl border border-amber-200 px-3 py-2.5 text-xs font-medium text-amber-700 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all duration-150 group">
+                   class="flex items-center gap-2.5 rounded-xl bg-neo-surface shadow-neo-sm px-3 py-2.5 text-xs font-medium text-amber-700 hover:bg-amber-500 hover:text-white hover:shadow-neo-hover transition-all duration-150 group">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.914c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.075 9.101c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.95-.69l1.52-4.674z"/>
                     </svg>
@@ -489,7 +489,7 @@
                 </a>
 
                 <a href="{{ route('admin.programs.create') }}"
-                   class="flex items-center gap-2.5 rounded-xl border border-tpc-primary/15 px-3 py-2.5 text-xs font-medium text-tpc-ink/60 hover:bg-tpc-ink/5 hover:text-tpc-ink transition-all duration-150 group">
+                   class="flex items-center gap-2.5 rounded-xl bg-neo-surface shadow-neo-sm px-3 py-2.5 text-xs font-medium text-neo-ink/60 hover:shadow-neo-hover hover:text-neo-ink transition-all duration-150 group">
                     <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>
                     </svg>

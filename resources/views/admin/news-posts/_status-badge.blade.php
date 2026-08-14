@@ -5,13 +5,13 @@
 
 @php
     $map = [
-        'approved' => ['bg-tpc-accent/30 text-tpc-secondary',  'Approved'],
-        'declined' => ['bg-red-100 text-red-700',              'Declined'],
-        'pending'  => ['bg-yellow-100 text-yellow-800',        'Pending Review'],
+        'approved' => ['bg-emerald-50 text-emerald-700',  'Approved'],
+        'declined' => ['bg-red-50 text-red-700',          'Declined'],
+        'pending'  => ['bg-amber-50 text-amber-700',      'Pending Review'],
     ];
-    [$cls, $label] = $map[$post->status] ?? ['bg-gray-100 text-gray-700', ucfirst($post->status)];
+    [$cls, $label] = $map[$post->status] ?? ['bg-neo-bg text-neo-ink/50', ucfirst($post->status)];
 @endphp
 
-<span class="shrink-0 rounded-full px-2 py-1 text-xs font-semibold {{ $cls }}">
+<span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold {{ $cls }}">
     {{ $label }}
 </span>

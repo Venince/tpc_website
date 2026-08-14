@@ -11,8 +11,8 @@
                 </svg>
                 {{ $program->code }}
             </a>
-            <h1 class="text-lg font-bold text-tpc-ink">Add Person</h1>
-            <p class="text-xs text-tpc-ink/50 mt-0.5">Adding to: <span class="font-semibold text-tpc-ink">{{ $program->name }}</span></p>
+            <h1 class="text-lg font-semibold text-neo-ink">Add Person</h1>
+            <p class="text-xs text-neo-ink/45 mt-0.5">Adding to: <span class="font-semibold text-neo-ink/70">{{ $program->name }}</span></p>
         </div>
     </div>
 
@@ -20,22 +20,21 @@
         <form method="POST"
               action="{{ route('admin.programs.people.store', $program) }}"
               enctype="multipart/form-data"
-              class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm p-5 sm:p-6 space-y-5">
+              class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
             @csrf
 
             {{-- Role --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-2">Role</label>
+                <label class="block text-sm font-medium text-neo-ink/70 mb-2">Role</label>
                 <div class="grid grid-cols-3 gap-2">
                     @foreach (['head' => 'Program Head', 'coordinator' => 'Coordinator', 'instructor' => 'Instructor'] as $val => $label)
                         <label class="cursor-pointer">
                             <input type="radio" name="role" value="{{ $val }}"
                                    {{ old('role', 'instructor') === $val ? 'checked' : '' }}
                                    class="sr-only peer" />
-                            <span class="block rounded-xl border-2 px-3 py-2.5 text-center text-xs font-semibold transition
-                                         border-gray-200 text-tpc-ink/60
-                                         peer-checked:border-tpc-primary peer-checked:bg-tpc-primary peer-checked:text-white
-                                         hover:border-tpc-primary/40">
+                            <span class="block rounded-xl bg-neo-surface shadow-neo-sm px-3 py-2.5 text-center text-xs font-semibold text-neo-ink/55 transition
+                                         hover:shadow-neo-hover
+                                         peer-checked:shadow-neo-inset-sm peer-checked:bg-neo-bg peer-checked:text-tpc-primary">
                                 {{ $label }}
                             </span>
                         </label>
@@ -46,38 +45,38 @@
 
             {{-- Name --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Full Name</label>
+                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Full Name</label>
                 <input type="text" name="name" value="{{ old('name') }}" required autofocus
-                       class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition"
+                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition"
                        placeholder="e.g. Venince Dave Quiamco Autida" />
                 @error('name') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             {{-- Position --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                    Title / Position <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">
+                    Title / Position <span class="text-neo-ink/35 font-normal">(optional)</span>
                 </label>
                 <input type="text" name="position" value="{{ old('position') }}"
-                       class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition"
+                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition"
                        placeholder="e.g. Associate Professor" />
                 @error('position') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             {{-- Photo --}}
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                    Photo <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                <label class="block text-sm font-medium text-neo-ink/70 mb-2">
+                    Photo <span class="text-neo-ink/35 font-normal">(optional)</span>
                 </label>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
                     <div id="photo-preview" class="hidden shrink-0">
                         <img id="preview-img" src="" alt="Preview"
-                            class="h-20 w-20 rounded-full object-cover border-2 border-tpc-primary/20 shadow-sm" />
+                            class="h-16 w-16 rounded-full object-cover shadow-neo-inset-sm" />
                     </div>
                     <div class="flex-1">
                         <div class="relative inline-flex">
-                            <span class="inline-flex items-center gap-2 rounded-xl border border-tpc-primary/25 bg-white px-4 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition pointer-events-none">
+                            <span class="inline-flex items-center gap-2 rounded-xl bg-neo-surface shadow-neo-sm px-4 py-2.5 text-sm font-semibold text-tpc-primary transition hover:shadow-neo-hover pointer-events-none">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M4 16l4-4a3 3 0 014.24 0L16 16m-2-2l1.59-1.59A3 3 0 0119.41 12L21 13.41M8 11a2 2 0 110-4 2 2 0 010 4zm13 9H3a2 2 0 01-2-2V7a2 2 0 012-2h3.17A2 2 0 007 4h10a2 2 0 011.83 1H21a2 2 0 012 2v11a2 2 0 01-2 2z"/>
@@ -87,7 +86,7 @@
                             <input id="photo-pick" type="file" accept="image/png,image/jpeg,image/webp"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                         </div>
-                        <p class="mt-1.5 text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB · will be cropped to square</p>
+                        <p class="mt-1.5 text-xs text-neo-ink/35">PNG / JPG / WEBP · max 5 MB · will be cropped to square</p>
                     </div>
                 </div>
 
@@ -95,16 +94,18 @@
                 @error('photo_crop') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
-            <div class="pt-2 border-t border-tpc-primary/8 flex flex-wrap gap-3">
+            <div class="pt-2 border-t border-black/[0.06] flex flex-wrap gap-3">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-tpc-secondary transition focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
+                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
+                               shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Add Person
                 </button>
                 <a href="{{ route('admin.programs.show', $program) }}"
-                   class="inline-flex items-center rounded-xl border border-tpc-primary/25 bg-white px-5 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition">
+                   class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
+                          transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
                     Cancel
                 </a>
             </div>
@@ -113,26 +114,27 @@
 
     {{-- Crop Modal --}}
     <div id="crop-modal"
-        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                <h2 class="text-sm font-bold text-tpc-ink">Crop Photo</h2>
-                <button type="button" id="crop-cancel" class="text-tpc-ink/40 hover:text-tpc-ink transition">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-neo-ink/50 backdrop-blur-sm p-4">
+        <div class="bg-neo-surface rounded-2xl shadow-neo-lg w-full max-w-md flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-black/[0.06]">
+                <h2 class="text-sm font-semibold text-neo-ink">Crop Photo</h2>
+                <button type="button" id="crop-cancel"
+                        class="h-7 w-7 inline-flex items-center justify-center rounded-lg text-neo-ink/40 hover:text-neo-ink shadow-neo-sm hover:shadow-neo-hover transition">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
-            <div id="crop-container" class="relative bg-gray-950" style="height:340px;"></div>
-            <div class="px-5 py-4 flex items-center justify-between gap-3 border-t border-gray-100">
-                <p class="text-xs text-tpc-ink/50">Drag to reposition · Pinch or scroll to zoom</p>
+            <div id="crop-container" class="relative bg-neo-ink" style="height:340px;"></div>
+            <div class="px-5 py-4 flex items-center justify-between gap-3 border-t border-black/[0.06]">
+                <p class="text-xs text-neo-ink/45">Drag to reposition · Pinch or scroll to zoom</p>
                 <div class="flex gap-2 shrink-0">
                     <button type="button" id="crop-cancel-btn"
-                            class="rounded-xl border border-tpc-primary/25 px-4 py-2 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition">
+                            class="rounded-xl bg-neo-surface shadow-neo-sm px-4 py-2 text-sm font-semibold text-tpc-primary transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
                         Cancel
                     </button>
                     <button type="button" id="crop-confirm"
-                            class="rounded-xl bg-tpc-primary px-4 py-2 text-sm font-semibold text-white hover:bg-tpc-secondary transition">
+                            class="rounded-xl bg-tpc-primary px-4 py-2 text-sm font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
                         Use Photo
                     </button>
                 </div>

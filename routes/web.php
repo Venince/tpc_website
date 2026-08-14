@@ -87,10 +87,10 @@ Route::any('/tpc_admin', fn () => abort(404));
 | ADMIN LOGIN URL (alias)
 |----------------------------------------------------------------------
 */
-Route::get('/tpc_login', function () {
-    abort_unless(Route::has('login'), 404);
-    return redirect()->route('login');
-})->name('admin.login');
+// Route::get('/tpc_login', function () {
+//     abort_unless(Route::has('login'), 404);
+//     return redirect()->route('login');
+// })->name('admin.login');
 
 /*
 |----------------------------------------------------------------------

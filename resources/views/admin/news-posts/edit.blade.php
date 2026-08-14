@@ -12,7 +12,7 @@
                 </svg>
                 News Posts
             </a>
-            <h1 class="text-lg font-bold text-tpc-ink">Edit News Post</h1>
+            <h1 class="text-lg font-semibold text-neo-ink">Edit News Post</h1>
         </div>
         <div class="self-start sm:self-auto">
             @include('admin.news-posts._status-badge', ['post' => $newsPost])
@@ -21,63 +21,57 @@
 
     {{-- Status banner --}}
     @if($newsPost->isDeclined())
-        <div class="mb-5 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
-            <svg class="h-4 w-4 text-red-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <div class="text-xs text-red-800">
-                <span class="font-semibold">Declined.</span>
-                {{ $newsPost->review_note ? ' Reason: ' . $newsPost->review_note : ' No reason provided.' }}
-                <span class="block mt-0.5 text-red-700/80">Edit and save to re-submit for review.</span>
+        <div class="mb-5 flex items-start gap-3 rounded-2xl bg-neo-bg shadow-neo-inset-sm p-4">
+            <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-red-500"></span>
+            <div class="text-xs">
+                <span class="font-semibold text-red-600">Declined.</span>
+                <span class="text-neo-ink/70">{{ $newsPost->review_note ? ' Reason: ' . $newsPost->review_note : ' No reason provided.' }}</span>
+                <span class="block mt-0.5 text-neo-ink/45">Edit and save to re-submit for review.</span>
             </div>
         </div>
     @elseif($newsPost->isPending())
-        <div class="mb-5 flex items-start gap-3 rounded-2xl border border-yellow-200 bg-yellow-50 px-4 py-3">
-            <svg class="h-4 w-4 text-yellow-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <p class="text-xs text-yellow-800">
-                <span class="font-semibold">Pending review.</span>
-                Saving will re-submit this post for superadmin approval.
+        <div class="mb-5 flex items-start gap-3 rounded-2xl bg-neo-bg shadow-neo-inset-sm p-4">
+            <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-amber-500"></span>
+            <p class="text-xs">
+                <span class="font-semibold text-amber-700">Pending review.</span>
+                <span class="text-neo-ink/70">Saving will re-submit this post for superadmin approval.</span>
             </p>
         </div>
     @elseif($newsPost->isApproved())
-        <div class="mb-5 flex items-start gap-3 rounded-2xl border border-tpc-primary/20 bg-tpc-primary/5 px-4 py-3">
-            <svg class="h-4 w-4 text-tpc-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <p class="text-xs text-tpc-ink/80">
+        <div class="mb-5 flex items-start gap-3 rounded-2xl bg-neo-bg shadow-neo-inset-sm p-4">
+            <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-tpc-primary"></span>
+            <p class="text-xs">
                 <span class="font-semibold text-tpc-primary">Currently approved & live.</span>
-                Saving changes will un-publish this post and re-submit it for review.
+                <span class="text-neo-ink/70">Saving changes will un-publish this post and re-submit it for review.</span>
             </p>
         </div>
     @endif
 
     <div class="max-w-2xl">
         <form method="POST" action="{{ route('admin.news-posts.update', $newsPost) }}" enctype="multipart/form-data"
-              class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm p-5 sm:p-6 space-y-5">
+              class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
             @csrf @method('PUT')
 
             {{-- Title --}}
             <div>
-                <label for="title" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Title</label>
+                <label for="title" class="block text-sm font-medium text-neo-ink/70 mb-1.5">Title</label>
                 <input type="text" name="title" id="title" value="{{ old('title', $newsPost->title) }}" required
-                       class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition" />
+                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
                 @error('title') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             {{-- Category + Excerpt row --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                    <label for="category" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Category</label>
+                    <label for="category" class="block text-sm font-medium text-neo-ink/70 mb-1.5">Category</label>
                     <div class="relative">
                         <select name="category" id="category"
-                                class="w-full appearance-none rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition bg-white pr-9">
+                                class="w-full appearance-none rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition pr-9">
                             @foreach (['Announcement','Event','Advisory','Scholarship'] as $cat)
                                 <option value="{{ $cat }}" @selected(old('category', $newsPost->category) === $cat)>{{ $cat }}</option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-tpc-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neo-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </div>
@@ -85,20 +79,20 @@
                 </div>
 
                 <div>
-                    <label for="excerpt" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                        Excerpt <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                    <label for="excerpt" class="block text-sm font-medium text-neo-ink/70 mb-1.5">
+                        Excerpt <span class="text-neo-ink/35 font-normal">(optional)</span>
                     </label>
                     <input type="text" name="excerpt" id="excerpt" value="{{ old('excerpt', $newsPost->excerpt) }}"
-                           class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition" />
+                           class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
                     @error('excerpt') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             {{-- Body --}}
             <div>
-                <label for="body" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Body</label>
+                <label for="body" class="block text-sm font-medium text-neo-ink/70 mb-1.5">Body</label>
                 <textarea name="body" id="body" rows="10" required
-                          class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition resize-none">{{ old('body', $newsPost->body) }}</textarea>
+                          class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none">{{ old('body', $newsPost->body) }}</textarea>
                 @error('body') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
@@ -106,13 +100,13 @@
             @php $images = $newsPost->galleryImages; @endphp
             @if ($images->isNotEmpty())
                 <div>
-                    <p class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-2">
+                    <p class="block text-sm font-medium text-neo-ink/70 mb-2">
                         Current Photos
-                        <span class="normal-case font-normal text-tpc-ink/40">({{ $images->count() }})</span>
+                        <span class="text-neo-ink/35 font-normal">({{ $images->count() }})</span>
                     </p>
                     <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
                         @foreach ($images as $image)
-                            <div class="relative rounded-xl overflow-hidden border border-tpc-primary/15 bg-gray-50 aspect-square group">
+                            <div class="relative rounded-xl overflow-hidden shadow-neo-inset-sm bg-neo-bg aspect-square group">
                                 <img src="{{ asset('storage/' . $image->image_path) }}"
                                      class="w-full h-full object-cover"
                                      alt="">
@@ -130,18 +124,18 @@
 
             {{-- ── Add more photos ── --}}
             <div>
-                <label for="photos-input" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
+                <label for="photos-input" class="block text-sm font-medium text-neo-ink/70 mb-1.5">
                     Add More Photos
-                    <span class="normal-case font-normal text-tpc-ink/40">(optional · up to 20 at a time)</span>
+                    <span class="text-neo-ink/35 font-normal">(optional · up to 20 at a time)</span>
                 </label>
 
                 <div id="drop-zone"
-                     class="relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-tpc-primary/25 bg-tpc-primary/3 px-4 py-7 text-center cursor-pointer hover:border-tpc-primary/50 hover:bg-tpc-primary/5 transition">
+                     class="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-7 text-center cursor-pointer transition">
                     <svg class="h-7 w-7 text-tpc-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
                     <p class="text-sm font-semibold text-tpc-primary/70">Click to add or drag &amp; drop</p>
-                    <p class="text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB each</p>
+                    <p class="text-xs text-neo-ink/35">PNG / JPG / WEBP · max 5 MB each</p>
                     <input type="file" name="photos[]" id="photos-input" accept="image/png,image/jpeg,image/webp"
                            multiple class="absolute inset-0 opacity-0 cursor-pointer" />
                 </div>
@@ -154,16 +148,18 @@
             </div>
 
             {{-- Actions --}}
-            <div class="pt-2 border-t border-tpc-primary/8 flex flex-wrap gap-3">
+            <div class="pt-2 border-t border-black/[0.06] flex flex-wrap gap-3">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-tpc-secondary transition focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
+                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
+                               shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Save & Re-submit
                 </button>
                 <a href="{{ route('admin.news-posts.index') }}"
-                   class="inline-flex items-center rounded-xl border border-tpc-primary/25 bg-white px-5 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition">
+                   class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
+                          transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
                     Cancel
                 </a>
             </div>
@@ -210,7 +206,7 @@
 
             selectedFiles.forEach((file, idx) => {
                 const wrap = document.createElement('div');
-                wrap.className = 'relative rounded-xl overflow-hidden border border-tpc-primary/15 bg-gray-50 aspect-square';
+                wrap.className = 'relative rounded-xl overflow-hidden shadow-neo-inset-sm bg-neo-bg aspect-square';
 
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
@@ -254,14 +250,17 @@
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.classList.add('border-tpc-primary/60', 'bg-tpc-primary/8');
+            dropZone.classList.add('shadow-neo-inset');
+            dropZone.classList.remove('shadow-neo-inset-sm');
         });
         dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('border-tpc-primary/60', 'bg-tpc-primary/8');
+            dropZone.classList.remove('shadow-neo-inset');
+            dropZone.classList.add('shadow-neo-inset-sm');
         });
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.classList.remove('border-tpc-primary/60', 'bg-tpc-primary/8');
+            dropZone.classList.remove('shadow-neo-inset');
+            dropZone.classList.add('shadow-neo-inset-sm');
             addFiles(e.dataTransfer.files);
         });
     })();

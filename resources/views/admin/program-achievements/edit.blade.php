@@ -11,7 +11,7 @@
                 </svg>
                 {{ $program->code }}
             </a>
-            <h1 class="text-lg font-bold text-tpc-ink">Edit Achievement</h1>
+            <h1 class="text-lg font-semibold text-neo-ink">Edit Achievement</h1>
         </div>
     </div>
 
@@ -21,34 +21,34 @@
         <form method="POST"
               action="{{ route('admin.programs.achievements.update', [$program, $achievement]) }}"
               enctype="multipart/form-data"
-              class="rounded-2xl border border-tpc-primary/10 bg-white shadow-sm p-5 sm:p-6 space-y-5">
+              class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
             @csrf @method('PATCH')
 
             {{-- Title --}}
             <div>
-                <label for="title" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">Title</label>
+                <label for="title" class="block text-sm font-medium text-neo-ink/70 mb-1.5">Title</label>
                 <input type="text" name="title" id="title" value="{{ old('title', $achievement->title) }}" required
-                       class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition" />
+                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
                 @error('title') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             {{-- Year --}}
             <div>
-                <label for="year" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                    Year <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                <label for="year" class="block text-sm font-medium text-neo-ink/70 mb-1.5">
+                    Year <span class="text-neo-ink/35 font-normal">(optional)</span>
                 </label>
                 <input type="text" name="year" id="year" value="{{ old('year', $achievement->year) }}"
-                       class="w-48 rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition" />
+                       class="w-48 rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
                 @error('year') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
             {{-- Description --}}
             <div>
-                <label for="description" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
-                    Description <span class="normal-case font-normal text-tpc-ink/40">(optional)</span>
+                <label for="description" class="block text-sm font-medium text-neo-ink/70 mb-1.5">
+                    Description <span class="text-neo-ink/35 font-normal">(optional)</span>
                 </label>
                 <textarea name="description" id="description" rows="4"
-                          class="w-full rounded-xl border border-tpc-primary/20 px-3 py-2.5 text-sm focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/15 outline-none transition resize-none">{{ old('description', $achievement->description) }}</textarea>
+                          class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none">{{ old('description', $achievement->description) }}</textarea>
                 @error('description') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
@@ -56,13 +56,13 @@
             @php $images = $achievement->images; @endphp
             @if ($images->isNotEmpty())
                 <div>
-                    <p class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-2">
+                    <p class="block text-sm font-medium text-neo-ink/70 mb-2">
                         Current Photos
-                        <span class="normal-case font-normal text-tpc-ink/40">({{ $images->count() }})</span>
+                        <span class="text-neo-ink/35 font-normal">({{ $images->count() }})</span>
                     </p>
                     <div class="grid grid-cols-3 gap-2">
                         @foreach ($images as $image)
-                            <div class="relative rounded-xl overflow-hidden border border-tpc-primary/15 bg-gray-50 aspect-square group">
+                            <div class="relative rounded-xl overflow-hidden shadow-neo-inset-sm bg-neo-bg aspect-square group">
                                 <img src="{{ asset('storage/' . $image->path) }}"
                                      class="w-full h-full object-cover"
                                      alt="">
@@ -85,18 +85,18 @@
 
             {{-- ── Add more photos ── --}}
             <div>
-                <label for="photos-input" class="block text-xs font-bold uppercase tracking-widest text-tpc-ink/60 mb-1.5">
+                <label for="photos-input" class="block text-sm font-medium text-neo-ink/70 mb-1.5">
                     Add More Photos
-                    <span class="normal-case font-normal text-tpc-ink/40">(optional · up to 10 at a time)</span>
+                    <span class="text-neo-ink/35 font-normal">(optional · up to 10 at a time)</span>
                 </label>
 
                 <div id="drop-zone"
-                     class="relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-tpc-primary/25 bg-tpc-primary/3 px-4 py-7 text-center cursor-pointer hover:border-tpc-primary/50 hover:bg-tpc-primary/5 transition">
+                     class="relative flex flex-col items-center justify-center gap-2 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-7 text-center cursor-pointer transition">
                     <svg class="h-7 w-7 text-tpc-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
                     <p class="text-sm font-semibold text-tpc-primary/70">Click to add or drag &amp; drop</p>
-                    <p class="text-xs text-tpc-ink/40">PNG / JPG / WEBP · max 5 MB each</p>
+                    <p class="text-xs text-neo-ink/35">PNG / JPG / WEBP · max 5 MB each</p>
                     <input type="file" name="photos[]" id="photos-input" accept="image/png,image/jpeg,image/webp"
                            multiple class="absolute inset-0 opacity-0 cursor-pointer" />
                 </div>
@@ -108,16 +108,18 @@
                 <p id="preview-count" class="hidden mt-1.5 text-xs font-semibold text-tpc-primary"></p>
             </div>
 
-            <div class="pt-2 border-t border-tpc-primary/8 flex flex-wrap gap-3">
+            <div class="pt-2 border-t border-black/[0.06] flex flex-wrap gap-3">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-tpc-secondary transition focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
+                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
+                               shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Save Changes
                 </button>
                 <a href="{{ route('admin.programs.show', $program) }}"
-                   class="inline-flex items-center rounded-xl border border-tpc-primary/25 bg-white px-5 py-2.5 text-sm font-semibold text-tpc-primary hover:bg-tpc-primary/5 transition">
+                   class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
+                          transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
                     Cancel
                 </a>
             </div>
@@ -148,7 +150,7 @@
 
             selectedFiles.forEach((file, idx) => {
                 const wrap = document.createElement('div');
-                wrap.className = 'relative rounded-xl overflow-hidden border border-tpc-primary/15 bg-gray-50 aspect-square';
+                wrap.className = 'relative rounded-xl overflow-hidden shadow-neo-inset-sm bg-neo-bg aspect-square';
 
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
@@ -193,14 +195,17 @@
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.classList.add('border-tpc-primary/60', 'bg-tpc-primary/8');
+            dropZone.classList.add('shadow-neo-inset');
+            dropZone.classList.remove('shadow-neo-inset-sm');
         });
         dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('border-tpc-primary/60', 'bg-tpc-primary/8');
+            dropZone.classList.remove('shadow-neo-inset');
+            dropZone.classList.add('shadow-neo-inset-sm');
         });
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.classList.remove('border-tpc-primary/60', 'bg-tpc-primary/8');
+            dropZone.classList.remove('shadow-neo-inset');
+            dropZone.classList.add('shadow-neo-inset-sm');
             addFiles(e.dataTransfer.files);
         });
     })();
