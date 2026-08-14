@@ -5,13 +5,13 @@
 @section('page_actions')
     <div class="flex items-center gap-2">
         <a href="{{ route('admin.services.index') }}"
-           class="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:border-tpc-primary/30 hover:text-tpc-primary transition">
+           class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-neo-surface shadow-neo-sm text-neo-ink/40 transition hover:shadow-neo-hover active:shadow-neo-inset-sm hover:text-tpc-primary">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
         </a>
         <div>
-            <h1 class="text-base font-bold text-tpc-ink">Create Service</h1>
+            <h1 class="text-base font-semibold text-tpc-ink">Create Service</h1>
             <p class="text-xs text-tpc-ink/50">Add a new service to the website</p>
         </div>
     </div>
@@ -32,16 +32,16 @@
           }">
         @csrf
 
-        <div class="space-y-5">
+        <div class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
 
             {{-- Title --}}
-            <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <label for="title" class="block text-xs font-bold text-gray-600 mb-1.5">
+            <div>
+                <label for="title" class="block text-xs font-bold text-neo-ink/60 mb-1.5">
                     Service Title <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="title" id="title" value="{{ old('title') }}" required
                         placeholder="e.g. Technical Vocational Training"
-                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition @error('title') border-red-300 bg-red-50/30 @enderror">
+                        class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-4 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition @error('title') ring-2 ring-red-300 @enderror">
                 @error('title')
                     <p class="mt-1.5 flex items-center gap-1 text-xs text-red-600">
                         <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -53,10 +53,10 @@
             </div>
 
             {{-- Description --}}
-            <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <label for="description" class="block text-xs font-bold text-gray-600 mb-1.5">Short Description</label>
+            <div>
+                <label for="description" class="block text-xs font-bold text-neo-ink/60 mb-1.5">Short Description</label>
                 <textarea name="description" id="description" rows="3"
-                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none text-justify">{{ old('description') }}</textarea>
+                        class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-4 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none text-justify">{{ old('description') }}</textarea>
                 @error('description')
                     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
                 @enderror
@@ -66,11 +66,11 @@
             @include('admin.services._social_links', ['existing' => old('social_links', [])])
 
             {{-- Featured Image --}}
-            <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <div class="block text-xs font-bold text-gray-600 mb-1.5">Featured Image</div>
+            <div>
+                <div class="block text-xs font-bold text-neo-ink/60 mb-1.5">Featured Image</div>
 
                 <div x-show="imagePreview" x-transition class="mb-3">
-                    <div class="relative inline-block rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                    <div class="relative inline-block rounded-xl overflow-hidden shadow-neo-inset-sm bg-neo-bg">
                         <img :src="imagePreview" class="h-36 w-full max-w-xs object-cover" alt="Preview">
                         <button type="button"
                                 @click="imagePreview = null; $refs.imageInput.value = ''"
@@ -91,15 +91,15 @@
                 <button type="button"
                     x-show="!imagePreview"
                     @click="$refs.imageInput.click()"
-                    class="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white px-4 py-8 cursor-pointer hover:border-tpc-primary/40 hover:bg-tpc-primary/[0.02] transition group">
-                    <div class="h-10 w-10 rounded-xl bg-gray-100 group-hover:bg-tpc-primary/8 flex items-center justify-center transition">
-                        <svg class="h-5 w-5 text-gray-400 group-hover:text-tpc-primary/60 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    class="flex w-full flex-col items-center justify-center gap-2 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-8 cursor-pointer transition hover:shadow-neo-inset group">
+                    <div class="h-10 w-10 rounded-xl bg-neo-surface shadow-neo-sm flex items-center justify-center transition">
+                        <svg class="h-5 w-5 text-tpc-primary/50 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
                         </svg>
                     </div>
                     <div class="text-center">
-                        <p class="text-xs font-semibold text-gray-500 group-hover:text-tpc-primary/70 transition">Click to upload image</p>
-                        <p class="text-[11px] text-gray-400 mt-0.5">JPG, PNG or WebP · max 5 MB</p>
+                        <p class="text-xs font-semibold text-neo-ink/50 group-hover:text-tpc-primary/70 transition">Click to upload image</p>
+                        <p class="text-[11px] text-neo-ink/35 mt-0.5">JPG, PNG or WebP · max 5 MB</p>
                     </div>
                 </button>
 
@@ -119,8 +119,8 @@
             </div>
 
             {{-- Active toggle --}}
-            <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-                <div class="block text-xs font-bold text-gray-600 mb-3">Visibility</div>
+            <div class="rounded-xl bg-neo-bg shadow-neo-inset-sm p-4">
+                <div class="block text-xs font-bold text-neo-ink/60 mb-3">Visibility</div>
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <input type="hidden" name="is_active" value="0">
                     <div class="relative">
@@ -128,24 +128,24 @@
                                id="is_active_create"
                                {{ old('is_active', 1) ? 'checked' : '' }}
                                class="sr-only peer">
-                        <div class="w-10 h-5.5 rounded-full bg-gray-200 peer-checked:bg-tpc-primary transition-colors duration-200 h-[22px]"></div>
+                        <div class="w-10 h-5.5 rounded-full bg-neo-surface-dim peer-checked:bg-tpc-primary transition-colors duration-200 h-[22px]"></div>
                         <div class="absolute top-0.5 left-0.5 h-[18px] w-[18px] rounded-full bg-white shadow-sm transition-all duration-200 peer-checked:translate-x-[18px]"></div>
                     </div>
-                    <span class="text-sm text-gray-700 group-hover:text-gray-900 transition">Active (visible on site)</span>
+                    <span class="text-sm text-neo-ink/70 group-hover:text-neo-ink transition">Active (visible on site)</span>
                 </label>
             </div>
 
             {{-- Submit --}}
-            <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-2">
+            <div class="pt-2 border-t border-black/[0.06] flex flex-col-reverse sm:flex-row items-center gap-3">
                 <button type="submit"
-                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-tpc-primary px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-tpc-secondary transition-all hover:shadow-md active:scale-[0.98]">
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-tpc-primary px-6 py-2.5 text-sm font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
                     Create Service
                 </button>
                 <a href="{{ route('admin.services.index') }}"
-                   class="w-full sm:w-auto text-center sm:text-left text-sm font-semibold text-gray-400 hover:text-gray-600 transition py-2">
+                   class="w-full sm:w-auto text-center sm:text-left text-sm font-semibold text-neo-ink/40 hover:text-neo-ink transition py-2">
                     Cancel
                 </a>
             </div>

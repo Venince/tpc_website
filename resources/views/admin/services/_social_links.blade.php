@@ -3,7 +3,7 @@
     Usage: @include('admin.services._social_links', ['existing' => $service->social_links ?? []])
     Requires: $platforms (passed from controller)
 --}}
-<div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5"
+<div
      x-data="{
          links: {{ json_encode(
              !empty($existing)
@@ -31,12 +31,12 @@
      }">
 
     <div class="flex items-center justify-between mb-3">
-        <div class="text-xs font-bold text-gray-600">
+        <div class="text-xs font-bold text-neo-ink/60">
             Social Media Links
-            <span class="ml-1 font-normal text-gray-400">(optional)</span>
+            <span class="ml-1 font-normal text-neo-ink/35">(optional)</span>
         </div>
         <button type="button" @click="addLink()"
-                class="inline-flex items-center gap-1 rounded-full bg-tpc-primary/10 px-3 py-1 text-[11px] font-bold text-tpc-primary hover:bg-tpc-primary/20 transition">
+                class="inline-flex items-center gap-1 rounded-full bg-neo-bg shadow-neo-inset-sm px-3 py-1 text-[11px] font-bold text-tpc-primary transition hover:shadow-neo-inset">
             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
@@ -46,11 +46,11 @@
 
     <div class="space-y-3">
         <template x-for="(link, i) in links" :key="i">
-            <div class="flex items-start gap-2 rounded-xl border border-gray-200 bg-white p-3">
+            <div class="flex items-start gap-2 rounded-xl bg-neo-bg shadow-neo-inset-sm p-3">
 
                 {{-- Platform icon badge --}}
-                <div class="mt-0.5 shrink-0 h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center">
-                    <svg class="h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="currentColor">
+                <div class="mt-0.5 shrink-0 h-8 w-8 rounded-lg bg-neo-surface shadow-neo-sm flex items-center justify-center">
+                    <svg class="h-4 w-4 text-neo-ink/50" viewBox="0 0 24 24" fill="currentColor">
                         <path :d="platformIcon(link.platform).split('|')[0]"/>
                     </svg>
                 </div>
@@ -59,7 +59,7 @@
                     {{-- Platform select --}}
                     <select :name="`social_links[${i}][platform]`"
                             x-model="link.platform"
-                            class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-700 focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
+                            class="w-full rounded-lg bg-neo-surface shadow-neo-sm border-0 px-3 py-1.5 text-xs font-semibold text-neo-ink focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
                         @foreach ($platforms as $key => $meta)
                             <option value="{{ $key }}">{{ $meta['label'] }}</option>
                         @endforeach
@@ -70,19 +70,19 @@
                            :name="`social_links[${i}][url]`"
                            x-model="link.url"
                            placeholder="https://..."
-                           class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
+                           class="w-full rounded-lg bg-neo-surface shadow-neo-sm border-0 px-3 py-1.5 text-xs text-neo-ink placeholder-neo-ink/35 focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
 
                     {{-- Optional custom label --}}
                     <input type="text"
                            :name="`social_links[${i}][label]`"
                            x-model="link.label"
                            placeholder="Custom label (optional)"
-                           class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs text-gray-700 placeholder-gray-400 focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
+                           class="w-full rounded-lg bg-neo-surface shadow-neo-sm border-0 px-3 py-1.5 text-xs text-neo-ink placeholder-neo-ink/35 focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
                 </div>
 
                 {{-- Remove --}}
                 <button type="button" @click="removeLink(i)"
-                        class="mt-0.5 shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition">
+                        class="mt-0.5 shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg text-red-400 transition hover:bg-neo-surface hover:shadow-neo-sm hover:text-red-600">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
                     </svg>
@@ -91,7 +91,7 @@
         </template>
 
         <div x-show="links.length === 0"
-             class="rounded-xl border border-dashed border-gray-200 py-5 text-center text-xs text-gray-400">
+             class="rounded-xl bg-neo-bg shadow-neo-inset-sm py-5 text-center text-xs text-neo-ink/40">
             No social links added yet. Click <span class="font-semibold text-tpc-primary">Add Link</span> to get started.
         </div>
     </div>

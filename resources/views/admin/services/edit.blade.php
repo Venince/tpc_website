@@ -6,13 +6,13 @@
     <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-2">
             <a href="{{ route('admin.services.show', $service) }}"
-               class="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:border-tpc-primary/30 hover:text-tpc-primary transition">
+               class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-neo-surface shadow-neo-sm text-neo-ink/40 transition hover:shadow-neo-hover active:shadow-neo-inset-sm hover:text-tpc-primary">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                 </svg>
             </a>
             <div>
-                <h1 class="text-base font-bold text-tpc-ink">Edit Service</h1>
+                <h1 class="text-base font-semibold text-tpc-ink">Edit Service</h1>
                 <p class="text-xs text-tpc-ink/50 truncate max-w-xs">{{ $service->title }}</p>
             </div>
         </div>
@@ -20,77 +20,95 @@
 @endsection
 
 @section('content')
-    <form action="{{ route('admin.services.update', $service) }}" method="POST" enctype="multipart/form-data" class="space-y-5 max-w-2xl">
+    <form action="{{ route('admin.services.update', $service) }}" method="POST" enctype="multipart/form-data" class="max-w-2xl">
         @csrf @method('PATCH')
 
-        {{-- Title --}}
-        <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-            <label class="block text-xs font-bold text-gray-600 mb-1.5">
-                Service Title <span class="text-red-500">*</span>
-            </label>
-            <input type="text" name="title" value="{{ old('title', $service->title) }}" required
-                   class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 @error('title') border-red-300 @enderror">
-            @error('title')
-                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
+        <div class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
 
-        {{-- Description --}}
-        <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-            <label class="block text-xs font-bold text-gray-600 mb-1.5">Short Description</label>
-            <textarea name="description" rows="3"
-                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-tpc-primary focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 resize-none text-justify">{{ old('description', $service->description) }}</textarea>
-        </div>
+            {{-- Title --}}
+            <div>
+                <label class="block text-xs font-bold text-neo-ink/60 mb-1.5">
+                    Service Title <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="title" value="{{ old('title', $service->title) }}" required
+                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-4 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition @error('title') ring-2 ring-red-300 @enderror">
+                @error('title')
+                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
 
-        {{-- Social Media Links --}}
-        @include('admin.services._social_links', ['existing' => old('social_links', $service->social_links ?? [])])
+            {{-- Description --}}
+            <div>
+                <label class="block text-xs font-bold text-neo-ink/60 mb-1.5">Short Description</label>
+                <textarea name="description" rows="3"
+                            class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-4 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none text-justify">{{ old('description', $service->description) }}</textarea>
+            </div>
 
-        {{-- Featured Image --}}
-        <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-            <label class="block text-xs font-bold text-gray-600 mb-1.5">Featured Image</label>
+            {{-- Social Media Links --}}
+            @include('admin.services._social_links', ['existing' => old('social_links', $service->social_links ?? [])])
 
-            @if ($service->featured_image_path)
-                <div class="mb-3 flex items-center gap-4">
-                    <img src="{{ asset('storage/' . $service->featured_image_path) }}"
-                         class="h-24 w-40 rounded-xl object-cover border border-gray-200" alt="">
-                    <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
-                        <input type="checkbox" name="remove_image" value="1" class="rounded border-gray-300 text-red-500">
-                        Remove current image
-                    </label>
-                </div>
-            @endif
+            {{-- Featured Image --}}
+            <div>
+                <label class="block text-xs font-bold text-neo-ink/60 mb-1.5">Featured Image</label>
 
-            <input type="file" name="featured_image" accept="image/png,image/jpeg,image/webp"
-                   class="block w-full text-sm text-gray-500 file:mr-3 file:rounded-full file:border-0 file:bg-tpc-primary/10 file:px-4 file:py-1.5 file:text-xs file:font-bold file:text-tpc-primary hover:file:bg-tpc-primary/20 transition">
-            <p class="mt-1 text-[11px] text-gray-400">JPG, PNG or WebP · max 5 MB · leave blank to keep existing</p>
-        </div>
+                @if ($service->featured_image_path)
+                    <div class="mb-3 flex items-center gap-4">
+                        <img src="{{ asset('storage/' . $service->featured_image_path) }}"
+                             class="h-24 w-40 rounded-xl object-cover shadow-neo-inset-sm bg-neo-bg" alt="">
+                        <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
+                            <input type="checkbox" name="remove_image" value="1" class="rounded border-gray-300 text-red-500">
+                            Remove current image
+                        </label>
+                    </div>
+                @endif
 
-        {{-- Active toggle --}}
-        <div class="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 sm:p-5">
-            <label class="block text-xs font-bold text-gray-600 mb-3">Visibility</label>
-            <label class="flex items-center gap-3 cursor-pointer group">
-                <input type="hidden" name="is_active" value="0">
-                <div class="relative">
-                    <input type="checkbox" name="is_active" value="1"
-                           {{ old('is_active', $service->is_active) ? 'checked' : '' }}
-                           class="sr-only peer">
-                    <div class="w-10 rounded-full bg-gray-200 peer-checked:bg-tpc-primary transition-colors duration-200 h-[22px]"></div>
-                    <div class="absolute top-0.5 left-0.5 h-[18px] w-[18px] rounded-full bg-white shadow-sm transition-all duration-200 peer-checked:translate-x-[18px]"></div>
-                </div>
-                <span class="text-sm text-gray-700 group-hover:text-gray-900 transition">Active (visible on site)</span>
-            </label>
-        </div>
+                <label for="featured_image_input"
+                       class="flex items-center gap-3 w-full cursor-pointer rounded-xl bg-neo-bg shadow-neo-inset-sm hover:shadow-neo-inset px-4 py-3 transition-all duration-200">
+                    <div class="h-8 w-8 rounded-lg bg-neo-surface shadow-neo-sm flex items-center justify-center shrink-0">
+                        <svg class="h-4 w-4 text-neo-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-neo-ink/70">Replace image</p>
+                        <p class="text-xs text-neo-ink/40 truncate">JPG, PNG or WebP · max 5 MB · leave blank to keep existing</p>
+                    </div>
+                    <input id="featured_image_input" type="file" name="featured_image" accept="image/png,image/jpeg,image/webp"
+                           class="sr-only">
+                </label>
 
-        {{-- Submit --}}
-        <div class="flex flex-col-reverse sm:flex-row items-center gap-3 border-t border-gray-100 pt-5">
-            <a href="{{ route('admin.services.show', $service) }}"
-               class="w-full sm:w-auto text-center text-sm font-semibold text-gray-400 hover:text-gray-600 transition py-2">
-                Cancel
-            </a>
-            <button type="submit"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-tpc-primary px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-tpc-secondary transition-all hover:shadow-md active:scale-[0.98]">
-                Save Changes
-            </button>
+                @error('featured_image')
+                    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Active toggle --}}
+            <div class="rounded-xl bg-neo-bg shadow-neo-inset-sm p-4">
+                <label class="block text-xs font-bold text-neo-ink/60 mb-3">Visibility</label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input type="hidden" name="is_active" value="0">
+                    <div class="relative">
+                        <input type="checkbox" name="is_active" value="1"
+                               {{ old('is_active', $service->is_active) ? 'checked' : '' }}
+                               class="sr-only peer">
+                        <div class="w-10 rounded-full bg-neo-surface-dim peer-checked:bg-tpc-primary transition-colors duration-200 h-[22px]"></div>
+                        <div class="absolute top-0.5 left-0.5 h-[18px] w-[18px] rounded-full bg-white shadow-sm transition-all duration-200 peer-checked:translate-x-[18px]"></div>
+                    </div>
+                    <span class="text-sm text-neo-ink/70 group-hover:text-neo-ink transition">Active (visible on site)</span>
+                </label>
+            </div>
+
+            {{-- Submit --}}
+            <div class="flex flex-col-reverse sm:flex-row items-center gap-3 border-t border-black/[0.06] pt-5">
+                <a href="{{ route('admin.services.show', $service) }}"
+                   class="w-full sm:w-auto text-center text-sm font-semibold text-neo-ink/40 hover:text-neo-ink transition py-2">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-tpc-primary px-6 py-2.5 text-sm font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
+                    Save Changes
+                </button>
+            </div>
         </div>
     </form>
 @endsection
