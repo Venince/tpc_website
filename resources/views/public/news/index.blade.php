@@ -143,7 +143,7 @@
                         @endphp
 
                         {{-- Feed card --}}
-                        <article class="bg-white rounded-2xl border border-gray-300 shadow-md
+                        <article class="bg-white rounded-2xl border border-gray-100 shadow-md
                                         hover:shadow-md hover:border-tpc-primary/20
                                         transition-all duration-300 overflow-hidden">
 

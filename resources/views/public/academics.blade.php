@@ -74,7 +74,7 @@
                         @endphp
 
                         <a href="{{ route('academics.show', $program) }}"
-                           class="program-card group relative bg-white rounded-2xl border border-gray-300 shadow-md
+                           class="program-card group relative bg-white rounded-2xl border border-gray-100 shadow-md
                                   overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
 
                             <div class="p-4 sm:p-6 flex flex-col flex-1">

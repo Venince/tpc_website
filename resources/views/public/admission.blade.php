@@ -64,7 +64,7 @@
                                 @foreach (['freshmen', 'transferee'] as $key)
                                     @if ($sections->has($key) && $sections[$key]->is_visible)
                                         @php $sec = $sections[$key]; @endphp
-                                        <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                                        <div class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                                             <div class="p-4 sm:p-6">
                                                 <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-tpc-primary uppercase mb-3 sm:mb-4">{{ $sec->label }}</p>
                                                 <ul class="space-y-2.5 sm:space-y-3">
@@ -106,7 +106,7 @@
                                 <h2 class="text-[10px] sm:text-xs font-bold tracking-widest text-tpc-primary uppercase">{{ $process->label }}</h2>
                                 <div class="flex-1 h-px bg-gray-200"></div>
                             </div>
-                            <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                            <div class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                                 <div class="divide-y divide-gray-100">
                                     @foreach ($process->items as $i => $step)
                                         <div class="flex gap-3 sm:gap-5 p-4 sm:p-5 hover:bg-gray-50 transition">
@@ -135,7 +135,7 @@
                     @endif
 
                     {{-- Explore Programs CTA --}}
-                    <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                         <div class="p-4 sm:p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <p class="font-bold text-sm sm:text-base text-gray-800">Explore programs before enrolling</p>
@@ -156,7 +156,7 @@
                     {{-- Office Hours --}}
                     @if ($sections->has('office_hours') && $sections['office_hours']->is_visible)
                         @php $oh = $sections['office_hours']; @endphp
-                        <div id="office-hours" class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                        <div id="office-hours" class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                             <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                                 <p class="text-[10px] sm:text-xs font-bold text-tpc-primary uppercase tracking-widest">{{ $oh->label }}</p>
                             </div>
@@ -178,7 +178,7 @@
                     @endif
 
                     {{-- Contact Admissions --}}
-                    <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                         <div class="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
                             <p class="text-[10px] sm:text-xs font-bold text-tpc-primary uppercase tracking-widest">Contact Admissions</p>
                         </div>

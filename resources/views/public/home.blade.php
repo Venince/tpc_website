@@ -210,7 +210,7 @@
         {{-- Vision / Mission --}}
         <div class="max-w-7xl mx-auto px-4 pb-12">
             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                <div id="vision" class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                <div id="vision" class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                     <div class="p-5 sm:p-7">
                         <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Vision</p>
                         <p class="text-sm sm:text-base leading-relaxed text-gray-700">
@@ -219,7 +219,7 @@
                         </p>
                     </div>
                 </div>
-                <div id="mission" class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                <div id="mission" class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                     <div class="p-5 sm:p-7">
                         <p class="text-xs font-bold tracking-widest text-tpc-primary uppercase mb-3">Mission</p>
                         <p class="text-sm sm:text-base leading-relaxed text-gray-700">
@@ -263,7 +263,7 @@
 
                 {{-- ── FEATURED POST ── --}}
                 <a href="{{ route('news.show', $featured) }}"
-                   class="news-featured-card group relative block bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden mb-5
+                   class="news-featured-card group relative block bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden mb-5
                           hover:shadow-lg hover:border-tpc-primary/30 transition-all duration-300">
 
                     <div class="sm:flex min-h-[220px] sm:min-h-[260px]">
@@ -320,7 +320,7 @@
                 @if($latestNews->count() > 1)
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach($latestNews->skip(1) as $post)
-                        <article class="news-card group bg-white rounded-2xl border border-gray-300 shadow-md
+                        <article class="news-card group bg-white rounded-2xl border border-gray-100 shadow-md
                                         hover:shadow-md hover:border-tpc-primary/30 hover:-translate-y-0.5
                                         transition-all duration-300 overflow-hidden flex flex-col">
 
@@ -410,7 +410,7 @@
                     @endphp
 
                     <a href="{{ route('academics.show', $program) }}"
-                        class="program-card group relative bg-white rounded-2xl border border-gray-300 shadow-md
+                        class="program-card group relative bg-white rounded-2xl border border-gray-100 shadow-md
                                 overflow-hidden flex flex-col {{ $lgCenter }} {{ $smCenter }}">
 
                         <div class="p-4 sm:p-6 flex flex-col flex-1">
@@ -469,7 +469,7 @@
             </div>
 
             <div class="mt-6 sm:mt-8 max-w-2xl mx-auto">
-                <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                     <div class="p-5 sm:p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <p class="font-bold text-gray-800">Explore programs before enrolling</p>

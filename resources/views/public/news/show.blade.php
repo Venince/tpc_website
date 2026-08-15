@@ -71,7 +71,7 @@
 <section class="bg-gray-50">
     <div class="max-w-4xl mx-auto px-4 py-8 sm:py-12">
 
-        <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
 
             @php
                 // Unified photo set: gallery photos, falling back to legacy single image_path
