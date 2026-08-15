@@ -389,36 +389,119 @@
     {{-- Sidebar panel: Content overview + Quick actions --}}
     <div class="space-y-3">
 
-        {{-- Content overview bar chart --}}
+        {{-- Activity overview line chart --}}
         <div class="rounded-[24px] bg-neo-surface p-4 shadow-neo">
-            <h2 class="text-xs font-semibold text-neo-ink mb-3">Content Overview</h2>
+            <div class="flex items-center justify-between mb-1">
+                <h2 class="text-xs font-semibold text-neo-ink">Activity Overview</h2>
+                <span class="text-[10px] text-neo-ink/40">Last 14 days</span>
+            </div>
 
-            @php
-                $barItems = [
-                ['label' => 'Programs',   'val' => $programCount,     'max' => max($programCount, 10),  'color' => 'bg-tpc-primary'],
-                ['label' => 'News',       'val' => $newsCount,        'max' => max($newsCount, 10),     'color' => 'bg-emerald-500'],
-                ['label' => 'Messages',   'val' => $messageCount,     'max' => max($messageCount, 40),  'color' => 'bg-yellow-500'],
-                ['label' => 'Feedback',   'val' => $feedbackCount,    'max' => max($feedbackCount, 30), 'color' => 'bg-amber-400'],
-                ['label' => 'Pending',    'val' => $pendingNewsCount, 'max' => max($newsCount, 10),     'color' => 'bg-amber-400'],
-            ];
-            @endphp
+            {{-- Legend --}}
+            <div class="flex items-center gap-3 mb-3">
+                <span class="inline-flex items-center gap-1.5 text-[10px] text-neo-ink/55">
+                    <span class="h-1.5 w-1.5 rounded-full" style="background:#eab308"></span> Messages
+                </span>
+                <span class="inline-flex items-center gap-1.5 text-[10px] text-neo-ink/55">
+                    <span class="h-1.5 w-1.5 rounded-full" style="background:#fbbf24"></span> Feedback
+                </span>
+                <span class="inline-flex items-center gap-1.5 text-[10px] text-neo-ink/55">
+                    <span class="h-1.5 w-1.5 rounded-full bg-tpc-primary"></span> News
+                </span>
+            </div>
 
-            <div class="space-y-3">
-                @foreach($barItems as $item)
-                    @php $pct = $item['max'] > 0 ? round(($item['val'] / $item['max']) * 100) : 0; @endphp
-                    <div>
-                        <div class="flex justify-between text-[10px] mb-1">
-                            <span class="text-neo-ink/60">{{ $item['label'] }}</span>
-                            <span class="font-semibold text-neo-ink tabular-nums">{{ $item['val'] }}</span>
-                        </div>
-                        <div class="h-1.5 w-full rounded-full bg-neo-bg shadow-neo-inset-sm overflow-hidden">
-                            <div class="h-full rounded-full {{ $item['color'] }} transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                                 style="width: {{ $pct }}%"></div>
-                        </div>
-                    </div>
-                @endforeach
+            <div class="rounded-xl bg-neo-bg shadow-neo-inset-sm p-3">
+                <canvas id="activityChart" height="150"></canvas>
             </div>
         </div>
+
+        @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+        <script>
+        (function () {
+            const ctx = document.getElementById('activityChart');
+            if (!ctx || typeof Chart === 'undefined') return;
+
+            const labels  = @json($activityChart['labels']);
+            const messages = @json($activityChart['messages']);
+            const feedback = @json($activityChart['feedback']);
+            const news      = @json($activityChart['news']);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Messages',
+                            data: messages,
+                            borderColor: '#eab308',
+                            backgroundColor: 'rgba(234,179,8,0.10)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            borderWidth: 2,
+                        },
+                        {
+                            label: 'Feedback',
+                            data: feedback,
+                            borderColor: '#fbbf24',
+                            backgroundColor: 'rgba(251,191,36,0.10)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            borderWidth: 2,
+                        },
+                        {
+                            label: 'News',
+                            data: news,
+                            borderColor: '#008000',
+                            backgroundColor: 'rgba(0,128,0,0.10)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            borderWidth: 2,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#F4F7FB',
+                            titleColor: '#2B3648',
+                            bodyColor: '#2B3648',
+                            borderColor: 'rgba(0,0,0,0.06)',
+                            borderWidth: 1,
+                            padding: 8,
+                            boxPadding: 4,
+                            titleFont: { size: 11, weight: '600' },
+                            bodyFont: { size: 11 },
+                        },
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            border: { display: false },
+                            ticks: { color: 'rgba(43,54,72,0.4)', font: { size: 9 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 7 },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            border: { display: false },
+                            ticks: { color: 'rgba(43,54,72,0.4)', font: { size: 9 }, precision: 0 },
+                        },
+                    },
+                },
+            });
+        })();
+        </script>
+        @endpush
 
         {{-- Quick actions --}}
         <div class="rounded-[24px] bg-neo-surface p-4 shadow-neo">
