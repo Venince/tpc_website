@@ -4,10 +4,9 @@
     @disabled($disabled)
     {{ $attributes->merge([
         'class' => '
-            w-full rounded-xl border border-tpc-primary/20 bg-white/70 px-3 py-2 text-sm text-tpc-ink
-            shadow-sm backdrop-blur
-            placeholder:text-tpc-ink/45
-            focus:border-tpc-primary focus:ring-2 focus:ring-tpc-primary/25
+            w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink
+            placeholder:text-neo-ink/30
+            focus:outline-none focus:ring-2 focus:ring-tpc-primary/30
             disabled:opacity-60 disabled:cursor-not-allowed
             transition
         '
