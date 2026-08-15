@@ -421,10 +421,10 @@
             const ctx = document.getElementById('activityChart');
             if (!ctx || typeof Chart === 'undefined') return;
 
-            const labels  = @json($activityChart['labels']);
+            const labels   = @json($activityChart['labels']);
             const messages = @json($activityChart['messages']);
             const feedback = @json($activityChart['feedback']);
-            const news      = @json($activityChart['news']);
+            const news     = @json($activityChart['news']);
 
             new Chart(ctx, {
                 type: 'line',
