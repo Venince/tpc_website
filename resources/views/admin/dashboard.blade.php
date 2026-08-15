@@ -409,8 +409,30 @@
                 </span>
             </div>
 
-            <div class="rounded-xl bg-neo-bg shadow-neo-inset-sm p-3">
+            <div class="relative rounded-xl bg-neo-bg shadow-neo-inset-sm p-3">
                 <canvas id="activityChart" height="150"></canvas>
+
+                {{-- Auto-cycling day card: fades out, moves, fades in with the next day's numbers --}}
+                <div id="activityCard"
+                     class="absolute z-10 pointer-events-none opacity-0 transition-opacity duration-300 ease-in-out">
+                    <div class="rounded-lg bg-neo-surface shadow-neo px-3 py-2 min-w-[128px]">
+                        <p id="activityCardDate" class="text-[11px] font-bold text-neo-ink mb-1"></p>
+                        <div class="space-y-1 text-[10px] text-neo-ink/70">
+                            <p class="flex items-center gap-1.5">
+                                <span class="inline-block h-2.5 w-2.5 rounded-[2px] border-2 shrink-0" style="border-color:#eab308"></span>
+                                Messages: <span id="activityCardMessages" class="font-semibold text-neo-ink"></span>
+                            </p>
+                            <p class="flex items-center gap-1.5">
+                                <span class="inline-block h-2.5 w-2.5 rounded-[2px] border-2 shrink-0" style="border-color:#fbbf24"></span>
+                                Feedback: <span id="activityCardFeedback" class="font-semibold text-neo-ink"></span>
+                            </p>
+                            <p class="flex items-center gap-1.5">
+                                <span class="inline-block h-2.5 w-2.5 rounded-[2px] shrink-0" style="background:#008000"></span>
+                                News: <span id="activityCardNews" class="font-semibold text-neo-ink"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -418,87 +440,199 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
         <script>
         (function () {
-            const ctx = document.getElementById('activityChart');
-            if (!ctx || typeof Chart === 'undefined') return;
+            let chart      = null;
+            let cycleTimer = null;
 
-            const labels   = @json($activityChart['labels']);
-            const messages = @json($activityChart['messages']);
-            const feedback = @json($activityChart['feedback']);
-            const news     = @json($activityChart['news']);
+            function whenChartReady(callback, attempts) {
+                attempts = attempts || 0;
+                if (typeof Chart !== 'undefined') {
+                    callback();
+                    return;
+                }
+                if (attempts >= 50) {
+                    console.error('[Activity Overview] Chart.js failed to load after 5s — check network/ad-blocker/CDN access.');
+                    return;
+                }
+                setTimeout(function () { whenChartReady(callback, attempts + 1); }, 100);
+            }
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Messages',
-                            data: messages,
-                            borderColor: '#eab308',
-                            backgroundColor: 'rgba(234,179,8,0.10)',
-                            tension: 0.35,
-                            fill: true,
-                            pointRadius: 0,
-                            pointHoverRadius: 4,
-                            borderWidth: 2,
+            function init() {
+                whenChartReady(function () {
+                    try {
+                        buildChart();
+                    } catch (err) {
+                        console.error('[Activity Overview] failed to initialize:', err);
+                    }
+                });
+            }
+
+            function buildChart() {
+                // Always re-query — PJAX swaps innerHTML, so any canvas
+                // reference captured earlier points at a detached node.
+                const ctx = document.getElementById('activityChart');
+                if (!ctx) return;
+
+
+                // Tear down any previous instance/timer before rebuilding —
+                // this can run again on re-navigation/bfcache, so avoid double charts/loops.
+                if (chart) { chart.destroy(); chart = null; }
+                if (cycleTimer) { clearTimeout(cycleTimer); cycleTimer = null; }
+
+                const labels    = @json($activityChart['labels']);
+                const fullDates = @json($activityChart['labels']); // "Aug 6" style, already formatted
+                const messages  = @json($activityChart['messages']);
+                const feedback  = @json($activityChart['feedback']);
+                const news      = @json($activityChart['news']);
+                const total     = labels.length;
+
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Messages',
+                                data: messages,
+                                borderColor: '#eab308',
+                                backgroundColor: 'rgba(234,179,8,0.10)',
+                                tension: 0.35,
+                                fill: true,
+                                pointRadius: 0,
+                                pointHoverRadius: 4,
+                                borderWidth: 2,
+                            },
+                            {
+                                label: 'Feedback',
+                                data: feedback,
+                                borderColor: '#fbbf24',
+                                backgroundColor: 'rgba(251,191,36,0.10)',
+                                tension: 0.35,
+                                fill: true,
+                                pointRadius: 0,
+                                pointHoverRadius: 4,
+                                borderWidth: 2,
+                            },
+                            {
+                                label: 'News',
+                                data: news,
+                                borderColor: '#008000',
+                                backgroundColor: 'rgba(0,128,0,0.10)',
+                                tension: 0.35,
+                                fill: true,
+                                pointRadius: 0,
+                                pointHoverRadius: 4,
+                                borderWidth: 2,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#F4F7FB',
+                                titleColor: '#2B3648',
+                                bodyColor: '#2B3648',
+                                borderColor: 'rgba(0,0,0,0.06)',
+                                borderWidth: 1,
+                                padding: 8,
+                                boxPadding: 4,
+                                titleFont: { size: 11, weight: '600' },
+                                bodyFont: { size: 11 },
+                            },
                         },
-                        {
-                            label: 'Feedback',
-                            data: feedback,
-                            borderColor: '#fbbf24',
-                            backgroundColor: 'rgba(251,191,36,0.10)',
-                            tension: 0.35,
-                            fill: true,
-                            pointRadius: 0,
-                            pointHoverRadius: 4,
-                            borderWidth: 2,
-                        },
-                        {
-                            label: 'News',
-                            data: news,
-                            borderColor: '#008000',
-                            backgroundColor: 'rgba(0,128,0,0.10)',
-                            tension: 0.35,
-                            fill: true,
-                            pointRadius: 0,
-                            pointHoverRadius: 4,
-                            borderWidth: 2,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#F4F7FB',
-                            titleColor: '#2B3648',
-                            bodyColor: '#2B3648',
-                            borderColor: 'rgba(0,0,0,0.06)',
-                            borderWidth: 1,
-                            padding: 8,
-                            boxPadding: 4,
-                            titleFont: { size: 11, weight: '600' },
-                            bodyFont: { size: 11 },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: { color: 'rgba(43,54,72,0.4)', font: { size: 9 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 7 },
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                border: { display: false },
+                                ticks: { color: 'rgba(43,54,72,0.4)', font: { size: 9 }, precision: 0 },
+                            },
                         },
                     },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            border: { display: false },
-                            ticks: { color: 'rgba(43,54,72,0.4)', font: { size: 9 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 7 },
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(0,0,0,0.05)' },
-                            border: { display: false },
-                            ticks: { color: 'rgba(43,54,72,0.4)', font: { size: 9 }, precision: 0 },
-                        },
-                    },
-                },
-            });
+                });
+
+                // ── Auto-cycling day card ──────────────────────────────────────
+                const wrap   = ctx.closest('.relative');
+                const card   = document.getElementById('activityCard');
+                const dateEl = document.getElementById('activityCardDate');
+                const msgEl  = document.getElementById('activityCardMessages');
+                const fbEl   = document.getElementById('activityCardFeedback');
+                const newsEl = document.getElementById('activityCardNews');
+
+                if (!wrap || !card || !dateEl || !msgEl || !fbEl || !newsEl) {
+                    return; // chart itself is fine; card overlay elements missing, skip it silently
+                }
+
+                // Reset any leftover fade state from a previous run.
+                card.classList.add('opacity-0');
+
+                const FADE_MS = 600;
+                const HOLD_MS = 1400;
+
+                function positionCard(i) {
+                    const meta  = chart.getDatasetMeta(0);
+                    const point = meta.data[i];
+                    if (!point) return;
+
+                    const yValue = Math.max(messages[i] ?? 0, feedback[i] ?? 0, news[i] ?? 0, 1);
+                    const yPixel = chart.scales.y.getPixelForValue(yValue);
+
+                    const canvasRect = ctx.getBoundingClientRect();
+                    const wrapRect   = wrap.getBoundingClientRect();
+                    const offsetX    = canvasRect.left - wrapRect.left;
+                    const offsetY    = canvasRect.top  - wrapRect.top;
+
+                    let left = offsetX + point.x - (card.offsetWidth / 2);
+                    let top  = offsetY + yPixel - card.offsetHeight - 14;
+
+                    left = Math.max(4, Math.min(left, wrapRect.width - card.offsetWidth - 4));
+                    top  = Math.max(4, top);
+
+                    card.style.left = left + 'px';
+                    card.style.top  = top + 'px';
+                }
+
+                function showDay(i) {
+                    dateEl.textContent = fullDates[i];
+                    msgEl.textContent  = messages[i] ?? 0;
+                    fbEl.textContent   = feedback[i] ?? 0;
+                    newsEl.textContent = news[i] ?? 0;
+                    positionCard(i);
+                    card.classList.remove('opacity-0');
+                }
+
+                let idx = 0;
+
+                function cycle() {
+                    showDay(idx);
+
+                    cycleTimer = setTimeout(function () {
+                        card.classList.add('opacity-0'); // crossfade out
+                        idx = (idx + 1) % total;
+                        cycleTimer = setTimeout(cycle, FADE_MS); // crossfade in with the next day's data
+                    }, HOLD_MS);
+                }
+
+                cycleTimer = setTimeout(cycle, 500);
+            }
+
+            // Exposed globally so app.js's initPageComponents() can call this
+            // again after every PJAX content swap — this script itself lives
+            // outside #tpc-admin-main (in @stack('scripts')) and only runs
+            // once on a true hard page load, so re-invoking on every swap is
+            // what actually makes the chart reappear after in-app navigation.
+            window.initActivityChart = init;
+
+            // Initial hard-load run.
+            init();
         })();
         </script>
         @endpush

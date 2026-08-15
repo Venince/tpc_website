@@ -106,6 +106,12 @@ function initPageComponents() {
     window.initAdmissionSortable();
   }
 
+  // Dashboard activity chart — only runs if Chart.js loader ran (defines this
+  // globally once) AND the current page actually has the canvas.
+  if (typeof window.initActivityChart === 'function' && document.getElementById('activityChart')) {
+    window.initActivityChart();
+  }
+
   // ── Handle post-PJAX anchor scroll (from search navigation) ──
   var anchor = sessionStorage.getItem('tpc_scroll_to');
   if (anchor) {
