@@ -110,7 +110,7 @@
             :class="onDark
                 ? 'bg-white text-tpc-primary shadow-lg shadow-black/25 hover:bg-tpc-accent ring-1 ring-black/5'
                 : 'bg-tpc-primary text-white shadow-lg shadow-tpc-primary/30 hover:bg-tpc-secondary'"
-            class="group flex items-center gap-2 rounded-full pl-4 pr-5 py-3 transition-colors duration-300
+            class="group flex items-center gap-2 rounded-full pl-4 pr-5 py-3 border border-white transition-colors duration-300
                 focus:outline-none focus:ring-4 focus:ring-tpc-primary/20">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-6l-4 4v-4z"/>
