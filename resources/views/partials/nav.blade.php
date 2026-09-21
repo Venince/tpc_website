@@ -73,7 +73,7 @@
                 <div x-cloak x-show="open"
                      x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1 scale-[0.98]" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                      x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                     class="absolute left-0 top-full pt-1 w-64 z-50">
+                     class="absolute left-0 top-full pt-1 w-max min-w-64 max-w-sm z-50">
                     <div class="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
                         <div class="bg-tpc-primary px-4 py-2.5">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-white/70">Our Services</p>
@@ -83,7 +83,7 @@
                                 <a href="{{ route('services.show', $svc) }}" data-tpc-link data-service-href="{{ route('services.show', $svc) }}"
                                    class="group flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-tpc-primary/6 hover:text-tpc-primary transition {{ request()->routeIs('services.show') && request()->route('service')?->is($svc) ? 'bg-tpc-primary/8 text-tpc-primary font-semibold' : '' }}">
                                     <span data-service-dot class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 shrink-0 group-hover:bg-tpc-primary transition"></span>
-                                    <span class="truncate">{{ $svc->title }}</span>
+                                    <span class="leading-snug">{{ $svc->title }}</span>
                                     <svg class="ml-auto h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-tpc-primary/50 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                                     </svg>

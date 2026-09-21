@@ -188,10 +188,10 @@
                                                 {{-- Photo grid layout --}}
                                                 @if ($imgCount === 1)
                                                     {{-- Single: full-width --}}
-                                                    <div class="achievement-img bg-gray-50 cursor-pointer" @click="openAt(0)">
+                                                    <div class="achievement-img aspect-[16/10] bg-gray-50 cursor-pointer" @click="openAt(0)">
                                                         <img src="{{ asset('storage/' . $galleryImages[0]) }}"
-                                                             class="object-cover hover:opacity-95 transition"
-                                                             alt="{{ $achievement->title }}" loading="lazy">
+                                                            class="w-full h-full object-cover hover:opacity-95 transition"
+                                                            alt="{{ $achievement->title }}" loading="lazy">
                                                     </div>
 
                                                 @elseif ($imgCount === 2)
