@@ -20,6 +20,7 @@ class AcademicsController extends Controller
 
         $program->load(['people', 'achievements']);
 
+        $deans        = $program->people->where('role', ProgramPerson::ROLE_DEAN)->values();
         $head         = $program->people->where('role', ProgramPerson::ROLE_HEAD)->values();
         $coordinators = $program->people->where('role', ProgramPerson::ROLE_COORDINATOR)->values();
         $instructors  = $program->people->where('role', ProgramPerson::ROLE_INSTRUCTOR)->values();
@@ -32,7 +33,7 @@ class AcademicsController extends Controller
             ->get();
 
         return view('public.program', compact(
-            'program', 'head', 'coordinators', 'instructors', 'achievements', 'otherPrograms'
+            'program', 'deans', 'head', 'coordinators', 'instructors', 'achievements', 'otherPrograms'
         ));
     }
 }

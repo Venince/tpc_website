@@ -80,35 +80,49 @@
                 <div class="lg:col-span-2 space-y-8 sm:space-y-10 min-w-0 w-full overflow-hidden">
 
                     {{-- PROGRAM LEADERSHIP --}}
-                    @if ($head->isNotEmpty() || $coordinators->isNotEmpty())
+                    @if ($deans->isNotEmpty() || $head->isNotEmpty() || $coordinators->isNotEmpty())
+                        @php
+                            // Dean sits alone on top (centered); Head + Coordinator share the row below.
+                            $leadershipRows = [
+                                ['people' => $deans,                        'class' => 'sm:grid-cols-1 sm:max-w-[calc(50%-0.625rem)] sm:mx-auto'],
+                                ['people' => $head->merge($coordinators),   'class' => 'sm:grid-cols-2'],
+                            ];
+                        @endphp
                         <div>
                             <div class="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                                 <span class="block h-5 w-1.5 bg-tpc-primary rounded-sm shrink-0"></span>
                                 <h2 class="text-xs font-bold tracking-widest text-tpc-primary uppercase">Program Leadership</h2>
                                 <div class="flex-1 h-px bg-gray-200"></div>
                             </div>
-                            <div class="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                                @foreach ($head->merge($coordinators) as $person)
-                                    <div class="person-card bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
-                                        <div class="p-4 sm:p-6 flex flex-col items-center text-center">
-                                            @if ($person->photo_path)
-                                                <img src="{{ asset('storage/' . $person->photo_path) }}"
-                                                     class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover mb-3 sm:mb-4"
-                                                     alt="{{ $person->name }}">
-                                            @else
-                                                <span class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-tpc-primary/10 flex items-center justify-center text-2xl sm:text-3xl font-bold text-tpc-primary mb-3 sm:mb-4">
-                                                    {{ strtoupper(substr($person->name, 0, 1)) }}
-                                                </span>
-                                            @endif
-                                            <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2">
-                                                {{ $person->role_label }}
-                                            </span>
-                                            <p class="font-bold text-gray-800 text-sm sm:text-base leading-snug">{{ $person->name }}</p>
-                                            @if ($person->position)
-                                                <p class="text-xs sm:text-sm text-gray-500 mt-0.5">{{ $person->position }}</p>
-                                            @endif
+
+                            <div class="space-y-4 sm:space-y-5">
+                                @foreach ($leadershipRows as $row)
+                                    @if ($row['people']->isNotEmpty())
+                                        <div class="grid gap-4 sm:gap-5 {{ $row['class'] }}">
+                                            @foreach ($row['people'] as $person)
+                                                <div class="person-card bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                                                    <div class="p-4 sm:p-6 flex flex-col items-center text-center">
+                                                        @if ($person->photo_path)
+                                                            <img src="{{ asset('storage/' . $person->photo_path) }}"
+                                                                class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover mb-3 sm:mb-4"
+                                                                alt="{{ $person->name }}">
+                                                        @else
+                                                            <span class="person-photo h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-tpc-primary/10 flex items-center justify-center text-2xl sm:text-3xl font-bold text-tpc-primary mb-3 sm:mb-4">
+                                                                {{ strtoupper(substr($person->name, 0, 1)) }}
+                                                            </span>
+                                                        @endif
+                                                        <span class="inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2">
+                                                            {{ $person->role_label }}
+                                                        </span>
+                                                        <p class="font-bold text-gray-800 text-sm sm:text-base leading-snug">{{ $person->name }}</p>
+                                                        @if ($person->position)
+                                                            <p class="text-xs sm:text-sm text-gray-500 mt-0.5">{{ $person->position }}</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    </div>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
@@ -352,7 +366,7 @@
                     @endif
 
                     {{-- EMPTY STATE --}}
-                    @if ($head->isEmpty() && $coordinators->isEmpty() && $instructors->isEmpty() && $achievements->isEmpty())
+                    @if ($deans->isEmpty() && $head->isEmpty() && $coordinators->isEmpty() && $instructors->isEmpty() && $achievements->isEmpty())
                         <div class="py-16 sm:py-24 text-center border border-dashed border-gray-300 rounded-2xl bg-white">
                             <p class="text-base sm:text-lg font-semibold text-gray-300 mb-1">No details yet</p>
                             <p class="text-xs sm:text-sm text-gray-400">More details about this program will be available soon.</p>

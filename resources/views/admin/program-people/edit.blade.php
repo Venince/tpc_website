@@ -25,8 +25,8 @@
             {{-- Role --}}
             <div>
                 <label class="block text-sm font-medium text-neo-ink/70 mb-2">Role</label>
-                <div class="grid grid-cols-3 gap-2">
-                    @foreach (['head' => 'Program Head', 'coordinator' => 'Coordinator', 'instructor' => 'Instructor'] as $val => $label)
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    @foreach (['dean' => 'Dean', 'head' => 'Program Head', 'coordinator' => 'Coordinator', 'instructor' => 'Instructor'] as $val => $label)
                         <label class="cursor-pointer">
                             <input type="radio" name="role" value="{{ $val }}"
                                    {{ old('role', $person->role) === $val ? 'checked' : '' }}

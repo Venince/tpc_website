@@ -16,11 +16,13 @@ class ProgramPerson extends Model
         'order',
     ];
 
+    const ROLE_DEAN        = 'dean';
     const ROLE_HEAD        = 'head';
     const ROLE_COORDINATOR = 'coordinator';
     const ROLE_INSTRUCTOR  = 'instructor';
 
     public static array $roleLabels = [
+        'dean'        => 'Dean',
         'head'        => 'Program Head',
         'coordinator' => 'Program Coordinator',
         'instructor'  => 'Instructor',

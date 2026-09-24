@@ -22,7 +22,7 @@ class ProgramPersonController extends Controller
     public function store(Request $request, Program $program)
     {
         $data = $request->validate([
-            'role'       => ['required', 'in:head,coordinator,instructor'],
+            'role'       => ['required', 'in:dean,head,coordinator,instructor'],
             'name'       => ['required', 'string', 'max:255'],
             'position'   => ['nullable', 'string', 'max:255'],
             'photo_crop' => ['nullable', 'string'],
@@ -53,7 +53,7 @@ class ProgramPersonController extends Controller
         abort_if($person->program_id !== $program->id, 404);
 
         $data = $request->validate([
-            'role'         => ['required', 'in:head,coordinator,instructor'],
+            'role'         => ['required', 'in:dean,head,coordinator,instructor'],
             'name'         => ['required', 'string', 'max:255'],
             'position'     => ['nullable', 'string', 'max:255'],
             'photo_crop'   => ['nullable', 'string'],
