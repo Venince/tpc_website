@@ -51,6 +51,10 @@
             </div>
 
             <div class="sm:col-span-2">
+                @include('admin.services._social_links', ['existing' => old('social_links', [])])
+            </div>
+
+            <div class="sm:col-span-2">
                 <label class="block text-sm font-medium text-neo-ink/70 mb-2">Program logo <span class="text-neo-ink/35 font-normal">(optional)</span></label>
                 <div class="flex items-center gap-4">
                     <span class="h-14 w-14 rounded-xl bg-neo-bg shadow-neo-inset-sm flex items-center justify-center text-2xl shrink-0">🎓</span>

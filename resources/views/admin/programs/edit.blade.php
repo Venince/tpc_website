@@ -52,6 +52,10 @@
             </div>
 
             <div class="sm:col-span-2">
+                @include('admin.services._social_links', ['existing' => old('social_links', $program->social_links ?? [])])
+            </div>
+
+            <div class="sm:col-span-2">
                 <label class="block text-sm font-medium text-neo-ink/70 mb-2">Program logo</label>
 
                 @if($program->logo_path)

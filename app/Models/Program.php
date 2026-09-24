@@ -9,7 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Program extends Model
 {
     protected $fillable = [
-        'code', 'name', 'slug', 'description', 'logo_path', 'department', 'is_active',
+        'code', 'name', 'slug', 'description', 'logo_path', 'department', 'is_active', 'social_links',
+    ];
+
+    protected $casts = [
+        'social_links' => 'array',
     ];
 
     public function scopeActive(Builder $q): Builder

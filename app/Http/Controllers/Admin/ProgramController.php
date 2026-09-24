@@ -19,7 +19,8 @@ class ProgramController extends Controller
 
     public function create()
     {
-        return view('admin.programs.create');
+        $platforms = ServiceController::SOCIAL_PLATFORMS;
+        return view('admin.programs.create', compact('platforms'));
     }
 
     public function store(Request $request)
@@ -33,8 +34,11 @@ class ProgramController extends Controller
             'is_active' => ['nullable','boolean'],
 
             'logo' => ['nullable','file','mimes:png,jpg,jpeg,webp','max:5120'],
+
+            ...$this->socialLinkRules(),
         ]);
 
+        $data['social_links'] = $this->cleanSocialLinks($request);
         $data['is_active'] = $request->boolean('is_active');
         $data['slug'] = $this->uniqueSlug($data['name']);
 
@@ -49,7 +53,8 @@ class ProgramController extends Controller
 
     public function edit(Program $program)
     {
-        return view('admin.programs.edit', compact('program'));
+        $platforms = ServiceController::SOCIAL_PLATFORMS;
+        return view('admin.programs.edit', compact('program', 'platforms'));
     }
 
     public function update(Request $request, Program $program)
@@ -64,8 +69,11 @@ class ProgramController extends Controller
             'remove_logo' => ['nullable','boolean'],
 
             'logo' => ['nullable','file','mimes:png,jpg,jpeg,webp','max:5120'],
+
+            ...$this->socialLinkRules(),
         ]);
 
+        $data['social_links'] = $this->cleanSocialLinks($request);
         $data['is_active'] = $request->boolean('is_active');
 
         if ($program->name !== $data['name']) {
@@ -114,6 +122,29 @@ class ProgramController extends Controller
         }
 
         return $slug;
+    }
+
+    private function socialLinkRules(): array
+    {
+        return [
+            'social_links'            => ['nullable', 'array'],
+            'social_links.*.platform' => ['nullable', 'string', 'in:' . implode(',', array_keys(ServiceController::SOCIAL_PLATFORMS))],
+            'social_links.*.url'      => ['nullable', 'url:http,https', 'max:500'],
+            'social_links.*.label'    => ['nullable', 'string', 'max:100'],
+        ];
+    }
+
+    private function cleanSocialLinks(Request $request): ?array
+    {
+        return collect($request->input('social_links', []))
+            ->filter(fn ($link) => ! empty($link['url']))
+            ->map(fn ($link) => [
+                'platform' => $link['platform'] ?? 'other',
+                'url'      => $link['url'],
+                'label'    => $link['label'] ?? null,
+            ])
+            ->values()
+            ->all() ?: null;
     }
 
     public function show(Program $program)

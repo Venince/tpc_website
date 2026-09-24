@@ -16,7 +16,7 @@
                 <p class="text-xs text-tpc-ink/50">/services/{{ $service->slug }}</p>
             </div>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('services.show', $service) }}" target="_blank"
                class="inline-flex items-center gap-1.5 rounded-full bg-neo-surface shadow-neo-sm px-3.5 py-2 text-xs font-semibold text-neo-ink/50 transition hover:shadow-neo-hover active:shadow-neo-inset-sm hover:text-tpc-primary">
                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -43,10 +43,10 @@
 @endsection
 
 @section('content')
-    <div class="grid lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {{-- LEFT: Service meta --}}
-        <aside class="lg:col-span-1 space-y-4">
+        <aside class="lg:col-span-1 space-y-4 min-w-0">
             @if ($service->featured_image_path)
                 <div class="rounded-2xl overflow-hidden shadow-neo-inset-sm bg-neo-bg">
                     <img src="{{ asset('storage/' . $service->featured_image_path) }}"
@@ -128,7 +128,7 @@
         </aside>
 
         {{-- RIGHT: Content blocks --}}
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-2 min-w-0">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-sm font-semibold text-neo-ink/70">Content Sections</h2>
                 @if ($service->contents->isNotEmpty())
@@ -191,7 +191,13 @@
                                         @endif
                                     </div>
                                 @elseif ($content->body)
-                                    <p class="text-xs text-neo-ink/55 leading-relaxed line-clamp-2 mt-0.5">{{ $content->body }}</p>
+                                    @php
+                                        $preview = trim(preg_replace(
+                                            '/[\s\x{00A0}]+/u', ' ',
+                                            html_entity_decode(strip_tags($content->body), ENT_QUOTES | ENT_HTML5, 'UTF-8')
+                                        ));
+                                    @endphp
+                                    <p class="text-xs text-neo-ink/55 leading-relaxed line-clamp-2 mt-0.5">{{ Str::limit($preview, 160) }}</p>
                                 @endif
                             </div>
                             <div class="flex items-center gap-1 shrink-0">

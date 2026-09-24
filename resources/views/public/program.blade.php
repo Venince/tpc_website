@@ -400,6 +400,8 @@
                         </div>
                     </div>
 
+                    @include('partials.social-links-card', ['links' => $program->social_links])
+
                     {{-- Other Programs --}}
                     @if ($otherPrograms->isNotEmpty())
                         <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
