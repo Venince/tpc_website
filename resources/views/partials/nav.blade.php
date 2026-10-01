@@ -273,14 +273,17 @@
                      class="absolute left-0 right-0 top-full z-50 px-3 pt-2 pb-3"
                      @click.outside="open = false">
 
-                    <nav class="rounded-2xl bg-white shadow-xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
+                    <nav class="flex flex-col max-h-[calc(100dvh-10.5rem)] rounded-2xl bg-white shadow-xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
 
-                        <div class="bg-tpc-primary px-4 py-3 flex items-center gap-2">
+                        <div class="shrink-0 bg-tpc-primary px-4 py-3 flex items-center gap-2">
                             <svg class="h-4 w-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                             </svg>
                             <span class="text-xs font-semibold text-white/80 uppercase tracking-widest">Navigation</span>
                         </div>
+
+                        {{-- Scrollable area: search + links + admin --}}
+                        <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
 
                         @php
                             $navItemsTop = [
@@ -459,6 +462,7 @@
                                 </div>
                             @endif
                         @endauth
+                        </div>{{-- /scrollable area --}}
                     </nav>
                 </div>
             </div>
