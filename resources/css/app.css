@@ -57,6 +57,38 @@
   width: 100%;
 }
 
+/* ------- Mobile menu: links fade/slide in one after another -------
+   The panel is display:none while closed, so the animation replays on every open. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes tpcNavItemIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tpc-mob-stagger > * {
+    animation: tpcNavItemIn 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  .tpc-mob-stagger > :nth-child(1) { animation-delay: 60ms; }
+  .tpc-mob-stagger > :nth-child(2) { animation-delay: 105ms; }
+  .tpc-mob-stagger > :nth-child(3) { animation-delay: 150ms; }
+  .tpc-mob-stagger > :nth-child(4) { animation-delay: 195ms; }
+  .tpc-mob-stagger > :nth-child(5) { animation-delay: 240ms; }
+  .tpc-mob-stagger > :nth-child(6) { animation-delay: 285ms; }
+  .tpc-mob-stagger > :nth-child(7) { animation-delay: 330ms; }
+  .tpc-mob-stagger > :nth-child(8) { animation-delay: 375ms; }
+}
+
+/* Reduced motion: switch off every nav transition/animation */
+@media (prefers-reduced-motion: reduce) {
+  .tpc-site-header,
+  .tpc-site-header *,
+  .tpc-site-header *::before,
+  .tpc-site-header *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
 /* ------- Page layout ------- */
 :root {
   --tpc-page-dur: 600ms;

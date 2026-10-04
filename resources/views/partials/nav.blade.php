@@ -37,7 +37,11 @@
     ];
 @endphp
 
-<header class="sticky top-0 z-50 bg-white overflow-x-clip border-b border-gray-100 shadow-sm">
+<header class="tpc-site-header sticky top-0 z-50 bg-white overflow-x-clip border-b border-gray-100 transition-shadow duration-300"
+        x-data="{ scrolled: false }"
+        x-init="scrolled = window.scrollY > 4"
+        @scroll.window.passive="scrolled = window.scrollY > 4"
+        :class="scrolled ? 'shadow-sm' : 'shadow-none'">
 
     <div class="mx-auto px-4 py-3 flex items-center justify-between gap-4 sm:relative sm:flex sm:items-center sm:justify-center sm:min-h-[56px]">
 
@@ -247,16 +251,31 @@
 
         {{-- Mobile hamburger --}}
         <div class="flex items-center gap-2 sm:hidden">
-            <div x-data="{ open: false }" @close-hamburger.window="open = false">
+            <div x-data="{ open: false }"
+                 x-init="$watch('open', v => {
+                     /* Lock <html> only. Putting overflow:hidden on <body> turns it into its own scroll
+                        container, which un-sticks the header and sends it (and this menu) off screen. */
+                     const h = document.documentElement;
+                     if (v) h.style.setProperty('overflow', 'hidden', 'important');
+                     else   h.style.removeProperty('overflow');
+                 })"
+                 @close-hamburger.window="open = false"
+                 @keydown.escape.window="open = false"
+                 @popstate.window="open = false"
+                 @resize.window="if (window.innerWidth >= 640) open = false">
 
                 <button type="button" @click="open = !open"
-                        class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg text-tpc-primary transition-all duration-200"
+                        class="relative inline-flex items-center justify-center w-10 h-10 rounded-xl text-tpc-primary transition-all duration-200 active:scale-95"
                         :class="open ? 'bg-tpc-primary text-white shadow-md' : 'bg-tpc-primary/8 hover:bg-tpc-primary/15'"
-                        aria-label="Toggle menu">
-                    <svg x-show="!open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        aria-label="Toggle menu" :aria-expanded="open.toString()" aria-controls="tpc-mobile-menu">
+                    <svg x-cloak aria-hidden="true" class="absolute h-5 w-5 transition-all duration-300 ease-out motion-reduce:transition-none"
+                         :class="open ? 'opacity-0 rotate-90 scale-50' : 'opacity-100 rotate-0 scale-100'"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h16"/>
                     </svg>
-                    <svg x-show="open" x-cloak class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <svg x-cloak aria-hidden="true" class="absolute h-5 w-5 transition-all duration-300 ease-out motion-reduce:transition-none"
+                         :class="open ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50'"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
@@ -264,26 +283,19 @@
                 <div x-cloak x-show="open"
                      x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                      x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                     class="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]"
-                     @click="open = false" aria-hidden="true"></div>
+                     class="fixed inset-x-0 top-16 bottom-0 z-40 bg-black/30"
+                     @click="open = false" @touchmove.prevent aria-hidden="true"></div>
 
                 <div x-cloak x-show="open"
-                     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2 scale-[0.98]" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 -translate-y-2 scale-[0.98]"
-                     class="absolute left-0 right-0 top-full z-50 px-3 pt-2 pb-3"
+                     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-3" x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-3"
+                     id="tpc-mobile-menu" class="absolute inset-x-0 top-full z-50 bg-white border-b border-gray-100 shadow-lg"
                      @click.outside="open = false">
 
-                    <nav class="flex flex-col max-h-[calc(100dvh-10.5rem)] rounded-2xl bg-white shadow-xl shadow-black/10 ring-1 ring-black/5 overflow-hidden">
-
-                        <div class="shrink-0 bg-tpc-primary px-4 py-3 flex items-center gap-2">
-                            <svg class="h-4 w-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                            </svg>
-                            <span class="text-xs font-semibold text-white/80 uppercase tracking-widest">Navigation</span>
-                        </div>
+                    <nav class="flex flex-col max-h-[calc(100dvh-4rem)]" aria-label="Mobile navigation">
 
                         {{-- Scrollable area: search + links + admin --}}
-                        <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                        <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[max(0.5rem,env(safe-area-inset-bottom))]">
 
                         @php
                             $navItemsTop = [
@@ -299,7 +311,7 @@
                         @endphp
 
                         {{-- ── Mobile search ── --}}
-                        <div class="px-2 pt-2.5 pb-1" x-data="tpcSearch()">
+                        <div class="px-3 pt-3 pb-1" x-data="tpcSearch()">
                             <div class="flex items-center gap-2 rounded-xl border px-3 h-10 transition-all duration-200"
                                  :class="query.length > 0
                                      ? 'border-tpc-primary/50 bg-white ring-2 ring-tpc-primary/10'
@@ -370,49 +382,35 @@
                             </div>
                         </div>
 
-                        <div class="p-2">
+                        <div class="px-3 py-2 tpc-mob-stagger">
                             @foreach ($navItemsTop as $item)
                                 <a id="{{ $item['id'] }}" data-tpc-link href="{{ $item['href'] }}"
                                    @click="open = false" @if($item['active']) aria-current="page" @endif
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $item['active'] ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $item['active'] ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">{!! $item['icon'] !!}</svg>
-                                    </span>
-                                    <span class="flex-1">{{ $item['label'] }}</span>
-                                    @if($item['active'])
-                                        <span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-                                    @else
-                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                                    @endif
+                                   class="flex items-center min-h-[48px] px-4 rounded-xl text-[15px] font-semibold transition-colors duration-150 active:bg-gray-100 {{ $item['active'] ? 'bg-green-50 text-tpc-secondary' : 'text-gray-700 hover:bg-gray-50' }}">
+                                    {{ $item['label'] }}
                                 </a>
                             @endforeach
 
                             @if ($navServices->isNotEmpty())
                                 <div x-data="{ servOpen: false }" x-init="servOpen = {{ $servicesActive ? 'true' : 'false' }}">
-                                    <button type="button" id="mob-services" @click="servOpen = !servOpen"
-                                            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $servicesActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $servicesActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
-                                            </svg>
-                                        </span>
-                                        <span class="flex-1 text-left">Services</span>
-                                        <svg class="h-3.5 w-3.5 transition-transform duration-200" :class="servOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
-                                        </svg>
+                                    <button type="button" id="mob-services" @click="servOpen = !servOpen" :aria-expanded="servOpen.toString()"
+                                            class="w-full text-left flex items-center min-h-[48px] px-4 rounded-xl text-[15px] font-semibold transition-colors duration-150 active:bg-gray-100 {{ $servicesActive ? 'bg-green-50 text-tpc-secondary' : 'text-gray-700 hover:bg-gray-50' }}">
+                                        <span class="flex-1">Services</span>
+                                        <svg class="h-4 w-4 transition-transform duration-200" :class="servOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+                                </svg>
                                     </button>
-                                    <div x-show="servOpen"
-                                         x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
-                                         x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1"
-                                         class="mt-1 ml-10 space-y-0.5">
-                                        @foreach ($navServices as $svc)
-                                            <a href="{{ route('services.show', $svc) }}" data-tpc-link @click="open = false"
-                                               data-service-href="{{ route('services.show', $svc) }}"
-                                               class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-600 hover:bg-tpc-primary/8 hover:text-tpc-primary transition group">
-                                                <span data-service-dot class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 group-hover:bg-tpc-primary shrink-0 transition"></span>
-                                                {{ $svc->title }}
-                                            </a>
-                                        @endforeach
+                                    <div x-show="servOpen" x-collapse class="ml-5 pl-3 border-l-2 border-tpc-primary/20">
+                                        <div class="py-1 space-y-0.5">
+                                            @foreach ($navServices as $svc)
+                                                <a href="{{ route('services.show', $svc) }}" data-tpc-link @click="open = false"
+                                                   data-service-href="{{ route('services.show', $svc) }}"
+                                                   class="group flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-sm text-gray-600 hover:bg-gray-50 hover:text-tpc-primary active:bg-gray-100 transition-colors">
+                                                    <span data-service-dot class="h-1.5 w-1.5 rounded-full bg-tpc-primary/30 group-hover:bg-tpc-primary shrink-0 transition"></span>
+                                                    {{ $svc->title }}
+                                                </a>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             @endif
@@ -420,16 +418,8 @@
                             @foreach ($navItemsBottom as $item)
                                 <a id="{{ $item['id'] }}" data-tpc-link href="{{ $item['href'] }}"
                                    @click="open = false" @if($item['active']) aria-current="page" @endif
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $item['active'] ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                    <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $item['active'] ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">{!! $item['icon'] !!}</svg>
-                                    </span>
-                                    <span class="flex-1">{{ $item['label'] }}</span>
-                                    @if($item['active'])
-                                        <span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-                                    @else
-                                        <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-tpc-primary/40 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                                    @endif
+                                   class="flex items-center min-h-[48px] px-4 rounded-xl text-[15px] font-semibold transition-colors duration-150 active:bg-gray-100 {{ $item['active'] ? 'bg-green-50 text-tpc-secondary' : 'text-gray-700 hover:bg-gray-50' }}">
+                                    {{ $item['label'] }}
                                 </a>
                             @endforeach
                         </div>
@@ -437,27 +427,15 @@
                         @auth
                             @if($isAdmin)
                                 <div class="mx-4 my-1 border-t border-gray-100"></div>
-                                <div class="px-2 pb-2">
-                                    <p class="px-3 pt-1 pb-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Admin</p>
+                                <div class="px-3 pb-3">
+                                    <p class="px-4 pt-1 pb-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Admin</p>
                                     <a id="mob-messages" data-tpc-link href="{{ route('admin.messages.index') }}" @click="open=false"
-                                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $messagesActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 {{ $messagesActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16v12H4z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6"/>
-                                            </svg>
-                                        </span>
-                                        <span class="flex-1">Messages</span>
+                                       class="flex items-center min-h-[48px] px-4 rounded-xl text-[15px] font-semibold transition-colors duration-150 active:bg-gray-100 {{ $messagesActive ? 'bg-green-50 text-tpc-secondary' : 'text-gray-700 hover:bg-gray-50' }}">
+                                        Messages
                                     </a>
                                     <a href="{{ route('admin.dashboard') }}" data-no-pjax="true" @click="open=false"
-                                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group {{ $adminActive ? 'bg-tpc-primary text-white shadow-sm' : 'text-gray-700 hover:bg-tpc-primary/8 hover:text-tpc-primary' }}">
-                                        <span class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg transition-all {{ $adminActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-tpc-primary/12 group-hover:text-tpc-primary' }}">
-                                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 1 0-16 0"/>
-                                                <circle cx="12" cy="8" r="4"/>
-                                            </svg>
-                                        </span>
-                                        <span class="flex-1">Admin Dashboard</span>
+                                       class="flex items-center min-h-[48px] px-4 rounded-xl text-[15px] font-semibold transition-colors duration-150 active:bg-gray-100 {{ $adminActive ? 'bg-green-50 text-tpc-secondary' : 'text-gray-700 hover:bg-gray-50' }}">
+                                        Admin Dashboard
                                     </a>
                                 </div>
                             @endif

@@ -191,8 +191,8 @@ function startBadgePolling() {
 ---------------------------- */
 const MOBILE_IDS = ['mob-home', 'mob-about', 'mob-academics', 'mob-admission', 'mob-news', 'mob-contact', 'mob-messages', 'mob-services'];
 
-const MOBILE_LINK_ACTIVE   = ['bg-tpc-primary', 'text-white', 'shadow-sm'];
-const MOBILE_LINK_INACTIVE = ['text-gray-700'];
+const MOBILE_LINK_ACTIVE   = ['bg-green-50', 'text-tpc-secondary'];
+const MOBILE_LINK_INACTIVE = ['text-gray-700', 'hover:bg-gray-50'];
 
 const MOBILE_ICON_ACTIVE   = ['bg-white/20', 'text-white'];
 const MOBILE_ICON_INACTIVE = ['bg-gray-100', 'text-gray-500'];
