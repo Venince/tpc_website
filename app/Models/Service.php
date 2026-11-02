@@ -41,6 +41,13 @@ class Service extends Model
         return $this->hasMany(ServiceContent::class)->orderBy('order');
     }
 
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(ServiceAttachment::class)
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
     // ── Route model binding ───────────────────────────────────────────
 
     public function getRouteKeyName(): string

@@ -47,6 +47,9 @@
             {{-- Social Media Links --}}
             @include('admin.services._social_links', ['existing' => old('social_links', $service->social_links ?? [])])
 
+            {{-- Downloadable / Printable Files --}}
+            @include('admin.services._attachments', ['attachments' => $service->attachments])
+
             {{-- Featured Image --}}
             <div>
                 <label class="block text-xs font-bold text-neo-ink/60 mb-1.5">Featured Image</label>

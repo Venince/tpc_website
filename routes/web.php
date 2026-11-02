@@ -60,6 +60,14 @@ Route::post('/feedback', [FeedbackController::class, 'store'])
 Route::get('/services/{service:slug}', [ServiceController::class, 'show'])
     ->name('services.show');
 
+Route::get('/services/{service:slug}/attachments/{attachment}/view', [ServiceController::class, 'viewAttachment'])
+    ->middleware('throttle:60,1')
+    ->name('services.attachments.view');
+
+Route::get('/services/{service:slug}/attachments/{attachment}/download', [ServiceController::class, 'downloadAttachment'])
+    ->middleware('throttle:60,1')
+    ->name('services.attachments.download');
+
 Route::get('/org-chart', [OrgChartController::class, 'index'])->name('org-chart');
 
 Route::post('/news/{newsPost}/like',   [NewsController::class, 'like'])  ->name('news.like');

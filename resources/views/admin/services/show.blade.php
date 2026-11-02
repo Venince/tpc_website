@@ -113,6 +113,38 @@
                 @endif
             </div>
 
+            {{-- Downloadable files --}}
+            <div class="rounded-2xl bg-neo-surface shadow-neo px-4 py-4">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                    <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest">Downloadable Files</p>
+                    <a href="{{ route('admin.services.edit', $service) }}"
+                       class="text-[11px] font-semibold text-tpc-primary/70 hover:text-tpc-primary transition">
+                        Manage
+                    </a>
+                </div>
+
+                @if ($service->attachments->isEmpty())
+                    <p class="text-xs text-neo-ink/40">No files attached. Use Edit Service to add forms or documents.</p>
+                @else
+                    <ul class="space-y-1.5">
+                        @foreach ($service->attachments as $file)
+                            <li>
+                                <a href="{{ $file->file_url }}" target="_blank" rel="noopener"
+                                   class="group flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-neo-bg">
+                                    <span class="inline-flex shrink-0 items-center rounded-md bg-neo-bg shadow-neo-inset-sm px-1.5 py-0.5 text-[10px] font-bold text-neo-ink/55">
+                                        {{ strtoupper($file->extension ?: 'file') }}
+                                    </span>
+                                    <span class="min-w-0 flex-1 truncate text-xs font-semibold text-neo-ink/70 group-hover:text-tpc-primary transition">
+                                        {{ $file->label }}
+                                    </span>
+                                    <span class="shrink-0 text-[11px] text-neo-ink/35">{{ $file->human_size }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+
             {{-- Danger zone --}}
             <div class="rounded-2xl bg-neo-surface shadow-neo px-4 py-4">
                 <p class="text-xs font-bold text-red-600 mb-2">Danger Zone</p>
