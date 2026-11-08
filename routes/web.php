@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\AboutSlideController;
 use App\Http\Controllers\Admin\NewsReviewController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\ServiceContentController;
+use App\Http\Controllers\Admin\ServiceAchievementController;
 use App\Http\Controllers\Admin\OrgChartController as AdminOrgChartController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 
@@ -218,6 +219,17 @@ Route::middleware(['auth', 'admin'])
                 Route::patch('/{content}',      [ServiceContentController::class, 'update'])  ->name('update');
                 Route::delete('/{content}',     [ServiceContentController::class, 'destroy']) ->name('destroy');
                 Route::post('/reorder',         [ServiceContentController::class, 'reorder']) ->name('reorder');
+            });
+
+        Route::prefix('services/{service}/achievements')
+            ->name('services.achievements.')
+            ->group(function () {
+                Route::get('/create',               [ServiceAchievementController::class, 'create'])  ->name('create');
+                Route::post('/',                    [ServiceAchievementController::class, 'store'])   ->name('store');
+                Route::get('/{achievement}/edit',   [ServiceAchievementController::class, 'edit'])    ->name('edit');
+                Route::patch('/{achievement}',      [ServiceAchievementController::class, 'update'])  ->name('update');
+                Route::delete('/{achievement}',     [ServiceAchievementController::class, 'destroy']) ->name('destroy');
+                Route::post('/reorder',             [ServiceAchievementController::class, 'reorder']) ->name('reorder');
             });
 
         Route::resource('org-chart', AdminOrgChartController::class)

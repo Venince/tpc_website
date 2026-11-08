@@ -48,6 +48,13 @@ class Service extends Model
             ->orderBy('id');
     }
 
+    public function achievements(): HasMany
+    {
+        return $this->hasMany(ServiceAchievement::class)
+            ->orderBy('order')
+            ->orderBy('id');
+    }
+
     // ── Route model binding ───────────────────────────────────────────
 
     public function getRouteKeyName(): string

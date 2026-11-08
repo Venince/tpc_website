@@ -14,7 +14,7 @@ class ServiceController extends Controller
         // 404 if inactive
         abort_unless($service->is_active, 404);
 
-        $service->load(['contents', 'attachments']);
+        $service->load(['contents', 'attachments', 'achievements.images']);
 
         return view('public.services.show', compact('service'));
     }

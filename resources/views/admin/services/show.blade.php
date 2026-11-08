@@ -145,6 +145,113 @@
                 @endif
             </div>
 
+            {{-- Achievements --}}
+            <div class="rounded-2xl bg-neo-surface shadow-neo overflow-hidden">
+                <div class="flex items-center justify-between gap-2 px-4 py-3 border-b border-black/[0.06]">
+                    <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest">Achievements</p>
+                    <a href="{{ route('admin.services.achievements.create', $service) }}"
+                       class="inline-flex items-center gap-1 rounded-full bg-tpc-primary px-3 py-1.5 text-[11px] font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                        </svg>
+                        Add
+                    </a>
+                </div>
+
+                @if ($service->achievements->isEmpty())
+                    <p class="px-4 py-8 text-center text-xs text-neo-ink/40">No achievements added yet.</p>
+                @else
+                    <ul id="sortable-achievements" class="divide-y divide-black/[0.05]">
+                        @foreach ($service->achievements as $achievement)
+                            <li class="group flex items-center gap-2 px-3 py-2.5 transition hover:bg-neo-bg/60"
+                                data-id="{{ $achievement->id }}">
+                                <span class="drag-handle shrink-0 cursor-grab select-none touch-none px-1 text-base text-neo-ink/25 group-hover:text-tpc-primary/50 active:cursor-grabbing"
+                                      title="Drag to reorder">⠿</span>
+
+                                @if ($achievement->images->isNotEmpty())
+                                    <img src="{{ asset('storage/' . $achievement->images->first()->path) }}"
+                                         class="h-9 w-9 shrink-0 rounded-lg object-cover shadow-neo-inset-sm" alt="">
+                                @else
+                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neo-bg text-base shadow-neo-inset-sm">🏆</span>
+                                @endif
+
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-xs font-semibold text-neo-ink">{{ $achievement->title }}</p>
+                                    @php $photoCount = $achievement->images->count(); @endphp
+                                    @if ($achievement->year || $photoCount > 0)
+                                        <p class="text-[11px] text-neo-ink/45">
+                                            {{ $achievement->year }}
+                                            @if ($achievement->year && $photoCount > 0) · @endif
+                                            @if ($photoCount > 0) {{ $photoCount }} {{ Str::plural('photo', $photoCount) }} @endif
+                                        </p>
+                                    @endif
+                                </div>
+
+                                <div class="flex shrink-0 items-center gap-0.5">
+                                    <a href="{{ route('admin.services.achievements.edit', [$service, $achievement]) }}"
+                                       class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-tpc-primary/60 transition hover:bg-neo-bg hover:text-tpc-primary" title="Edit">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/>
+                                        </svg>
+                                    </a>
+                                    <form action="{{ route('admin.services.achievements.destroy', [$service, $achievement]) }}" method="POST"
+                                          onsubmit="return confirm('Delete this achievement?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit"
+                                                class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-red-400/70 transition hover:bg-neo-bg hover:text-red-600" title="Delete">
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                    <p class="border-t border-black/[0.05] px-4 py-2 text-[11px] text-neo-ink/30">Drag the ⠿ handle to reorder.</p>
+                @endif
+
+                {{-- Lives inside the page content (not @push) so PJAX navigation re-runs it --}}
+                <script>
+                    (function () {
+                        function boot() {
+                            var el = document.getElementById('sortable-achievements');
+                            if (!el || typeof Sortable === 'undefined') return;
+                            if (el._sortable) el._sortable.destroy();
+
+                            el._sortable = Sortable.create(el, {
+                                handle: '.drag-handle',
+                                animation: 150,
+                                ghostClass: 'opacity-40',
+                                onEnd: function () {
+                                    var order = Array.prototype.map.call(
+                                        el.querySelectorAll('[data-id]'),
+                                        function (row) { return parseInt(row.dataset.id, 10); }
+                                    );
+
+                                    fetch('{{ route('admin.services.achievements.reorder', $service) }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                        },
+                                        body: JSON.stringify({ order: order }),
+                                    });
+                                },
+                            });
+                        }
+
+                        // On a full page load Sortable is loaded at the bottom of the layout,
+                        // so wait for DOMContentLoaded. After a PJAX swap it already exists.
+                        if (document.readyState === 'loading') {
+                            document.addEventListener('DOMContentLoaded', boot);
+                        } else {
+                            boot();
+                        }
+                    })();
+                </script>
+            </div>
+
             {{-- Danger zone --}}
             <div class="rounded-2xl bg-neo-surface shadow-neo px-4 py-4">
                 <p class="text-xs font-bold text-red-600 mb-2">Danger Zone</p>

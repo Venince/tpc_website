@@ -1,4 +1,3 @@
-{{-- resources/views/public/home.blade.php --}}
 @extends('layouts.site')
 
 @section('title', 'Home')
@@ -262,7 +261,7 @@
                 @php $featured = $latestNews->first(); @endphp
 
                 {{-- ── FEATURED POST ── --}}
-                <a href="{{ route('news.show', $featured) }}"
+                <a href="{{ route('news.index', ['post' => $featured->slug]) }}"
                    class="news-featured-card group relative block bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden mb-5
                           hover:shadow-lg hover:border-tpc-primary/30 transition-all duration-300">
 
@@ -326,7 +325,7 @@
 
                             @php $postImg = $post->image_path ?? optional($post->galleryImages->first())->image_path; @endphp
                             @if($postImg)
-                                <a href="{{ route('news.show', $post) }}" class="block shrink-0 bg-gray-50 overflow-hidden relative"
+                                <a href="{{ route('news.index', ['post' => $post->slug]) }}" class="block shrink-0 bg-gray-50 overflow-hidden relative"
                                 style="height: 160px;">
                                     <img src="{{ asset('storage/' . $postImg) }}"
                                          alt="{{ $post->title }}"
@@ -359,11 +358,11 @@
                                 @endif
 
                                 <h4 class="text-sm font-bold text-gray-800 group-hover:text-tpc-primary transition-colors duration-200 leading-snug flex-1 line-clamp-3">
-                                    <a href="{{ route('news.show', $post) }}">{{ $post->title }}</a>
+                                    <a href="{{ route('news.index', ['post' => $post->slug]) }}">{{ $post->title }}</a>
                                 </h4>
 
                                 <div class="mt-4 pt-4 border-t border-gray-100">
-                                    <a href="{{ route('news.show', $post) }}"
+                                    <a href="{{ route('news.index', ['post' => $post->slug]) }}"
                                        class="inline-flex items-center gap-1 text-xs font-bold text-tpc-primary group-hover:gap-2 transition-all duration-200">
                                         Read Article
                                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">

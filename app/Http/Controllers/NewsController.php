@@ -12,9 +12,21 @@ class NewsController extends Controller
         $q        = $request->query('q');
         $category = $request->query('category');
 
+        // A shared link (/news?post=slug) pins that one post at the top of the feed
+        $focusPost = null;
+        $slug      = $request->query('post');
+        if (is_string($slug) && $slug !== '') {
+            $focusPost = NewsPost::query()
+                ->published()
+                ->with('galleryImages')
+                ->where('slug', $slug)
+                ->first();
+        }
+
         $posts = NewsPost::query()
             ->published()
             ->with('galleryImages')
+            ->when($focusPost, fn ($query) => $query->whereKeyNot($focusPost->getKey()))
             ->when($q, fn($query) => $query->where(function ($qq) use ($q) {
                 $qq->where('title',   'like', "%{$q}%")
                 ->orWhere('excerpt', 'like', "%{$q}%")
@@ -23,11 +35,16 @@ class NewsController extends Controller
             ->when($category, fn($query) => $query->where('category', $category))
             ->orderByDesc('published_at')
             ->paginate(10)
-            ->withQueryString();
+            ->appends($request->except(['post', 'page']));
 
-        return view('public.news.index', compact('posts'));
+        return view('public.news.index', compact('posts', 'focusPost'));
     }
 
+    /**
+     * The separate article page was retired: a post is read in the feed itself.
+     * Old /news/{slug} links (home page, links people already shared) forward to
+     * the feed with that post pinned at the top.
+     */
     public function show(NewsPost $newsPost)
     {
         abort_unless(
@@ -35,9 +52,7 @@ class NewsController extends Controller
             404
         );
 
-        $newsPost->load('galleryImages');
-
-        return view('public.news.show', ['post' => $newsPost]);
+        return redirect()->route('news.index', ['post' => $newsPost->slug], 301);
     }
 
     public function like(NewsPost $newsPost)

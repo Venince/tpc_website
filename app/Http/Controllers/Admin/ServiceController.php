@@ -85,7 +85,7 @@ class ServiceController extends Controller
 
     public function show(Service $service)
     {
-        $service->load(['contents', 'attachments']);
+        $service->load(['contents', 'attachments', 'achievements.images']);
         return view('admin.services.show', compact('service'));
     }
 
@@ -165,6 +165,12 @@ class ServiceController extends Controller
         // DB rows cascade, but the files on disk must be removed manually
         foreach ($service->attachments as $attachment) {
             Storage::disk('public')->delete($attachment->file_path);
+        }
+
+        foreach ($service->achievements()->with('images')->get() as $achievement) {
+            foreach ($achievement->images as $image) {
+                Storage::disk('public')->delete($image->path);
+            }
         }
 
         $service->delete();

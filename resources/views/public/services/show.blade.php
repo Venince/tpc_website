@@ -1,4 +1,3 @@
-{{-- resources/views/public/services/show.blade.php --}}
 @extends('layouts.site')
 
 @section('title', $service->title)
@@ -132,7 +131,10 @@
                 {{-- ── SIDEBAR ──────────────────────────────────────────── --}}
                 <aside class="space-y-5 sm:space-y-6 min-w-0 overflow-hidden lg:sticky lg:top-24 lg:self-start">
 
-                    {{-- Forms & Downloads dropdown (renders nothing when no files are attached) --}}
+                    {{-- Achievements (renders nothing when none are posted) --}}
+                    @include('public.services._achievements', ['service' => $service])
+
+                    {{-- Forms & Downloads (renders nothing when no files are attached) --}}
                     @include('public.services._attachments', ['service' => $service])
 
                     {{-- Social Media Card (shown when links exist) --}}
