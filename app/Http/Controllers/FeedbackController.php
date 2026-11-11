@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class FeedbackController extends Controller
 {
-    public function index()
-    {
-        return view('public.feedback');
-    }
-
     public function store(Request $request)
     {
         $request->merge([

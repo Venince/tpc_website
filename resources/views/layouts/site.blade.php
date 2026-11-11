@@ -102,8 +102,8 @@
         </button>
     </div>
 
-    {{-- Floating Feedback Widget --}}
-    <div x-data="feedbackWidget()" class="fixed bottom-5 right-5 z-[9990]">
+    {{-- Floating Feedback Widget (only shown on pages containing #tpc-feedback-page, e.g. Contact) --}}
+    <div x-data="feedbackWidget()" x-show="enabled" style="display:none" class="fixed bottom-5 right-5 z-[9990]">
 
         {{-- Floating button --}}
         <button @click="open = true" x-show="!open" type="button" x-ref="fabBtn"
@@ -264,20 +264,29 @@
                 rating: 0, hoverRating: 0, category: '', message: '',
                 name: '', email: '', website: '', showContact: false,
                 onDark: false,
+                enabled: false,
                 _rafPending: false,
 
                 init() {
                     this._checkBg = this.checkBg.bind(this);
                     window.addEventListener('scroll', this._checkBg, { passive: true });
                     window.addEventListener('resize', this._checkBg);
+                    this.syncEnabled();
                     this._checkBg();
 
                     // Re-check when PJAX swaps page content (sections/colors change)
                     const content = document.getElementById('tpc-content');
                     if (content && typeof MutationObserver !== 'undefined') {
-                        new MutationObserver(() => setTimeout(this._checkBg, 80))
+                        new MutationObserver(() => { this.syncEnabled(); setTimeout(this._checkBg, 80); })
                             .observe(content, { childList: true, subtree: false });
                     }
+                },
+
+                // The widget lives in the layout (so it survives PJAX), but only shows
+                // while the current page contains the #tpc-feedback-page marker.
+                syncEnabled() {
+                    this.enabled = !!document.getElementById('tpc-feedback-page');
+                    if (!this.enabled) this.open = false;
                 },
 
                 checkBg() {
@@ -291,7 +300,7 @@
 
                 _doCheckBg() {
                     const btn = this.$refs.fabBtn;
-                    if (!btn) return;
+                    if (!btn || !this.enabled) return;
 
                     const rect = btn.getBoundingClientRect();
                     const points = [

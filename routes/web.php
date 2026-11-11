@@ -53,7 +53,7 @@ Route::post('/contact', [ContactController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
 
-Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback');
+  Route::get('/feedback', fn () => redirect()->route('contact'))->name('feedback');
 Route::post('/feedback', [FeedbackController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('feedback.store');

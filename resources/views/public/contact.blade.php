@@ -4,6 +4,8 @@
 @section('title', 'Contact')
 
 @section('content')
+{{-- Opt-in marker: tells the layout's floating feedback widget to show on this page --}}
+<span id="tpc-feedback-page" class="hidden" aria-hidden="true"></span>
 @php
     $siteName = \App\Support\Settings::get('site_name', 'Talibon Polytechnic College');
     $address  = \App\Support\Settings::get('address', '');
