@@ -95,7 +95,7 @@
       · Off-canvas drawer below 768px (md). Static sidebar from md up.
       · Collapsed preference is remembered; first visit on tablet widths starts collapsed.
     --}}
-    <div class="relative flex overflow-hidden" style="height:100vh;height:100dvh"
+    <div class="relative flex w-full max-w-full overflow-hidden" style="height:100vh;height:100dvh"
          x-data="{
             sidebarCollapsed: (() => {
                 const saved = localStorage.getItem('tpcSidebarCollapsed');
@@ -143,8 +143,8 @@
         <div class="flex h-full min-w-0 flex-1 flex-col overflow-hidden">
             @include('admin.partials.header', ['title' => $title ?? null])
 
-            <main id="tpc-admin-main" class="ui-scroll flex-1 overflow-y-auto focus:outline-none" tabindex="-1">
-                <div class="w-full px-4 py-5 sm:px-6 sm:py-6 lg:px-8 2xl:px-10">
+            <main id="tpc-admin-main" class="ui-scroll min-w-0 flex-1 overflow-y-auto overflow-x-hidden focus:outline-none" tabindex="-1">
+                <div class="w-full min-w-0 max-w-full px-4 py-5 sm:px-6 sm:py-6 lg:px-8 2xl:px-10">
 
                     {{-- Flash messages become toasts (see script below). Kept in the DOM so PJAX swaps can replay them. --}}
                     @php

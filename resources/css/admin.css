@@ -253,3 +253,25 @@
     .ui-actionbar { flex-direction: column-reverse; align-items: stretch; }
     .ui-actionbar > .ui-btn { width: 100%; }
 }
+
+/* ==========================================================================
+   Containment: the admin shell never pans sideways. Only the main region
+   scrolls (vertically); wide tables scroll inside their own wrapper.
+   ========================================================================== */
+html, body { overflow-x: hidden; overscroll-behavior: none; }
+
+#tpc-admin-main {
+    overflow-x: hidden;               /* no sideways page scroll, ever */
+    overscroll-behavior: contain;     /* no rubber-banding into the browser chrome */
+    touch-action: pan-y pinch-zoom;   /* vertical scroll + pinch-zoom only (no horizontal swipe) */
+    overflow-wrap: anywhere;          /* long unbroken strings wrap instead of widening the page */
+}
+
+/* Horizontally scrollable regions keep their own swipe */
+.ui-table-wrap { touch-action: pan-x pan-y; max-width: 100%; -webkit-overflow-scrolling: touch; }
+
+/* Root cause of the blow-out: grid tracks default to content width, so one long
+   title stretched the whole column. Zero-specificity defaults, so any explicit
+   grid-cols-* utility still wins. */
+:where(.ui-app .grid)       { grid-template-columns: minmax(0, 1fr); }
+:where(.ui-app .grid > *)   { min-width: 0; }
