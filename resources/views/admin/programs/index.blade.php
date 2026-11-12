@@ -1,149 +1,91 @@
 @extends('admin.layout', ['title' => 'Programs'])
 
 @section('content')
+    <x-admin.page-header title="Programs" subtitle="Manage academic programs, their people and achievements."
+        :breadcrumbs="['Programs' => null]">
+        <x-admin.button :href="route('admin.programs.create')" icon="plus">New program</x-admin.button>
+    </x-admin.page-header>
 
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div>
-            <h1 class="text-lg font-semibold text-neo-ink">Programs</h1>
-            <p class="text-xs text-neo-ink/45 mt-0.5">Manage academic programs offered by TPC.</p>
-        </div>
-        <a href="{{ route('admin.programs.create') }}"
-           class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-4 py-2.5 text-sm font-semibold text-white
-                  shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 shrink-0">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            New Program
-        </a>
-    </div>
-
-    {{-- Mobile cards --}}
-    <div class="flex flex-col gap-3 sm:hidden">
-        @forelse ($programs as $prog)
-            <div class="rounded-2xl bg-neo-surface shadow-neo-sm overflow-hidden">
-                <div class="flex items-center gap-3 p-4 border-b border-black/[0.06]">
-                    @if ($prog->logo_path)
-                        <img src="{{ asset('storage/' . $prog->logo_path) }}"
-                             class="h-11 w-11 rounded-xl bg-white object-contain p-1 shrink-0 shadow-neo-inset-sm"
-                             loading="lazy" alt="{{ $prog->code }}">
-                    @else
-                        <span class="h-11 w-11 rounded-xl bg-neo-bg shadow-neo-inset-sm flex items-center justify-center text-xl shrink-0">🎓</span>
-                    @endif
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="inline-block bg-tpc-primary/10 text-tpc-secondary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg">
-                                {{ $prog->code }}
-                            </span>
-                            @if ($prog->is_active)
-                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Active
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1 bg-neo-bg text-neo-ink/40 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-neo-ink/25"></span>Inactive
-                                </span>
-                            @endif
-                        </div>
-                        <p class="text-sm font-semibold text-neo-ink mt-0.5 truncate">{{ $prog->name }}</p>
-                        @if($prog->department)
-                            <p class="text-xs text-neo-ink/45">{{ $prog->department }}</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 px-4 py-3">
-                    <a href="{{ route('admin.programs.show', $prog) }}"
-                       class="text-xs font-semibold text-neo-ink/45 hover:text-tpc-primary transition">Manage</a>
-                    <a href="{{ route('admin.programs.edit', $prog) }}"
-                       class="text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition">Edit</a>
-                    <form class="inline ml-auto" method="POST"
-                          action="{{ route('admin.programs.destroy', $prog) }}"
-                          onsubmit="return confirm('Delete this program?');">
-                        @csrf @method('DELETE')
-                        <button class="text-xs font-semibold text-red-500 hover:text-red-700 transition">Delete</button>
-                    </form>
+    <x-admin.card :padding="false" x-data="tpcFilter()">
+        @if ($programs->total() > 0)
+            <div class="flex flex-col gap-3 border-b border-ui-line p-4 sm:flex-row sm:items-center sm:justify-between">
+                <x-admin.search-input placeholder="Filter this page by code, name or department" />
+                <div class="flex items-center gap-2">
+                    <label for="status-filter" class="sr-only">Status</label>
+                    <select id="status-filter" x-model="status" class="ui-select ui-select-auto">
+                        <option value="">All statuses</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    <button type="button" x-show="active" x-cloak @click="reset()" class="ui-btn ui-btn-ghost ui-btn-sm">Clear</button>
                 </div>
             </div>
-        @empty
-            <div class="rounded-2xl bg-neo-bg shadow-neo-inset-sm py-16 text-center">
-                <p class="text-sm text-neo-ink/40">No programs yet.</p>
-                <a href="{{ route('admin.programs.create') }}"
-                   class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-tpc-primary hover:text-tpc-secondary transition">
-                    + Create your first program
-                </a>
-            </div>
-        @endforelse
-    </div>
 
-    {{-- Desktop table --}}
-    <div class="hidden sm:block rounded-2xl bg-neo-surface shadow-neo overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-[720px] w-full text-sm">
-                <thead>
-                    <tr class="bg-neo-bg text-neo-ink/50">
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide w-16">Logo</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide">Code</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide">Program</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide">Department</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide">Status</th>
-                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-black/[0.05]">
-                    @forelse ($programs as $prog)
-                        <tr class="hover:bg-neo-bg/60 transition group">
-                            <td class="px-5 py-3">
-                                @if ($prog->logo_path)
-                                    <img src="{{ asset('storage/' . $prog->logo_path) }}"
-                                         alt="{{ $prog->code }}"
-                                         class="h-10 w-10 rounded-xl bg-white object-contain p-1 shadow-neo-inset-sm"
-                                         loading="lazy" />
-                                @else
-                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-neo-bg shadow-neo-inset-sm text-lg">🎓</span>
-                                @endif
-                            </td>
-                            <td class="px-5 py-3">
-                                <span class="inline-block bg-tpc-primary/10 text-tpc-secondary text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
-                                    {{ $prog->code }}
-                                </span>
-                            </td>
-                            <td class="px-5 py-3 font-semibold text-neo-ink">{{ $prog->name }}</td>
-                            <td class="px-5 py-3 text-neo-ink/50">{{ $prog->department ?? '—' }}</td>
-                            <td class="px-5 py-3">
-                                @if ($prog->is_active)
-                                    <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Active
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 bg-neo-bg text-neo-ink/40 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-neo-ink/25"></span>Inactive
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-5 py-3 text-right whitespace-nowrap">
-                                <a href="{{ route('admin.programs.show', $prog) }}"
-                                   class="text-xs font-semibold text-neo-ink/40 hover:text-tpc-primary transition">Manage</a>
-                                <a href="{{ route('admin.programs.edit', $prog) }}"
-                                   class="ml-4 text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition">Edit</a>
-                                <form class="inline" method="POST"
-                                      action="{{ route('admin.programs.destroy', $prog) }}"
-                                      onsubmit="return confirm('Delete this program?');">
-                                    @csrf @method('DELETE')
-                                    <button class="ml-4 text-xs font-semibold text-red-500 hover:text-red-700 transition">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
+            <div class="ui-table-wrap">
+                <table class="ui-table">
+                    <caption class="sr-only">Programs</caption>
+                    <thead>
                         <tr>
-                            <td class="px-5 py-16 text-center text-neo-ink/40 text-sm" colspan="6">
-                                No programs yet.
-                            </td>
+                            <th scope="col">Program</th>
+                            <th scope="col" class="hidden md:table-cell">Department</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="ui-col-actions"><span class="sr-only">Actions</span></th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($programs as $program)
+                            <tr data-search="{{ $program->code }} {{ $program->name }} {{ $program->department }}"
+                                data-status="{{ $program->is_active ? 'active' : 'inactive' }}"
+                                x-show="matches($el)">
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        @if ($program->logo_path)
+                                            <img src="{{ asset('storage/' . $program->logo_path) }}" alt="" class="ui-thumb !object-contain bg-white p-0.5" loading="lazy">
+                                        @else
+                                            <span class="ui-thumb grid place-items-center text-gray-400"><x-admin.icon name="book-open" class="h-5 w-5" /></span>
+                                        @endif
+                                        <div class="min-w-0">
+                                            <a href="{{ route('admin.programs.show', $program) }}" class="block truncate font-medium text-ui-ink hover:text-brand-dark focus-visible:outline-none focus-visible:underline">{{ $program->name }}</a>
+                                            <p class="truncate text-xs text-ui-muted">{{ $program->code }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="hidden text-ui-muted md:table-cell">{{ $program->department ?: '—' }}</td>
+                                <td>
+                                    @if ($program->is_active)
+                                        <x-admin.badge type="success" dot>Active</x-admin.badge>
+                                    @else
+                                        <x-admin.badge type="neutral" dot>Inactive</x-admin.badge>
+                                    @endif
+                                </td>
+                                <td class="ui-col-actions">
+                                    <div class="inline-flex items-center gap-1">
+                                        <x-admin.button :href="route('admin.programs.show', $program)" variant="secondary" size="sm" icon="users">Manage</x-admin.button>
+                                        <x-admin.button :href="route('admin.programs.edit', $program)" variant="ghost" size="sm" class="ui-btn-icon" icon="pencil" aria-label="Edit {{ $program->code }}" title="Edit" />
+                                        <form method="POST" action="{{ route('admin.programs.destroy', $program) }}"
+                                              data-confirm="“{{ $program->name }}” and its logo will be permanently removed. This cannot be undone."
+                                              data-confirm-title="Delete this program?" data-confirm-label="Delete program">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="ui-btn ui-btn-ghost-danger ui-btn-icon ui-btn-sm" aria-label="Delete {{ $program->code }}" title="Delete">
+                                                <x-admin.icon name="trash" class="h-4 w-4" />
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        <tr x-show="none" x-cloak>
+                            <td colspan="4"><x-admin.empty-state icon="search" title="No matching programs" description="Try a different search or clear the filters." /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <div class="mt-4">{{ $programs->links() }}</div>
-
+            {{ $programs->links('components.admin.pagination') }}
+        @else
+            <x-admin.empty-state icon="book-open" title="No programs yet" description="Create your first program to show it on the Academics page.">
+                <x-admin.button :href="route('admin.programs.create')" icon="plus">New program</x-admin.button>
+            </x-admin.empty-state>
+        @endif
+    </x-admin.card>
 @endsection

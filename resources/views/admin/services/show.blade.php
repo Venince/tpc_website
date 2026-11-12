@@ -1,394 +1,198 @@
-@extends('admin.layout')
-
-@section('title', $service->title)
-
-@section('page_actions')
-    <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div class="flex items-center gap-2 min-w-0">
-            <a href="{{ route('admin.services.index') }}"
-               class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-neo-surface shadow-neo-sm text-neo-ink/40 transition hover:shadow-neo-hover active:shadow-neo-inset-sm hover:text-tpc-primary">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                </svg>
-            </a>
-            <div class="min-w-0">
-                <h1 class="text-base font-semibold text-tpc-ink truncate">{{ $service->title }}</h1>
-                <p class="text-xs text-tpc-ink/50">/services/{{ $service->slug }}</p>
-            </div>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <a href="{{ route('services.show', $service) }}" target="_blank"
-               class="inline-flex items-center gap-1.5 rounded-full bg-neo-surface shadow-neo-sm px-3.5 py-2 text-xs font-semibold text-neo-ink/50 transition hover:shadow-neo-hover active:shadow-neo-inset-sm hover:text-tpc-primary">
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
-                </svg>
-                Preview
-            </a>
-            <a href="{{ route('admin.services.edit', $service) }}"
-               class="inline-flex items-center gap-1.5 rounded-full bg-neo-surface shadow-neo-sm px-3.5 py-2 text-xs font-semibold text-tpc-primary transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/>
-                </svg>
-                Edit Service
-            </a>
-            <a href="{{ route('admin.services.contents.create', $service) }}"
-               class="inline-flex items-center gap-1.5 rounded-full bg-tpc-primary px-4 py-2 text-xs font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                </svg>
-                Add Section
-            </a>
-        </div>
-    </div>
-@endsection
+@extends('admin.layout', ['title' => $service->title])
 
 @section('content')
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <x-admin.page-header :title="$service->title" :subtitle="'/services/' . $service->slug"
+        :breadcrumbs="['Services' => route('admin.services.index'), $service->title => null]">
+        <x-admin.button :href="route('services.show', $service)" target="_blank" rel="noopener" variant="secondary" icon="external">Preview</x-admin.button>
+        <x-admin.button :href="route('admin.services.edit', $service)" variant="secondary" icon="pencil">Edit service</x-admin.button>
+        <x-admin.button :href="route('admin.services.contents.create', $service)" icon="plus">Add section</x-admin.button>
+    </x-admin.page-header>
 
-        {{-- LEFT: Service meta --}}
-        <aside class="lg:col-span-1 space-y-4 min-w-0">
+    <div class="grid items-start gap-4 lg:grid-cols-3">
+        {{-- LEFT: meta --}}
+        <aside class="space-y-4 lg:order-2" aria-label="Service details">
             @if ($service->featured_image_path)
-                <div class="rounded-2xl overflow-hidden shadow-neo-inset-sm bg-neo-bg">
-                    <img src="{{ asset('storage/' . $service->featured_image_path) }}"
-                         class="w-full object-cover" alt="">
+                <div class="overflow-hidden rounded-xl border border-ui-line bg-white">
+                    <img src="{{ asset('storage/' . $service->featured_image_path) }}" alt="" class="max-h-56 w-full object-cover">
                 </div>
             @endif
 
-            {{-- Info card --}}
-            <div class="rounded-2xl bg-neo-surface shadow-neo divide-y divide-black/[0.06]">
-                <div class="px-4 py-3">
-                    <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest mb-0.5">Status</p>
-                    @if ($service->is_active)
-                        <span class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-green-200/60">
-                            <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span> Active
-                        </span>
-                    @else
-                        <span class="inline-flex items-center gap-1 rounded-full bg-neo-bg shadow-neo-inset-sm px-2 py-0.5 text-xs font-semibold text-neo-ink/40">
-                            <span class="h-1.5 w-1.5 rounded-full bg-neo-ink/30"></span> Inactive
-                        </span>
-                    @endif
-                </div>
-                @if ($service->description)
-                    <div class="px-4 py-3">
-                        <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest mb-0.5">Description</p>
-                        <p class="text-xs text-neo-ink/60 leading-relaxed">{{ $service->description }}</p>
+            <x-admin.card title="Overview">
+                <dl class="space-y-4 text-sm">
+                    <div class="flex items-center justify-between gap-3">
+                        <dt class="text-ui-muted">Status</dt>
+                        <dd>
+                            @if ($service->is_active)
+                                <x-admin.badge type="success" dot>Active</x-admin.badge>
+                            @else
+                                <x-admin.badge type="neutral" dot>Inactive</x-admin.badge>
+                            @endif
+                        </dd>
                     </div>
-                @endif
-                <div class="px-4 py-3">
-                    <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest mb-0.5">Sections</p>
-                    <p class="text-sm font-bold text-tpc-primary">{{ $service->contents->count() }}</p>
-                </div>
-
-                {{-- Social Links --}}
-                @if (!empty($service->social_links))
-                    <div class="px-4 py-3">
-                        <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest mb-2">Social Links</p>
-                        <div class="space-y-1.5">
-                            @foreach ($service->social_links as $link)
-                                @php
-                                    $platformColors = [
-                                        'facebook'  => 'bg-blue-50 text-blue-700 ring-blue-200/60',
-                                        'instagram' => 'bg-pink-50 text-pink-700 ring-pink-200/60',
-                                        'twitter'   => 'bg-gray-100 text-gray-700 ring-gray-200',
-                                        'youtube'   => 'bg-red-50 text-red-700 ring-red-200/60',
-                                        'tiktok'    => 'bg-gray-900 text-white ring-gray-700',
-                                        'linkedin'  => 'bg-sky-50 text-sky-700 ring-sky-200/60',
-                                        'other'     => 'bg-gray-50 text-gray-600 ring-gray-200',
-                                    ];
-                                    $colorClass = $platformColors[$link['platform']] ?? $platformColors['other'];
-                                    $displayLabel = !empty($link['label']) ? $link['label'] : ucfirst($link['platform']);
-                                @endphp
-                                <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"
-                                   class="flex items-center gap-2 group">
-                                    <span class="inline-flex items-center gap-1.5 rounded-full {{ $colorClass }} px-2.5 py-1 text-[11px] font-bold ring-1 truncate max-w-full group-hover:opacity-80 transition">
-                                        {{ $displayLabel }}
-                                        <svg class="h-2.5 w-2.5 shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
-                                        </svg>
-                                    </span>
-                                </a>
-                            @endforeach
+                    <div class="flex items-center justify-between gap-3">
+                        <dt class="text-ui-muted">Sections</dt>
+                        <dd class="font-medium text-ui-ink tabular-nums">{{ $service->contents->count() }}</dd>
+                    </div>
+                    @if ($service->description)
+                        <div>
+                            <dt class="text-ui-muted">Description</dt>
+                            <dd class="mt-1 text-ui-ink">{{ $service->description }}</dd>
                         </div>
-                    </div>
-                @endif
-            </div>
+                    @endif
+                    @if (! empty($service->social_links))
+                        <div>
+                            <dt class="text-ui-muted">Social links</dt>
+                            <dd class="mt-2 flex flex-wrap gap-1.5">
+                                @foreach ($service->social_links as $link)
+                                    @php $displayLabel = ! empty($link['label']) ? $link['label'] : ucfirst($link['platform']); @endphp
+                                    <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"
+                                       class="ui-badge ui-badge-neutral transition-colors hover:bg-brand-50 hover:text-brand-dark hover:ring-brand-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                                        {{ $displayLabel }}<x-admin.icon name="external" class="h-3 w-3" />
+                                    </a>
+                                @endforeach
+                            </dd>
+                        </div>
+                    @endif
+                </dl>
+            </x-admin.card>
 
-            {{-- Downloadable files --}}
-            <div class="rounded-2xl bg-neo-surface shadow-neo px-4 py-4">
-                <div class="flex items-center justify-between gap-2 mb-2">
-                    <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest">Downloadable Files</p>
-                    <a href="{{ route('admin.services.edit', $service) }}"
-                       class="text-[11px] font-semibold text-tpc-primary/70 hover:text-tpc-primary transition">
-                        Manage
-                    </a>
-                </div>
-
+            <x-admin.card title="Downloadable files" :padding="false">
+                <x-slot:actions>
+                    <x-admin.button :href="route('admin.services.edit', $service)" variant="ghost" size="sm">Manage</x-admin.button>
+                </x-slot:actions>
                 @if ($service->attachments->isEmpty())
-                    <p class="text-xs text-neo-ink/40">No files attached. Use Edit Service to add forms or documents.</p>
+                    <p class="px-5 py-4 text-sm text-ui-muted">No files attached. Use <em>Edit service</em> to add forms or documents.</p>
                 @else
-                    <ul class="space-y-1.5">
+                    <ul class="divide-y divide-ui-line">
                         @foreach ($service->attachments as $file)
                             <li>
                                 <a href="{{ $file->file_url }}" target="_blank" rel="noopener"
-                                   class="group flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-neo-bg">
-                                    <span class="inline-flex shrink-0 items-center rounded-md bg-neo-bg shadow-neo-inset-sm px-1.5 py-0.5 text-[10px] font-bold text-neo-ink/55">
-                                        {{ strtoupper($file->extension ?: 'file') }}
-                                    </span>
-                                    <span class="min-w-0 flex-1 truncate text-xs font-semibold text-neo-ink/70 group-hover:text-tpc-primary transition">
-                                        {{ $file->label }}
-                                    </span>
-                                    <span class="shrink-0 text-[11px] text-neo-ink/35">{{ $file->human_size }}</span>
+                                   class="flex items-center gap-3 px-5 py-2.5 transition-colors hover:bg-ui-bg focus-visible:outline-none focus-visible:bg-ui-bg">
+                                    <x-admin.badge type="neutral" class="uppercase">{{ $file->extension ?: 'file' }}</x-admin.badge>
+                                    <span class="min-w-0 flex-1 truncate text-sm text-ui-ink">{{ $file->label }}</span>
+                                    <span class="shrink-0 text-xs text-ui-muted">{{ $file->human_size }}</span>
                                 </a>
                             </li>
                         @endforeach
                     </ul>
                 @endif
-            </div>
+            </x-admin.card>
 
-            {{-- Achievements --}}
-            <div class="rounded-2xl bg-neo-surface shadow-neo overflow-hidden">
-                <div class="flex items-center justify-between gap-2 px-4 py-3 border-b border-black/[0.06]">
-                    <p class="text-[10px] font-bold text-neo-ink/40 uppercase tracking-widest">Achievements</p>
-                    <a href="{{ route('admin.services.achievements.create', $service) }}"
-                       class="inline-flex items-center gap-1 rounded-full bg-tpc-primary px-3 py-1.5 text-[11px] font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                        </svg>
-                        Add
-                    </a>
-                </div>
-
+            <x-admin.card title="Achievements" :padding="false">
+                <x-slot:actions>
+                    <x-admin.button :href="route('admin.services.achievements.create', $service)" size="sm" icon="plus">Add</x-admin.button>
+                </x-slot:actions>
                 @if ($service->achievements->isEmpty())
-                    <p class="px-4 py-8 text-center text-xs text-neo-ink/40">No achievements added yet.</p>
+                    <p class="px-5 py-4 text-sm text-ui-muted">No achievements added yet.</p>
                 @else
-                    <ul id="sortable-achievements" class="divide-y divide-black/[0.05]">
+                    <ul id="sortable-achievements" class="divide-y divide-ui-line">
                         @foreach ($service->achievements as $achievement)
-                            <li class="group flex items-center gap-2 px-3 py-2.5 transition hover:bg-neo-bg/60"
-                                data-id="{{ $achievement->id }}">
-                                <span class="drag-handle shrink-0 cursor-grab select-none touch-none px-1 text-base text-neo-ink/25 group-hover:text-tpc-primary/50 active:cursor-grabbing"
-                                      title="Drag to reorder">⠿</span>
-
-                                @if ($achievement->images->isNotEmpty())
-                                    <img src="{{ asset('storage/' . $achievement->images->first()->path) }}"
-                                         class="h-9 w-9 shrink-0 rounded-lg object-cover shadow-neo-inset-sm" alt="">
+                            @php $photoCount = $achievement->images->count(); @endphp
+                            <li data-id="{{ $achievement->id }}" class="flex items-center gap-3 bg-white px-4 py-3">
+                                <span class="drag-handle cursor-grab touch-none rounded p-1 text-gray-400 hover:bg-ui-bg-2 hover:text-gray-600 active:cursor-grabbing" role="img" aria-label="Drag to reorder" title="Drag to reorder">
+                                    <x-admin.icon name="grip" class="h-4 w-4" />
+                                </span>
+                                @if ($photoCount > 0)
+                                    <img src="{{ asset('storage/' . $achievement->images->first()->path) }}" alt="" class="ui-thumb" loading="lazy">
                                 @else
-                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neo-bg text-base shadow-neo-inset-sm">🏆</span>
+                                    <span class="ui-thumb grid place-items-center text-gray-400"><x-admin.icon name="star" class="h-5 w-5" /></span>
                                 @endif
-
                                 <div class="min-w-0 flex-1">
-                                    <p class="truncate text-xs font-semibold text-neo-ink">{{ $achievement->title }}</p>
-                                    @php $photoCount = $achievement->images->count(); @endphp
+                                    <p class="truncate text-sm font-medium text-ui-ink">{{ $achievement->title }}</p>
                                     @if ($achievement->year || $photoCount > 0)
-                                        <p class="text-[11px] text-neo-ink/45">
-                                            {{ $achievement->year }}
-                                            @if ($achievement->year && $photoCount > 0) · @endif
-                                            @if ($photoCount > 0) {{ $photoCount }} {{ Str::plural('photo', $photoCount) }} @endif
+                                        <p class="text-xs text-ui-muted">
+                                            {{ $achievement->year }}@if ($achievement->year && $photoCount > 0) · @endif@if ($photoCount > 0){{ $photoCount }} {{ Str::plural('photo', $photoCount) }}@endif
                                         </p>
                                     @endif
                                 </div>
-
-                                <div class="flex shrink-0 items-center gap-0.5">
-                                    <a href="{{ route('admin.services.achievements.edit', [$service, $achievement]) }}"
-                                       class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-tpc-primary/60 transition hover:bg-neo-bg hover:text-tpc-primary" title="Edit">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/>
-                                        </svg>
-                                    </a>
+                                <div class="flex shrink-0 items-center gap-1">
+                                    <x-admin.button :href="route('admin.services.achievements.edit', [$service, $achievement])" variant="ghost" size="sm" class="ui-btn-icon" icon="pencil" aria-label="Edit {{ $achievement->title }}" title="Edit" />
                                     <form action="{{ route('admin.services.achievements.destroy', [$service, $achievement]) }}" method="POST"
-                                          onsubmit="return confirm('Delete this achievement?')">
+                                          data-confirm="This achievement and its photos will be permanently deleted." data-confirm-title="Delete this achievement?" data-confirm-label="Delete">
                                         @csrf @method('DELETE')
-                                        <button type="submit"
-                                                class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-red-400/70 transition hover:bg-neo-bg hover:text-red-600" title="Delete">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                            </svg>
+                                        <button type="submit" class="ui-btn ui-btn-ghost-danger ui-btn-icon ui-btn-sm" aria-label="Delete {{ $achievement->title }}" title="Delete">
+                                            <x-admin.icon name="trash" class="h-4 w-4" />
                                         </button>
                                     </form>
                                 </div>
                             </li>
                         @endforeach
                     </ul>
-                    <p class="border-t border-black/[0.05] px-4 py-2 text-[11px] text-neo-ink/30">Drag the ⠿ handle to reorder.</p>
+                    <p class="border-t border-ui-line px-4 py-2.5 text-xs text-ui-muted">Drag the handle to reorder.</p>
                 @endif
+            </x-admin.card>
 
-                {{-- Lives inside the page content (not @push) so PJAX navigation re-runs it --}}
-                <script>
-                    (function () {
-                        function boot() {
-                            var el = document.getElementById('sortable-achievements');
-                            if (!el || typeof Sortable === 'undefined') return;
-                            if (el._sortable) el._sortable.destroy();
-
-                            el._sortable = Sortable.create(el, {
-                                handle: '.drag-handle',
-                                animation: 150,
-                                ghostClass: 'opacity-40',
-                                onEnd: function () {
-                                    var order = Array.prototype.map.call(
-                                        el.querySelectorAll('[data-id]'),
-                                        function (row) { return parseInt(row.dataset.id, 10); }
-                                    );
-
-                                    fetch('{{ route('admin.services.achievements.reorder', $service) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                        },
-                                        body: JSON.stringify({ order: order }),
-                                    });
-                                },
-                            });
-                        }
-
-                        // On a full page load Sortable is loaded at the bottom of the layout,
-                        // so wait for DOMContentLoaded. After a PJAX swap it already exists.
-                        if (document.readyState === 'loading') {
-                            document.addEventListener('DOMContentLoaded', boot);
-                        } else {
-                            boot();
-                        }
-                    })();
-                </script>
-            </div>
-
-            {{-- Danger zone --}}
-            <div class="rounded-2xl bg-neo-surface shadow-neo px-4 py-4">
-                <p class="text-xs font-bold text-red-600 mb-2">Danger Zone</p>
+            <x-admin.card title="Danger zone" class="border-red-200">
+                <p class="mb-3 text-sm text-ui-muted">Permanently delete this service and everything attached to it.</p>
                 <form action="{{ route('admin.services.destroy', $service) }}" method="POST"
-                      onsubmit="return confirm('Permanently delete this service and all its content?')">
+                      data-confirm="“{{ $service->title }}” and all of its content will be permanently deleted. This cannot be undone."
+                      data-confirm-title="Delete this service?" data-confirm-label="Delete service">
                     @csrf @method('DELETE')
-                    <button type="submit"
-                            class="w-full rounded-xl bg-neo-surface shadow-neo-sm px-4 py-2 text-xs font-semibold text-red-600 transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                        Delete Service
-                    </button>
+                    <x-admin.button type="submit" variant="danger" icon="trash">Delete service</x-admin.button>
                 </form>
-            </div>
+            </x-admin.card>
         </aside>
 
-        {{-- RIGHT: Content blocks --}}
-        <div class="lg:col-span-2 min-w-0">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-sm font-semibold text-neo-ink/70">Content Sections</h2>
-                @if ($service->contents->isNotEmpty())
-                    <p class="text-xs text-neo-ink/40">Drag rows to reorder</p>
-                @endif
-            </div>
+        {{-- RIGHT: content blocks --}}
+        <div class="lg:order-1 lg:col-span-2">
+            <x-admin.card title="Content sections" :description="$service->contents->isNotEmpty() ? 'Drag rows to reorder' : null" :padding="false">
+                <x-slot:actions>
+                    <x-admin.button :href="route('admin.services.contents.create', $service)" size="sm" icon="plus">Add section</x-admin.button>
+                </x-slot:actions>
 
-            @if ($service->contents->isEmpty())
-                <div class="py-16 text-center rounded-2xl bg-neo-bg shadow-neo-inset-sm">
-                    <svg class="h-10 w-10 mx-auto text-neo-ink/15 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
-                    </svg>
-                    <p class="text-sm font-semibold text-neo-ink/40 mb-1">No content sections yet</p>
-                    <p class="text-xs text-neo-ink/35 mb-4">Add text or image blocks to build out this service page.</p>
-                    <a href="{{ route('admin.services.contents.create', $service) }}"
-                       class="inline-flex items-center gap-1.5 rounded-full bg-tpc-primary px-5 py-2 text-xs font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                        </svg>
-                        Add First Section
-                    </a>
-                </div>
-            @else
-                <div id="sortable-contents" class="space-y-3">
-                    @foreach ($service->contents as $content)
-                        <div class="content-row flex items-start gap-3 rounded-2xl bg-neo-surface shadow-neo p-4 transition-all duration-200 hover:shadow-neo-hover"
-                             data-id="{{ $content->id }}">
-                            <span class="drag-handle mt-0.5 shrink-0 cursor-grab text-neo-ink/25 hover:text-neo-ink/50 active:cursor-grabbing">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5"/>
-                                </svg>
-                            </span>
-                            <div class="mt-0.5 shrink-0">
-                                @if ($content->isImage())
-                                    <span class="inline-flex items-center gap-1 rounded-lg bg-purple-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-600 ring-1 ring-purple-200/60">
-                                        <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
-                                        </svg>
-                                        Image
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-600 ring-1 ring-blue-200/60">
-                                        <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/>
-                                        </svg>
-                                        Text
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                @if ($content->heading)
-                                    <p class="text-sm font-semibold text-neo-ink truncate">{{ $content->heading }}</p>
-                                @endif
-                                @if ($content->isImage() && $content->image_path)
-                                    <div class="mt-1.5 flex items-center gap-2">
-                                        <img src="{{ asset('storage/' . $content->image_path) }}"
-                                             class="h-12 w-20 rounded-lg object-cover shadow-neo-inset-sm" alt="">
-                                        @if ($content->image_caption)
-                                            <p class="text-xs text-neo-ink/40 italic truncate">{{ $content->image_caption }}</p>
-                                        @endif
-                                    </div>
-                                @elseif ($content->body)
-                                    @php
-                                        $preview = trim(preg_replace(
-                                            '/[\s\x{00A0}]+/u', ' ',
-                                            html_entity_decode(strip_tags($content->body), ENT_QUOTES | ENT_HTML5, 'UTF-8')
-                                        ));
-                                    @endphp
-                                    <p class="text-xs text-neo-ink/55 leading-relaxed line-clamp-2 mt-0.5">{{ Str::limit($preview, 160) }}</p>
-                                @endif
-                            </div>
-                            <div class="flex items-center gap-1 shrink-0">
-                                <a href="{{ route('admin.services.contents.edit', [$service, $content]) }}"
-                                   class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-tpc-primary/60 hover:bg-neo-bg hover:text-tpc-primary transition" title="Edit">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/>
-                                    </svg>
-                                </a>
-                                <form action="{{ route('admin.services.contents.destroy', [$service, $content]) }}" method="POST"
-                                      onsubmit="return confirm('Delete this content section?')">
-                                    @csrf @method('DELETE')
-                                    <button class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-red-400/70 hover:bg-neo-bg hover:text-red-600 transition" title="Delete">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                        </svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
+                @if ($service->contents->isEmpty())
+                    <x-admin.empty-state icon="document-text" title="No content sections yet" description="Add text or image blocks to build out this service page.">
+                        <x-admin.button :href="route('admin.services.contents.create', $service)" icon="plus">Add first section</x-admin.button>
+                    </x-admin.empty-state>
+                @else
+                    <ul id="sortable-contents" class="divide-y divide-ui-line">
+                        @foreach ($service->contents as $content)
+                            <li data-id="{{ $content->id }}" class="content-row flex items-start gap-3 bg-white px-4 py-4">
+                                <span class="drag-handle mt-0.5 cursor-grab touch-none rounded p-1 text-gray-400 hover:bg-ui-bg-2 hover:text-gray-600 active:cursor-grabbing" role="img" aria-label="Drag to reorder" title="Drag to reorder">
+                                    <x-admin.icon name="grip" class="h-4 w-4" />
+                                </span>
+                                <x-admin.badge :type="$content->isImage() ? 'neutral' : 'success'" class="mt-0.5">{{ $content->isImage() ? 'Image' : 'Text' }}</x-admin.badge>
+
+                                <div class="min-w-0 flex-1">
+                                    @if ($content->heading)
+                                        <p class="truncate text-sm font-medium text-ui-ink">{{ $content->heading }}</p>
+                                    @endif
+                                    @if ($content->isImage() && $content->image_path)
+                                        <div class="mt-1 flex items-center gap-3">
+                                            <img src="{{ asset('storage/' . $content->image_path) }}" alt="" class="ui-thumb !h-14 !w-20" loading="lazy">
+                                            @if ($content->image_caption)<p class="truncate text-sm text-ui-muted">{{ $content->image_caption }}</p>@endif
+                                        </div>
+                                    @elseif ($content->body)
+                                        @php
+                                            $preview = trim(preg_replace('/[\s\x{00A0}]+/u', ' ', html_entity_decode(strip_tags($content->body), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+                                        @endphp
+                                        <p class="mt-0.5 line-clamp-2 text-sm text-ui-muted">{{ Str::limit($preview, 160) }}</p>
+                                    @endif
+                                </div>
+
+                                <div class="flex shrink-0 items-center gap-1">
+                                    <x-admin.button :href="route('admin.services.contents.edit', [$service, $content])" variant="ghost" size="sm" class="ui-btn-icon" icon="pencil" aria-label="Edit section" title="Edit" />
+                                    <form action="{{ route('admin.services.contents.destroy', [$service, $content]) }}" method="POST"
+                                          data-confirm="This content section will be permanently deleted." data-confirm-title="Delete this section?" data-confirm-label="Delete section">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="ui-btn ui-btn-ghost-danger ui-btn-icon ui-btn-sm" aria-label="Delete section" title="Delete">
+                                            <x-admin.icon name="trash" class="h-4 w-4" />
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </x-admin.card>
         </div>
     </div>
+
+    {{-- Lives inside the page content (not @push) so PJAX navigation re-runs it --}}
+    <script>
+        (function () {
+            window.tpcSortable('sortable-achievements', '{{ route('admin.services.achievements.reorder', $service) }}');
+            window.tpcSortable('sortable-contents', '{{ route('admin.services.contents.reorder', $service) }}');
+        })();
+    </script>
 @endsection
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const el = document.getElementById('sortable-contents');
-    if (!el) return;
-
-    Sortable.create(el, {
-        handle: '.drag-handle',
-        animation: 150,
-        ghostClass: 'opacity-40',
-        onEnd: function () {
-            const order = [...el.querySelectorAll('.content-row')]
-                .map(row => parseInt(row.dataset.id));
-
-            fetch('{{ route('admin.services.contents.reorder', $service) }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                },
-                body: JSON.stringify({ order }),
-            });
-        }
-    });
-});
-</script>
-@endpush

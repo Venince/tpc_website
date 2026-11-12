@@ -1,84 +1,15 @@
 @extends('admin.layout', ['title' => 'Add Item'])
 
 @section('content')
+    <x-admin.page-header title="Add item" :subtitle="'Adding to ' . $section->label"
+        :breadcrumbs="['Admission' => route('admin.admission.index'), 'Add item' => null]" />
 
-    {{-- ── Page header ── --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div>
-            <a href="{{ route('admin.admission.index') }}"
-               class="inline-flex items-center gap-1.5 text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition mb-2">
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                </svg>
-                Admission
-            </a>
-            <h1 class="text-lg font-semibold text-neo-ink">Add Item</h1>
+    <form method="POST" action="{{ route('admin.admission.sections.items.store', $section) }}">
+        @csrf
+        @include('admin.admission._item-fields', ['item' => null])
+        <div class="ui-actionbar">
+            <x-admin.button :href="route('admin.admission.index')" variant="secondary">Cancel</x-admin.button>
+            <x-admin.button type="submit">Add item</x-admin.button>
         </div>
-    </div>
-
-    <div class="max-w-lg">
-        {{-- Section context --}}
-        <div class="mb-5 flex items-center gap-2.5 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-3">
-            <svg class="h-4 w-4 text-tpc-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/>
-            </svg>
-            <div class="text-xs">
-                <span class="text-neo-ink/50">Adding to:</span>
-                <span class="font-semibold text-neo-ink ml-1">{{ $section->label }}</span>
-                <span class="ml-2 inline-flex items-center rounded-full bg-neo-surface shadow-neo-sm px-2 py-0.5 text-[10px] font-semibold text-tpc-primary">{{ $section->type }}</span>
-            </div>
-        </div>
-
-        <form method="POST" action="{{ route('admin.admission.sections.items.store', $section) }}"
-              class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
-            @csrf
-
-            {{-- Title --}}
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-neo-ink/60 mb-1.5">
-                    @if ($section->type === 'steps') Step Title
-                    @elseif ($section->type === 'schedule') Day / Period
-                    @else Item Text
-                    @endif
-                </label>
-                <input type="text" name="title" value="{{ old('title') }}" required autofocus
-                       placeholder="{{ $section->type === 'schedule' ? 'e.g. Monday – Friday' : ($section->type === 'steps' ? 'e.g. Submit documents' : 'e.g. PSA Birth Certificate') }}"
-                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                @error('title') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            {{-- Body (steps + schedule only) --}}
-            @if (in_array($section->type, ['steps', 'schedule']))
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-neo-ink/60 mb-1.5">
-                        @if ($section->type === 'steps') Description
-                        @else Time / Value
-                        @endif
-                        <span class="normal-case font-normal text-neo-ink/40">(optional)</span>
-                    </label>
-                    <input type="text" name="body" value="{{ old('body') }}"
-                           placeholder="{{ $section->type === 'schedule' ? 'e.g. 8:00 AM – 5:00 PM' : 'Short description of this step.' }}"
-                           class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                    @error('body') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-                </div>
-            @endif
-
-            <div class="pt-2 border-t border-black/[0.06] flex flex-wrap gap-3">
-                <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
-                               shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Add Item
-                </button>
-                <a href="{{ route('admin.admission.index') }}"
-                   class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
-                          transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                    Cancel
-                </a>
-            </div>
-        </form>
-    </div>
-
+    </form>
 @endsection

@@ -7,6 +7,7 @@ use App\Models\NewsPost;
 use App\Models\Program;
 use App\Models\ContactMessage;
 use App\Models\Feedback;
+use App\Models\Service;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -22,6 +23,12 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
             'programCount'       => Program::count(),
             'activeProgramCount' => Program::where('is_active', true)->count(),
+
+            // Added for the redesigned dashboard (additive — nothing existing was changed)
+            'serviceCount'       => Service::count(),
+            'activeServiceCount' => Service::where('is_active', true)->count(),
+            'recentMessages'     => ContactMessage::orderByDesc('created_at')->take(5)->get(),
+
             'newsCount'          => NewsPost::count(),
             'publishedNewsCount' => NewsPost::where('is_published', true)->count(),
             'pendingNewsCount'   => NewsPost::pending()->count(),

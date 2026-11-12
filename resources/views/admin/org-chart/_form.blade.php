@@ -1,212 +1,125 @@
-{{-- Shared form fields for create & edit --}}
-{{-- Variables: $node (OrgChartNode|null), $parents (Collection) --}}
+{{--
+    Shared form fields for create & edit.
+    Variables: $node (OrgChartNode|null), $parents (Collection)
+--}}
+@php
+    $selectedParents = collect(old('parent_ids', $node?->parents?->pluck('id')->toArray() ?? []))->map(fn ($v) => (int) $v);
+    $rowValue = (int) old('row', $node?->row ?? 1);
+@endphp
+<div class="grid gap-4 lg:grid-cols-3">
+    <div class="space-y-4 lg:col-span-2">
+        <x-admin.card title="Person details">
+            <div class="grid gap-5 sm:grid-cols-2">
+                <x-admin.field label="Full name" name="name" required class="sm:col-span-2">
+                    <input id="name" type="text" name="name" value="{{ old('name', $node?->name) }}" placeholder="e.g. Juan D. Dela Cruz" required
+                           class="ui-input @error('name') is-invalid @enderror">
+                </x-admin.field>
 
-{{-- Name --}}
-<div>
-    <label for="name" class="block text-sm font-semibold text-neo-ink/70 mb-1.5">Full Name <span class="text-red-500">*</span></label>
-    <input type="text" id="name" name="name"
-           value="{{ old('name', $node?->name) }}"
-           placeholder="e.g. Venince Dave Q. Autida"
-           class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-4 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30
-                  focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition
-                  @error('name') ring-2 ring-red-300 @enderror"
-           required>
-    @error('name')
-        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-    @enderror
-</div>
+                <x-admin.field label="Position / title" name="title" required>
+                    <input id="title" type="text" name="title" value="{{ old('title', $node?->title) }}" placeholder="e.g. College President" required
+                           class="ui-input @error('title') is-invalid @enderror">
+                </x-admin.field>
 
-{{-- Title / Position --}}
-<div>
-    <label for="title" class="block text-sm font-semibold text-neo-ink/70 mb-1.5">Position / Title <span class="text-red-500">*</span></label>
-    <input type="text" id="title" name="title"
-           value="{{ old('title', $node?->title) }}"
-           placeholder="e.g. College President"
-           class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-4 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30
-                  focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition
-                  @error('title') ring-2 ring-red-300 @enderror"
-           required>
-    @error('title')
-        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-    @enderror
-</div>
+                <x-admin.field label="Department / office" name="department" hint="Optional.">
+                    <input id="department" type="text" name="department" value="{{ old('department', $node?->department) }}" placeholder="e.g. Office of the President" class="ui-input">
+                </x-admin.field>
+            </div>
+        </x-admin.card>
 
-{{-- Department --}}
-<div>
-    <label for="department" class="block text-sm font-semibold text-neo-ink/70 mb-1.5">Department / Office <span class="text-neo-ink/35 font-normal">(optional)</span></label>
-    <input type="text" id="department" name="department"
-           value="{{ old('department', $node?->department) }}"
-           placeholder="e.g. Office of the President"
-           class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-4 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30
-                  focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition">
-</div>
-
-{{-- Parent (Reports To) --}}
-<div>
-    <label class="block text-sm font-semibold text-neo-ink/70 mb-1.5">
-        Reports To
-        <span class="text-neo-ink/35 font-normal">(select one or more)</span>
-    </label>
-    <div class="rounded-xl bg-neo-bg shadow-neo-inset-sm divide-y divide-black/[0.06] max-h-56 overflow-y-auto">
-        @foreach ($parents as $parent)
-            @if (!$node || $parent->id !== $node->id)
-                <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-black/[0.02] cursor-pointer transition">
-                    <input type="checkbox"
-                           name="parent_ids[]"
-                           value="{{ $parent->id }}"
-                           {{ (collect(old('parent_ids', $node?->parents?->pluck('id')->toArray() ?? []))->contains($parent->id)) ? 'checked' : '' }}
-                           class="h-4 w-4 rounded border-gray-300 text-tpc-primary focus:ring-tpc-primary/30">
-                    <div class="min-w-0">
-                        <p class="text-sm font-semibold text-neo-ink truncate">{{ $parent->name }}</p>
-                        <p class="text-xs text-tpc-primary truncate">{{ $parent->title }}</p>
+        <x-admin.card title="Hierarchy" description="Where this person sits in the chart.">
+            <div class="space-y-5">
+                <fieldset>
+                    <legend class="ui-label">Reports to <span class="font-normal text-ui-muted">(select one or more)</span></legend>
+                    <div class="ui-scroll max-h-64 divide-y divide-ui-line overflow-y-auto rounded-lg border border-ui-line">
+                        @forelse ($parents as $parent)
+                            @if (! $node || $parent->id !== $node->id)
+                                <label class="flex cursor-pointer items-center gap-3 px-3 py-2.5 transition-colors hover:bg-ui-bg">
+                                    <input type="checkbox" name="parent_ids[]" value="{{ $parent->id }}" class="ui-check" @checked($selectedParents->contains($parent->id))>
+                                    <span class="min-w-0">
+                                        <span class="block truncate text-sm font-medium text-ui-ink">{{ $parent->name }}</span>
+                                        <span class="block truncate text-xs text-ui-muted">{{ $parent->title }}</span>
+                                    </span>
+                                </label>
+                            @endif
+                        @empty
+                            <p class="px-3 py-4 text-center text-sm text-ui-muted">No other people yet — this will be the root node.</p>
+                        @endforelse
                     </div>
-                </label>
-            @endif
-        @endforeach
-    </div>
-    <p class="mt-1 text-xs text-neo-ink/40">Leave all unchecked to make this a top-level (root) node.</p>
-    @error('parent_ids')
-        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-    @enderror
-</div>
+                    <p class="ui-help">Leave all unchecked to make this a top-level (root) node.</p>
+                    @error('parent_ids') <p class="ui-error">{{ $message }}</p> @enderror
+                </fieldset>
 
-{{-- Row placement --}}
-<div>
-    <label class="block text-sm font-semibold text-neo-ink/70 mb-1.5">Row Placement</label>
-    <div class="flex gap-3">
-        <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="row" value="1"
-                   {{ old('row', $node?->row ?? 1) == 1 ? 'checked' : '' }}
-                   class="h-4 w-4 border-gray-300 text-tpc-primary focus:ring-tpc-primary/30">
-            <span class="text-sm text-neo-ink/70">Same row as siblings</span>
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="row" value="2"
-                   {{ old('row', $node?->row ?? 1) == 2 ? 'checked' : '' }}
-                   class="h-4 w-4 border-gray-300 text-tpc-primary focus:ring-tpc-primary/30">
-            <span class="text-sm text-neo-ink/70">Next row (below siblings)</span>
-        </label>
-    </div>
-    <p class="mt-1 text-xs text-neo-ink/40">Controls whether this person appears beside or below their row-mates.</p>
-</div>
-
-{{-- Photo --}}
-<div>
-    <label class="block text-sm font-semibold text-neo-ink/70 mb-1.5">
-        Photo
-        <span class="text-neo-ink/35 font-normal">(optional, max 2 MB, 100×100 – 2000×2000 px)</span>
-    </label>
-
-    @if ($node?->photo)
-        <div class="mb-3 flex items-center gap-3">
-            <div class="h-14 w-14 overflow-hidden rounded-full shadow-neo-inset-sm">
-                <img src="{{ asset('storage/' . $node->photo) }}" alt="{{ $node->name }}"
-                     class="h-full w-full object-cover">
+                <fieldset>
+                    <legend class="ui-label">Row placement</legend>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        @foreach ([1 => 'Same row as siblings', 2 => 'Next row (below siblings)'] as $val => $label)
+                            <label class="cursor-pointer">
+                                <input type="radio" name="row" value="{{ $val }}" class="peer sr-only" @checked($rowValue === $val)>
+                                <span class="flex h-10 items-center justify-center rounded-lg border border-gray-300 bg-white px-3 text-sm font-medium text-ui-muted transition-colors hover:bg-ui-bg-2
+                                             peer-checked:border-brand peer-checked:bg-brand-50 peer-checked:text-brand-dark
+                                             peer-focus-visible:ring-2 peer-focus-visible:ring-brand peer-focus-visible:ring-offset-2">{{ $label }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    <p class="ui-help">Controls whether this person appears beside or below their row-mates.</p>
+                </fieldset>
             </div>
-            <p class="text-xs text-neo-ink/50">Current photo. Upload a new one to replace it.</p>
-        </div>
-    @endif
-
-    <div class="flex items-center gap-3 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-3
-                @error('photo') ring-2 ring-red-300 @enderror">
-        <span class="h-8 w-8 shrink-0 rounded-lg bg-neo-surface shadow-neo-sm flex items-center justify-center">
-            <svg class="h-4 w-4 text-neo-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
-            </svg>
-        </span>
-        <input type="file" id="photo" name="photo" accept="image/*"
-               class="block w-full text-sm text-neo-ink/60
-                      file:mr-3 file:rounded-full file:border-0 file:bg-neo-surface file:shadow-neo-sm file:px-3 file:py-1.5
-                      file:text-xs file:font-semibold file:text-tpc-primary hover:file:shadow-neo-hover transition
-                      focus:outline-none">
+        </x-admin.card>
     </div>
 
-    {{-- Client-side feedback --}}
-    <div id="photo-feedback" class="mt-1.5 hidden">
-        <div id="photo-preview-wrap" class="mb-2 flex items-center gap-3 hidden">
-            <div class="h-14 w-14 overflow-hidden rounded-full shadow-neo-inset-sm">
-                <img id="photo-preview" src="" alt="Preview" class="h-full w-full object-cover">
+    <div class="space-y-4">
+        {{-- Client-side checks mirror the server rules: ≤ 2 MB, 100×100 – 2000×2000 px --}}
+        <x-admin.card title="Photo" description="Optional · max 2 MB · 100×100 – 2000×2000 px">
+            <div x-data="{
+                    preview: null, meta: '', error: '', current: @js($node?->photo ? asset('storage/' . $node->photo) : null),
+                    check(e) {
+                        const input = e.target, file = input.files[0];
+                        this.preview = null; this.meta = ''; this.error = ''; input.setCustomValidity('');
+                        if (!file) return;
+                        if (file.size > 2 * 1024 * 1024) {
+                            this.error = `File is too large (${(file.size / 1048576).toFixed(2)} MB). Maximum allowed size is 2 MB.`;
+                            input.setCustomValidity(this.error); return;
+                        }
+                        const url = URL.createObjectURL(file), img = new Image();
+                        img.onload = () => {
+                            const w = img.naturalWidth, h = img.naturalHeight, errs = [];
+                            if (w < 100 || h < 100) errs.push(`Too small (${w}×${h} px). Minimum is 100×100 px.`);
+                            if (w > 2000 || h > 2000) errs.push(`Too large (${w}×${h} px). Maximum is 2000×2000 px.`);
+                            if (errs.length) { this.error = errs.join(' '); input.setCustomValidity(this.error); URL.revokeObjectURL(url); return; }
+                            this.preview = url; this.meta = `${w}×${h} px · ${(file.size / 1024).toFixed(0)} KB`;
+                        };
+                        img.src = url;
+                    }
+                 }">
+                <div class="flex items-center gap-4">
+                    <div class="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-full border border-ui-line bg-ui-bg-2 text-gray-300">
+                        <img x-show="preview" x-cloak :src="preview" alt="Photo preview" class="h-full w-full object-cover">
+                        <img x-show="!preview && current" x-cloak :src="current" alt="Current photo" class="h-full w-full object-cover">
+                        <span x-show="!preview && !current"><x-admin.icon name="user-circle" class="h-10 w-10" /></span>
+                    </div>
+                    <div class="min-w-0 space-y-1.5">
+                        <label for="photo" class="ui-btn ui-btn-secondary ui-btn-sm cursor-pointer focus-within:ring-2 focus-within:ring-brand">
+                            <x-admin.icon name="upload" class="h-3.5 w-3.5" /> <span x-text="(preview || current) ? 'Change photo' : 'Choose photo'"></span>
+                            <input type="file" id="photo" name="photo" accept="image/*" class="sr-only" @change="check($event)">
+                        </label>
+                        <p x-show="meta" x-cloak class="text-xs text-ui-muted" x-text="meta"></p>
+                        <p x-show="current && !preview" x-cloak class="text-xs text-ui-muted">Current photo. Upload a new one to replace it.</p>
+                    </div>
+                </div>
+                <p x-show="error" x-cloak class="ui-error" role="alert" x-text="error"></p>
+                @error('photo') <p class="ui-error" role="alert">{{ $message }}</p> @enderror
             </div>
-            <p id="photo-meta" class="text-xs text-neo-ink/50"></p>
-        </div>
-        <p id="photo-error" class="text-xs text-red-600 hidden"></p>
+        </x-admin.card>
+
+        <x-admin.card title="Visibility">
+            <label class="flex cursor-pointer items-start gap-3">
+                <input type="hidden" name="is_active" value="0">
+                <input id="is_active" type="checkbox" name="is_active" value="1" class="ui-switch mt-0.5" role="switch" @checked(old('is_active', $node?->is_active ?? true))>
+                <span>
+                    <span class="block text-sm font-medium text-ui-ink">Visible on public org chart</span>
+                    <span class="block text-xs text-ui-muted">Turn off to hide without deleting.</span>
+                </span>
+            </label>
+        </x-admin.card>
     </div>
-
-    @error('photo')
-        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-    @enderror
-</div>
-
-<script>
-document.getElementById('photo').addEventListener('change', function () {
-    const file = this.files[0];
-    const feedback   = document.getElementById('photo-feedback');
-    const previewWrap = document.getElementById('photo-preview-wrap');
-    const preview    = document.getElementById('photo-preview');
-    const meta       = document.getElementById('photo-meta');
-    const errorEl    = document.getElementById('photo-error');
-
-    // Reset state
-    feedback.classList.remove('hidden');
-    previewWrap.classList.add('hidden');
-    errorEl.classList.add('hidden');
-    errorEl.textContent = '';
-    this.setCustomValidity('');
-
-    if (!file) return;
-
-    const MAX_BYTES     = 2 * 1024 * 1024; // 2 MB
-    const MIN_PX        = 100;
-    const MAX_PX        = 2000;
-
-    // File size check
-    if (file.size > MAX_BYTES) {
-        const sizeMB = (file.size / 1024 / 1024).toFixed(2);
-        errorEl.textContent = `File is too large (${sizeMB} MB). Maximum allowed size is 2 MB.`;
-        errorEl.classList.remove('hidden');
-        this.setCustomValidity('File too large.');
-        return;
-    }
-
-    // Dimension check via Image
-    const url = URL.createObjectURL(file);
-    const img  = new Image();
-    img.onload = () => {
-        const w = img.naturalWidth;
-        const h = img.naturalHeight;
-        URL.revokeObjectURL(url);
-
-        const errors = [];
-        if (w < MIN_PX || h < MIN_PX)
-            errors.push(`Too small (${w}×${h} px). Minimum is ${MIN_PX}×${MIN_PX} px.`);
-        if (w > MAX_PX || h > MAX_PX)
-            errors.push(`Too large (${w}×${h} px). Maximum is ${MAX_PX}×${MAX_PX} px.`);
-
-        if (errors.length) {
-            errorEl.textContent = errors.join(' ');
-            errorEl.classList.remove('hidden');
-            this.setCustomValidity(errors.join(' '));
-            return;
-        }
-
-        // All good — show preview
-        this.setCustomValidity('');
-        preview.src = URL.createObjectURL(file);
-        meta.textContent = `${w}×${h} px · ${(file.size / 1024).toFixed(0)} KB`;
-        previewWrap.classList.remove('hidden');
-    };
-    img.src = url;
-});
-</script>
-
-{{-- Active toggle --}}
-<div class="flex items-center gap-3 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-3">
-    <input type="hidden" name="is_active" value="0">
-    <input type="checkbox" id="is_active" name="is_active" value="1"
-           {{ old('is_active', $node?->is_active ?? true) ? 'checked' : '' }}
-           class="h-4 w-4 rounded border-gray-300 text-tpc-primary focus:ring-tpc-primary/30">
-    <label for="is_active" class="text-sm font-semibold text-neo-ink/70">
-        Visible on public org chart
-        <span class="block text-xs font-normal text-neo-ink/40">Uncheck to hide without deleting.</span>
-    </label>
 </div>

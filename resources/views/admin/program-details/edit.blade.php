@@ -1,143 +1,67 @@
 @extends('admin.layout', ['title' => 'Edit Section'])
 
 @section('content')
+    <x-admin.page-header title="Edit section" subtitle="The section type cannot be changed after creation."
+        :breadcrumbs="['Programs' => route('admin.programs.index'), $program->code => route('admin.programs.show', $program), 'Details' => route('admin.programs.details.index', $program), 'Edit section' => null]">
+        <x-admin.badge type="success" class="uppercase">{{ $detail->type }}</x-admin.badge>
+    </x-admin.page-header>
 
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div>
-            <a href="{{ route('admin.programs.details.index', $program) }}"
-               class="inline-flex items-center gap-1.5 text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition mb-2">
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                </svg>
-                {{ $program->code }} Details
-            </a>
-            <div class="flex items-center gap-2.5">
-                <h1 class="text-lg font-semibold text-neo-ink">Edit Section</h1>
-                @php
-                    $typeStyles = ['gallery' => 'bg-purple-50 text-purple-700', 'list' => 'bg-blue-50 text-blue-700', 'text' => 'bg-tpc-primary/10 text-tpc-secondary'];
-                @endphp
-                <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider {{ $typeStyles[$detail->type] ?? 'bg-neo-bg text-neo-ink/50' }}">
-                    {{ $detail->type }}
-                </span>
+    <form method="POST" action="{{ route('admin.programs.details.update', [$program, $detail]) }}" enctype="multipart/form-data"
+          x-data="{
+              items: {{ json_encode(old('items', $detail->items ?? [''])) }},
+              addItem() { this.items.push(''); },
+              removeItem(i) { if (this.items.length > 1) this.items.splice(i, 1); }
+          }">
+        @csrf @method('PATCH')
+
+        <x-admin.card title="Section content" class="">
+            <div class="space-y-5">
+                <x-admin.field label="Section heading" name="heading" hint="Optional.">
+                    <input id="heading" type="text" name="heading" value="{{ old('heading', $detail->heading) }}" class="ui-input" placeholder="e.g. About this Program">
+                </x-admin.field>
+
+                @if ($detail->type === 'text')
+                    <x-admin.field label="Body" name="body">
+                        <textarea id="body" name="body" rows="7" class="ui-textarea">{{ old('body', $detail->body) }}</textarea>
+                    </x-admin.field>
+                @endif
+
+                @if ($detail->type === 'list')
+                    <div>
+                        <p class="ui-label">Items</p>
+                        <div class="space-y-2">
+                            <template x-for="(item, index) in items" :key="index">
+                                <div class="flex items-center gap-2">
+                                    <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true"></span>
+                                    <input type="text" :name="'items[' + index + ']'" x-model="items[index]" class="ui-input" :aria-label="'Item ' + (index + 1)">
+                                    <button type="button" @click="removeItem(index)" class="ui-btn ui-btn-ghost ui-btn-icon ui-btn-sm" aria-label="Remove item" title="Remove">
+                                        <x-admin.icon name="x" class="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        <button type="button" @click="addItem()" class="ui-btn ui-btn-secondary ui-btn-sm mt-3"><x-admin.icon name="plus" class="h-3.5 w-3.5" /> Add item</button>
+                        @error('items') <p class="ui-error">{{ $message }}</p> @enderror
+                    </div>
+                @endif
+
+                @if ($detail->type === 'gallery')
+                    <x-admin.image-upload name="image" id="image" label="Image"
+                        :current="$detail->image_path ? asset('storage/' . $detail->image_path) : null" />
+                    <x-admin.field label="Caption" name="caption" hint="Optional — shown below the image.">
+                        <input id="caption" type="text" name="caption" value="{{ old('caption', $detail->caption) }}" class="ui-input">
+                    </x-admin.field>
+                @endif
+
+                <x-admin.field label="Display order" name="order">
+                    <input id="order" type="number" name="order" value="{{ old('order', $detail->order) }}" min="0" class="ui-input ui-input-auto" style="width:8rem">
+                </x-admin.field>
             </div>
-            <p class="text-xs text-neo-ink/35 mt-0.5">Section type cannot be changed after creation.</p>
+        </x-admin.card>
+
+        <div class="ui-actionbar">
+            <x-admin.button :href="route('admin.programs.details.index', $program)" variant="secondary">Cancel</x-admin.button>
+            <x-admin.button type="submit">Save changes</x-admin.button>
         </div>
-    </div>
-
-    <div class="max-w-xl"
-         x-data="{
-             items: {{ json_encode(old('items', $detail->items ?? [''])) }},
-             addItem() { this.items.push(''); },
-             removeItem(i) { if (this.items.length > 1) this.items.splice(i, 1); }
-         }">
-
-        <form method="POST"
-              action="{{ route('admin.programs.details.update', [$program, $detail]) }}"
-              enctype="multipart/form-data"
-              class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
-            @csrf @method('PATCH')
-
-            {{-- Heading --}}
-            <div>
-                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">
-                    Section Heading <span class="text-neo-ink/35 font-normal">(optional)</span>
-                </label>
-                <input type="text" name="heading" value="{{ old('heading', $detail->heading) }}"
-                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition"
-                       placeholder="e.g. About this Program" />
-                @error('heading') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            {{-- TEXT --}}
-            @if ($detail->type === 'text')
-                <div>
-                    <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Body</label>
-                    <textarea name="body" rows="6"
-                              class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none">{{ old('body', $detail->body) }}</textarea>
-                    @error('body') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-                </div>
-            @endif
-
-            {{-- LIST --}}
-            @if ($detail->type === 'list')
-                <div class="space-y-3">
-                    <label class="block text-sm font-medium text-neo-ink/70">Items</label>
-                    <template x-for="(item, index) in items" :key="index">
-                        <div class="flex items-center gap-2">
-                            <span class="shrink-0 h-1.5 w-1.5 rounded-full bg-tpc-primary"></span>
-                            <input type="text" :name="'items[' + index + ']'" x-model="items[index]"
-                                   class="flex-1 rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                            <button type="button" @click="removeItem(index)"
-                                    class="shrink-0 h-7 w-7 flex items-center justify-center rounded-lg bg-neo-surface shadow-neo-sm text-red-400 hover:text-red-600 hover:shadow-neo-hover active:shadow-neo-inset-sm transition text-lg leading-none"
-                                    title="Remove">×</button>
-                        </div>
-                    </template>
-                    <button type="button" @click="addItem()"
-                            class="inline-flex items-center gap-1 text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition">
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Add Item
-                    </button>
-                    @error('items') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-                </div>
-            @endif
-
-            {{-- GALLERY --}}
-            @if ($detail->type === 'gallery')
-                <div class="space-y-4">
-                    @if ($detail->image_path)
-                        <div class="rounded-xl bg-neo-bg shadow-neo-inset-sm p-3">
-                            <p class="text-xs font-semibold text-neo-ink/55 mb-2">Current image</p>
-                            <img src="{{ asset('storage/' . $detail->image_path) }}"
-                                 class="w-full max-h-64 rounded-xl object-contain" alt="current">
-                        </div>
-                    @endif
-                    <div>
-                        <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">
-                            Replace Image <span class="text-neo-ink/35 font-normal">(optional)</span>
-                        </label>
-                        <input type="file" name="image" accept="image/png,image/jpeg,image/webp"
-                               class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2 text-sm text-neo-ink
-                                      file:mr-3 file:rounded-lg file:border-0 file:bg-tpc-primary/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-tpc-primary
-                                      hover:file:bg-tpc-primary/15 transition" />
-                        <p class="mt-1.5 text-xs text-neo-ink/35">PNG / JPG / WEBP · max 5 MB</p>
-                        @error('image') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">
-                            Caption <span class="text-neo-ink/35 font-normal">(optional)</span>
-                        </label>
-                        <input type="text" name="caption" value="{{ old('caption', $detail->caption) }}"
-                               class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                        @error('caption') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                </div>
-            @endif
-
-            {{-- Order --}}
-            <div>
-                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Display Order</label>
-                <input type="number" name="order" value="{{ old('order', $detail->order) }}" min="0"
-                       class="w-28 rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-            </div>
-
-            <div class="pt-2 border-t border-black/[0.06] flex flex-wrap gap-3">
-                <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
-                               shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    Save Changes
-                </button>
-                <a href="{{ route('admin.programs.details.index', $program) }}"
-                   class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
-                          transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                    Cancel
-                </a>
-            </div>
-        </form>
-    </div>
-
+    </form>
 @endsection

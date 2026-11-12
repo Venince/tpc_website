@@ -1,5 +1,5 @@
 {{--
-    Reusable social links builder partial.
+    Reusable social links builder.
     Usage: @include('admin.services._social_links', ['existing' => $service->social_links ?? []])
     Requires: $platforms (passed from controller)
 --}}
@@ -29,77 +29,46 @@
              return icons[platform] || icons.other;
          }
      }">
-
-    <div class="flex items-center justify-between mb-3">
-        <div class="text-xs font-bold text-neo-ink/60">
-            Social Media Links
-            <span class="ml-1 font-normal text-neo-ink/35">(optional)</span>
+    <div class="mb-3 flex items-center justify-between gap-3">
+        <div>
+            <p class="ui-label !mb-0">Social media links <span class="font-normal text-ui-muted">(optional)</span></p>
+            <p class="ui-help !mt-0.5">Shown on the public page. URLs must start with https://</p>
         </div>
-        <button type="button" @click="addLink()"
-                class="inline-flex items-center gap-1 rounded-full bg-neo-bg shadow-neo-inset-sm px-3 py-1 text-[11px] font-bold text-tpc-primary transition hover:shadow-neo-inset">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-            </svg>
-            Add Link
+        <button type="button" @click="addLink()" class="ui-btn ui-btn-secondary ui-btn-sm">
+            <x-admin.icon name="plus" class="h-3.5 w-3.5" /> Add link
         </button>
     </div>
 
-    <div class="space-y-3">
+    <div class="space-y-2">
         <template x-for="(link, i) in links" :key="i">
-            <div class="flex items-start gap-2 rounded-xl bg-neo-bg shadow-neo-inset-sm p-3">
-
-                {{-- Platform icon badge --}}
-                <div class="mt-0.5 shrink-0 h-8 w-8 rounded-lg bg-neo-surface shadow-neo-sm flex items-center justify-center">
-                    <svg class="h-4 w-4 text-neo-ink/50" viewBox="0 0 24 24" fill="currentColor">
-                        <path :d="platformIcon(link.platform).split('|')[0]"/>
-                    </svg>
-                </div>
-
-                <div class="flex-1 min-w-0 space-y-2">
-                    {{-- Platform select --}}
-                    <select :name="`social_links[${i}][platform]`"
-                            x-model="link.platform"
-                            class="w-full rounded-lg bg-neo-surface shadow-neo-sm border-0 px-3 py-1.5 text-xs font-semibold text-neo-ink focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
+            <div class="flex items-start gap-2 rounded-lg border border-ui-line bg-ui-bg p-3">
+                <span class="mt-1.5 grid h-7 w-7 shrink-0 place-items-center rounded-md bg-white text-gray-500 ring-1 ring-ui-line" aria-hidden="true">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"
+                         x-html="platformIcon(link.platform).split('|').filter(p => p !== 'M0 0h24v24H0z').map(d => `<path d=&quot;${d}&quot;/>`).join('')"></svg>
+                </span>
+                <div class="grid min-w-0 flex-1 gap-2 sm:grid-cols-[9rem_minmax(0,1fr)_minmax(0,1fr)]">
+                    <select :name="`social_links[${i}][platform]`" x-model="link.platform" class="ui-select" aria-label="Platform">
                         @foreach ($platforms as $key => $meta)
                             <option value="{{ $key }}">{{ $meta['label'] }}</option>
                         @endforeach
                     </select>
-
-                    {{-- URL --}}
-                    <input type="url"
-                           :name="`social_links[${i}][url]`"
-                           x-model="link.url"
-                           placeholder="https://..."
-                           class="w-full rounded-lg bg-neo-surface shadow-neo-sm border-0 px-3 py-1.5 text-xs text-neo-ink placeholder-neo-ink/35 focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
-
-                    {{-- Optional custom label --}}
-                    <input type="text"
-                           :name="`social_links[${i}][label]`"
-                           x-model="link.label"
-                           placeholder="Custom label (optional)"
-                           class="w-full rounded-lg bg-neo-surface shadow-neo-sm border-0 px-3 py-1.5 text-xs text-neo-ink placeholder-neo-ink/35 focus:outline-none focus:ring-2 focus:ring-tpc-primary/20 transition">
+                    <input type="url" :name="`social_links[${i}][url]`" x-model="link.url" placeholder="https://..." class="ui-input" aria-label="URL">
+                    <input type="text" :name="`social_links[${i}][label]`" x-model="link.label" placeholder="Custom label (optional)" class="ui-input" aria-label="Label">
                 </div>
-
-                {{-- Remove --}}
-                <button type="button" @click="removeLink(i)"
-                        class="mt-0.5 shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg text-red-400 transition hover:bg-neo-surface hover:shadow-neo-sm hover:text-red-600">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-                    </svg>
+                <button type="button" @click="removeLink(i)" class="ui-btn ui-btn-ghost ui-btn-icon ui-btn-sm mt-1" aria-label="Remove link">
+                    <x-admin.icon name="x" class="h-4 w-4" />
                 </button>
             </div>
         </template>
-
-        <div x-show="links.length === 0"
-             class="rounded-xl bg-neo-bg shadow-neo-inset-sm py-5 text-center text-xs text-neo-ink/40">
-            No social links added yet. Click <span class="font-semibold text-tpc-primary">Add Link</span> to get started.
-        </div>
+        <p x-show="links.length === 0" x-cloak class="rounded-lg border border-dashed border-ui-line px-4 py-5 text-center text-sm text-ui-muted">
+            No social links added yet. Use <span class="font-medium text-ui-ink">Add link</span> to get started.
+        </p>
     </div>
 
     @error('social_links')
-        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+        <p class="ui-error">{{ $message }}</p>
     @enderror
     @error('social_links.*.url')
-        <p class="mt-2 text-xs text-red-600">One or more URLs are invalid. Make sure they start with https://</p>
+        <p class="ui-error">One or more URLs are invalid. Make sure they start with https://</p>
     @enderror
 </div>

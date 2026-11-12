@@ -1,126 +1,19 @@
 @extends('admin.layout', ['title' => 'Edit Program'])
 
 @section('content')
+    <x-admin.page-header title="Edit program" :subtitle="'Update information for ' . $program->code . '.'"
+        :breadcrumbs="['Programs' => route('admin.programs.index'), $program->code => route('admin.programs.show', $program), 'Edit' => null]">
+        <x-admin.button :href="route('admin.programs.show', $program)" variant="secondary" icon="users">People &amp; achievements</x-admin.button>
+    </x-admin.page-header>
 
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div>
-            <h1 class="text-lg font-semibold text-neo-ink">Edit Program</h1>
-            <p class="text-xs text-neo-ink/45 mt-0.5">Update information for {{ $program->code }}.</p>
-        </div>
-        <a href="{{ route('admin.programs.index') }}"
-           class="inline-flex items-center gap-1.5 text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition">
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Back to Programs
-        </a>
-    </div>
-
-    <form method="POST" action="{{ route('admin.programs.update', $program) }}" enctype="multipart/form-data"
-          class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6">
+    <form method="POST" action="{{ route('admin.programs.update', $program) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        @include('admin.programs._form', ['program' => $program])
 
-        <div class="grid gap-5 sm:grid-cols-2">
-
-            <div>
-                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Code</label>
-                <input name="code" type="text" value="{{ old('code', $program->code) }}"
-                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                @error('code') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Department</label>
-                <input name="department" type="text" value="{{ old('department', $program->department) }}"
-                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                @error('department') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="sm:col-span-2">
-                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Program name</label>
-                <input name="name" type="text" value="{{ old('name', $program->name) }}"
-                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                @error('name') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="sm:col-span-2">
-                <label class="block text-sm font-medium text-neo-ink/70 mb-1.5">Description</label>
-                <textarea name="description" rows="4"
-                          class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none">{{ old('description', $program->description) }}</textarea>
-                @error('description') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="sm:col-span-2">
-                @include('admin.services._social_links', ['existing' => old('social_links', $program->social_links ?? [])])
-            </div>
-
-            <div class="sm:col-span-2">
-                <label class="block text-sm font-medium text-neo-ink/70 mb-2">Program logo</label>
-
-                @if($program->logo_path)
-                    <div class="flex items-center gap-4 mb-3 p-3 rounded-xl bg-neo-bg shadow-neo-inset-sm">
-                        <img src="{{ asset('storage/' . $program->logo_path) }}"
-                             class="h-14 w-14 rounded-xl bg-white object-contain p-1 shrink-0"
-                             alt="Current logo">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold text-neo-ink/60 mb-1.5">Current logo</p>
-                            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                                <input type="checkbox" name="remove_logo" value="1"
-                                       class="rounded border-red-300 text-red-500 focus:ring-red-300/30 w-3.5 h-3.5">
-                                <span class="text-xs text-red-600 font-medium">Remove current logo</span>
-                            </label>
-                        </div>
-                    </div>
-                @else
-                    <p class="mb-2 text-xs text-neo-ink/35">No logo uploaded yet.</p>
-                @endif
-
-                <div class="flex items-center gap-4">
-                    <span class="h-14 w-14 rounded-xl bg-neo-bg shadow-neo-inset-sm flex items-center justify-center text-2xl shrink-0">🎓</span>
-                    <div class="flex-1">
-                        <input type="file" name="logo" accept="image/png,image/jpeg,image/webp"
-                               class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2 text-sm text-neo-ink
-                                      file:mr-3 file:rounded-lg file:border-0 file:bg-tpc-primary/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-tpc-primary
-                                      hover:file:bg-tpc-primary/15 transition" />
-                        <p class="mt-1.5 text-xs text-neo-ink/35">Upload a new file to replace the current one · PNG / JPG / WEBP · max 5 MB</p>
-                    </div>
-                </div>
-                @error('logo') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="sm:col-span-2">
-                <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
-                    <input id="is_active" type="checkbox" name="is_active" value="1"
-                           {{ old('is_active', $program->is_active) ? 'checked' : '' }}
-                           class="rounded border-neo-ink/20 text-tpc-primary focus:ring-tpc-primary/20 w-4 h-4" />
-                    <span class="text-sm text-neo-ink/70">Active — visible on the public site</span>
-                </label>
-            </div>
-
+        <div class="ui-actionbar">
+            <x-admin.button :href="route('admin.programs.index')" variant="secondary">Cancel</x-admin.button>
+            <x-admin.button type="submit">Update program</x-admin.button>
         </div>
-
-        <div class="mt-6 pt-5 border-t border-black/[0.06] flex flex-wrap gap-3">
-            <button type="submit"
-                    class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
-                           shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                </svg>
-                Update Program
-            </button>
-            <a href="{{ route('admin.programs.index') }}"
-               class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
-                      transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                Cancel
-            </a>
-            <a href="{{ route('admin.programs.show', $program) }}"
-               class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-neo-ink/50
-                      transition hover:shadow-neo-hover hover:text-tpc-primary active:shadow-neo-inset-sm ml-auto">
-                Manage →
-            </a>
-        </div>
-
     </form>
-
 @endsection

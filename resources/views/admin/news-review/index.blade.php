@@ -1,158 +1,73 @@
 @extends('admin.layout', ['title' => 'News Review'])
 
 @section('content')
+    <x-admin.page-header title="News review queue" subtitle="Approve or decline posts submitted by admins."
+        :breadcrumbs="['News Review' => null]" />
 
-    {{-- ── Page header ── --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div>
-            <h1 class="text-lg font-semibold text-neo-ink">News Review Queue</h1>
-            <p class="mt-0.5 text-xs text-neo-ink/50">Approve or decline posts submitted by admins</p>
-        </div>
-    </div>
-
-    {{-- ── Status tabs ── --}}
-    <div class="flex gap-2 flex-wrap mb-5">
-        @foreach([
-            'pending'  => ['Pending',  $counts['pending'],  'text-amber-700'],
-            'approved' => ['Approved', $counts['approved'], 'text-tpc-secondary'],
-            'declined' => ['Declined', $counts['declined'], 'text-red-600'],
-        ] as $key => [$label, $count, $activeText])
+    {{-- Status tabs --}}
+    <nav aria-label="Review status" class="mb-4 flex flex-wrap gap-2">
+        @foreach ([
+            'pending'  => ['Pending',  $counts['pending']],
+            'approved' => ['Approved', $counts['approved']],
+            'declined' => ['Declined', $counts['declined']],
+        ] as $key => [$label, $count])
             <a href="{{ route('admin.news-review.index', ['status' => $key]) }}"
-               class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition
-                      {{ $status === $key
-                           ? 'bg-neo-bg shadow-neo-inset-sm ' . $activeText
-                           : 'bg-neo-surface shadow-neo-sm text-neo-ink/50 hover:shadow-neo-hover hover:text-neo-ink' }}">
+               @if ($status === $key) aria-current="page" @endif
+               class="inline-flex h-9 items-center gap-2 rounded-lg border px-3.5 text-sm font-medium transition-colors
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2
+                      {{ $status === $key ? 'border-brand bg-brand-50 text-brand-dark' : 'border-ui-line bg-white text-ui-muted hover:bg-ui-bg-2 hover:text-ui-ink' }}">
                 {{ $label }}
-                <span class="rounded-full px-1.5 py-0.5 text-[11px] font-bold
-                             {{ $status === $key ? 'bg-white/50' : 'bg-neo-bg text-neo-ink/50' }}">
-                    {{ $count }}
-                </span>
+                <span class="rounded-full px-1.5 py-0.5 text-[11px] font-semibold leading-none tabular-nums
+                             {{ $status === $key ? 'bg-brand text-white' : 'bg-ui-bg-2 text-ui-muted' }}">{{ $count }}</span>
             </a>
         @endforeach
-    </div>
+    </nav>
 
-    {{-- ── Mobile cards ── --}}
-    <div class="space-y-3 sm:hidden">
-        @forelse ($posts as $post)
-            <div class="rounded-2xl bg-neo-surface shadow-neo overflow-hidden">
-                <div class="flex items-start gap-3 p-4">
-                    @if($post->image_path)
-                        <img src="{{ asset('storage/' . $post->image_path) }}" alt=""
-                             class="h-16 w-20 shrink-0 rounded-xl object-cover shadow-neo-inset-sm" loading="lazy" />
-                    @else
-                        <div class="h-16 w-20 shrink-0 rounded-xl bg-neo-bg shadow-neo-inset-sm grid place-items-center">
-                            <svg class="h-5 w-5 text-neo-ink/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 18h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v10.5a1.5 1.5 0 001.5 1.5z"/>
-                            </svg>
-                        </div>
-                    @endif
-
-                    <div class="min-w-0 flex-1">
-                        <p class="text-sm font-semibold text-neo-ink leading-snug line-clamp-2">{{ $post->title }}</p>
-                        <p class="mt-0.5 text-xs text-neo-ink/50">
-                            <span class="font-medium text-neo-ink/70">{{ $post->category }}</span>
-                            · {{ $post->created_at->format('M d, Y') }}
-                        </p>
-                        @if($post->review_note)
-                            <p class="mt-1 text-xs text-red-600 italic line-clamp-2">{{ $post->review_note }}</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="px-4 pb-4">
-                    <a href="{{ route('admin.news-review.show', $post) }}"
-                       class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-neo-bg shadow-neo-inset-sm px-3 py-2 text-xs font-semibold text-tpc-primary transition hover:text-tpc-secondary">
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        Preview & Review
-                    </a>
-                </div>
-            </div>
-        @empty
-            <div class="rounded-2xl bg-neo-surface shadow-neo-inset-sm p-10 text-center">
-                <svg class="mx-auto h-10 w-10 text-neo-ink/15 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
-                </svg>
-                <p class="text-sm font-medium text-neo-ink/50">No {{ $status }} posts</p>
-            </div>
-        @endforelse
-
-        <div class="pt-1">{{ $posts->links() }}</div>
-    </div>
-
-    {{-- ── Desktop table ── --}}
-    <div class="hidden sm:block overflow-hidden rounded-2xl bg-neo-surface shadow-neo">
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-neo-ink/40 w-20">Image</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-neo-ink/40">Title</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-neo-ink/40 w-32">Category</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-neo-ink/40 w-28">Submitted</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-neo-ink/40">Review Note</th>
-                        <th class="px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-neo-ink/40 w-28">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($posts as $post)
-                        <tr class="border-t border-black/[0.04] hover:bg-neo-bg/60 transition">
-                            <td class="px-4 py-3">
-                                @if($post->image_path)
-                                    <img src="{{ asset('storage/' . $post->image_path) }}" alt=""
-                                         class="h-10 w-14 rounded-xl object-cover shadow-neo-inset-sm" loading="lazy" />
-                                @else
-                                    <div class="h-10 w-14 rounded-xl bg-neo-bg shadow-neo-inset-sm grid place-items-center">
-                                        <svg class="h-4 w-4 text-neo-ink/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 18h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v10.5a1.5 1.5 0 001.5 1.5z"/>
-                                        </svg>
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                <span class="font-semibold text-neo-ink">{{ $post->title }}</span>
-                                @if($post->excerpt)
-                                    <p class="mt-0.5 text-xs text-neo-ink/50 truncate max-w-xs">{{ $post->excerpt }}</p>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                <span class="inline-flex items-center rounded-lg bg-neo-bg shadow-neo-inset-sm px-2.5 py-1 text-xs font-semibold text-tpc-primary/90">
-                                    {{ $post->category }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-xs text-neo-ink/50 whitespace-nowrap">
-                                {{ $post->created_at->format('M d, Y') }}
-                            </td>
-                            <td class="px-4 py-3 text-xs text-red-600 italic max-w-[200px] truncate">
-                                {{ $post->review_note ?? '—' }}
-                            </td>
-                            <td class="px-4 py-3 text-right whitespace-nowrap">
-                                <a href="{{ route('admin.news-review.show', $post) }}"
-                                   class="inline-flex items-center gap-1.5 rounded-xl bg-neo-surface shadow-neo-sm px-2.5 py-1.5 text-xs font-semibold text-tpc-primary transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
-                                    Preview
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
+    <x-admin.card :padding="false">
+        @if ($posts->total() > 0)
+            <div class="ui-table-wrap">
+                <table class="ui-table">
+                    <caption class="sr-only">{{ ucfirst($status) }} news posts</caption>
+                    <thead>
                         <tr>
-                            <td colspan="6" class="px-4 py-14 text-center">
-                                <svg class="mx-auto h-10 w-10 text-neo-ink/15 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
-                                </svg>
-                                <p class="text-sm font-medium text-neo-ink/50">No {{ $status }} posts</p>
-                            </td>
+                            <th scope="col">Post</th>
+                            <th scope="col" class="hidden md:table-cell">Category</th>
+                            <th scope="col" class="hidden sm:table-cell">Submitted</th>
+                            <th scope="col" class="hidden lg:table-cell">Review note</th>
+                            <th scope="col" class="ui-col-actions"><span class="sr-only">Actions</span></th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="mt-4 hidden sm:block">{{ $posts->links() }}</div>
-
+                    </thead>
+                    <tbody>
+                        @foreach ($posts as $post)
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        @if ($post->image_path)
+                                            <img src="{{ asset('storage/' . $post->image_path) }}" alt="" class="ui-thumb !h-12 !w-16" loading="lazy">
+                                        @else
+                                            <span class="ui-thumb grid !h-12 !w-16 place-items-center text-gray-300"><x-admin.icon name="newspaper" class="h-5 w-5" /></span>
+                                        @endif
+                                        <div class="min-w-0">
+                                            <a href="{{ route('admin.news-review.show', $post) }}" class="block max-w-[22rem] truncate font-medium text-ui-ink hover:text-brand-dark focus-visible:outline-none focus-visible:underline">{{ $post->title }}</a>
+                                            @if ($post->excerpt)<p class="max-w-[22rem] truncate text-xs text-ui-muted">{{ $post->excerpt }}</p>@endif
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="hidden md:table-cell"><x-admin.badge>{{ $post->category }}</x-admin.badge></td>
+                                <td class="hidden whitespace-nowrap text-ui-muted sm:table-cell">{{ $post->created_at->format('M d, Y') }}</td>
+                                <td class="hidden max-w-[18rem] truncate text-ui-muted lg:table-cell" title="{{ $post->review_note }}">{{ $post->review_note ?? '—' }}</td>
+                                <td class="ui-col-actions">
+                                    <x-admin.button :href="route('admin.news-review.show', $post)" variant="secondary" size="sm" icon="eye">{{ $status === 'pending' ? 'Review' : 'Preview' }}</x-admin.button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            {{ $posts->links('components.admin.pagination') }}
+        @else
+            <x-admin.empty-state :icon="$status === 'pending' ? 'check-circle' : 'shield-check'" :title="'No ' . $status . ' posts'"
+                :description="$status === 'pending' ? 'You are all caught up. New submissions will appear here.' : 'Nothing to show for this status yet.'" />
+        @endif
+    </x-admin.card>
 @endsection

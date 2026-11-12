@@ -1,313 +1,146 @@
 @extends('admin.layout', ['title' => 'Admission Page'])
 
 @section('content')
+    <x-admin.page-header title="Admission page" subtitle="Manage all sections and items shown on the public Admission page."
+        :breadcrumbs="['Admission' => null]">
+        <x-admin.button :href="route('admission')" target="_blank" rel="noopener" variant="secondary" icon="external">View live page</x-admin.button>
+    </x-admin.page-header>
 
-    {{-- ── Page header ── --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div>
-            <h1 class="text-lg font-semibold text-neo-ink">Admission Page</h1>
-            <p class="mt-0.5 text-xs text-neo-ink/50">Manage all sections and items shown on the public Admission page</p>
+    <div x-data="{
+            selected: {},   // { sectionId: [itemId, …] }
+            get total() { return Object.values(this.selected).reduce((n, ids) => n + ids.length, 0); },
+            sectionIds(sid) { return Array.from(this.$root.querySelectorAll('[data-item-section=&quot;' + sid + '&quot;]')).map(el => el.dataset.itemId); },
+            isChecked(sid, id) { return (this.selected[sid] || []).includes(id); },
+            toggle(sid, id, on) {
+                const set = new Set(this.selected[sid] || []);
+                on ? set.add(id) : set.delete(id);
+                this.selected = { ...this.selected, [sid]: [...set] };
+            },
+            allChecked(sid) { const ids = this.sectionIds(sid); return ids.length > 0 && (this.selected[sid] || []).length === ids.length; },
+            someChecked(sid) { const n = (this.selected[sid] || []).length; return n > 0 && n < this.sectionIds(sid).length; },
+            toggleSection(sid, on) { this.selected = { ...this.selected, [sid]: on ? this.sectionIds(sid) : [] }; },
+            clear() { this.selected = {}; },
+            bulkDelete() {
+                const token = document.querySelector('meta[name=&quot;csrf-token&quot;]').content;
+                const picked = this.selected;
+                this.$dispatch('confirm-action', {
+                    title: 'Delete ' + this.total + ' item(s)?',
+                    message: 'The selected items will be permanently removed. This cannot be undone.',
+                    label: 'Delete selected', danger: true,
+                    onConfirm: () => {
+                        const requests = Object.keys(picked).filter(sid => picked[sid].length).map(sid => {
+                            const form = document.getElementById('bulk-form-' + sid);
+                            if (!form) return Promise.resolve();
+                            const body = new FormData();
+                            body.append('_token', token);
+                            body.append('_method', 'DELETE');
+                            picked[sid].forEach(id => body.append('ids[]', id));
+                            return fetch(form.action, { method: 'POST', body });
+                        });
+                        Promise.all(requests).then(() => window.location.reload());
+                    }
+                });
+            }
+         }">
+
+        <div x-show="total > 0" x-cloak x-transition.opacity
+             class="sticky top-0 z-20 mb-3 flex items-center justify-between gap-3 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5" role="region" aria-label="Bulk actions">
+            <p class="text-sm font-medium text-brand-dark"><span x-text="total"></span> selected</p>
+            <div class="flex items-center gap-2">
+                <button type="button" class="ui-btn ui-btn-secondary ui-btn-sm" @click="clear()">Clear</button>
+                <button type="button" class="ui-btn ui-btn-danger-solid ui-btn-sm" @click="bulkDelete()"><x-admin.icon name="trash" class="h-3.5 w-3.5" /> Delete selected</button>
+            </div>
         </div>
-        <a href="{{ route('admission') }}" target="_blank"
-           class="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-xl bg-neo-surface shadow-neo-sm px-4 py-2.5 text-sm font-semibold text-tpc-primary transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-            View Live Page
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-            </svg>
-        </a>
-    </div>
 
-    {{-- ── Bulk-delete action bar (hidden until items are checked) ── --}}
-    <div id="bulk-bar"
-         class="hidden sticky top-4 z-30 mb-4 items-center justify-between gap-3
-                rounded-2xl bg-neo-surface shadow-neo px-5 py-3">
-        <p class="text-sm font-semibold text-neo-ink">
-            <span class="text-red-600" id="bulk-count">0</span> item(s) selected
-        </p>
-        <div class="flex items-center gap-2">
-            <button type="button" onclick="clearAllSelections()"
-                    class="rounded-xl bg-neo-bg shadow-neo-inset-sm px-3 py-1.5 text-xs font-semibold text-neo-ink/60 transition hover:text-neo-ink">
-                Cancel
-            </button>
-            <button type="button" onclick="submitBulkDelete()"
-                    class="inline-flex items-center gap-1.5 rounded-xl bg-red-600 px-3 py-1.5 text-xs font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                </svg>
-                Delete Selected
-            </button>
-        </div>
-    </div>
-
-    <div class="space-y-5">
-        @foreach ($sections as $section)
-            <div class="rounded-2xl bg-neo-surface shadow-neo overflow-hidden">
-
-                {{-- Section Header --}}
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 bg-neo-bg/60 border-b border-black/[0.04]">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <span class="shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider
-                            {{ $section->is_visible ? 'bg-tpc-accent/30 text-tpc-secondary' : 'bg-neo-bg shadow-neo-inset-sm text-neo-ink/40' }}">
-                            {{ $section->is_visible ? 'Visible' : 'Hidden' }}
-                        </span>
-                        <div class="min-w-0">
-                            <p class="font-semibold text-neo-ink text-sm truncate">{{ $section->label }}</p>
-                            <p class="text-[11px] text-neo-ink/40 mt-0.5">
-                                Type: <span class="font-semibold text-neo-ink/60">{{ $section->type }}</span>
-                                &middot; Key: <span class="font-mono text-neo-ink/60">{{ $section->key }}</span>
-                            </p>
+        <div class="space-y-4">
+            @foreach ($sections as $section)
+                <x-admin.card :padding="false">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-ui-line px-5 py-4">
+                        <div class="flex min-w-0 items-center gap-3">
+                            <x-admin.badge :type="$section->is_visible ? 'success' : 'neutral'" dot>{{ $section->is_visible ? 'Visible' : 'Hidden' }}</x-admin.badge>
+                            <div class="min-w-0">
+                                <h3 class="truncate text-sm font-semibold text-ui-ink">{{ $section->label }}</h3>
+                                <p class="text-xs text-ui-muted">Type: <span class="font-medium text-ui-ink">{{ $section->type }}</span> · Key: <code class="rounded bg-ui-bg-2 px-1 py-0.5 text-[11px]">{{ $section->key }}</code></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <x-admin.button :href="route('admin.admission.sections.edit', $section)" variant="secondary" size="sm" icon="pencil">Edit section</x-admin.button>
+                            @if ($section->type !== 'note')
+                                <x-admin.button :href="route('admin.admission.sections.items.create', $section)" size="sm" icon="plus">Add item</x-admin.button>
+                            @endif
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
-                        <a href="{{ route('admin.admission.sections.edit', $section) }}"
-                           class="inline-flex items-center gap-1.5 rounded-xl bg-neo-surface shadow-neo-sm px-3 py-1.5 text-xs font-semibold text-tpc-primary transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
-                            </svg>
-                            Edit Section
-                        </a>
-                        @if ($section->type !== 'note')
-                            <a href="{{ route('admin.admission.sections.items.create', $section) }}"
-                               class="inline-flex items-center gap-1.5 rounded-xl bg-tpc-primary px-3 py-1.5 text-xs font-semibold text-white shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Add Item
-                            </a>
-                        @endif
-                    </div>
-                </div>
 
-                {{-- Section note preview --}}
-                @if ($section->note)
-                    <div class="flex items-start gap-2.5 px-5 py-3 border-b border-black/[0.04] bg-neo-bg/30">
-                        <svg class="h-3.5 w-3.5 text-tpc-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
-                        </svg>
-                        <p class="text-xs text-neo-ink/60"><span class="font-semibold text-tpc-primary">Note:</span> {{ $section->note }}</p>
-                    </div>
-                @endif
-
-                {{-- Items --}}
-                @if ($section->type !== 'note')
-                    @if ($section->items->isEmpty())
-                        <div class="px-5 py-8 text-center">
-                            <svg class="mx-auto h-8 w-8 text-neo-ink/15 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-                            </svg>
-                            <p class="text-xs text-neo-ink/40 font-medium">No items yet</p>
-                            <a href="{{ route('admin.admission.sections.items.create', $section) }}"
-                               class="mt-2 inline-block text-xs font-semibold text-tpc-primary hover:text-tpc-secondary">Add the first item →</a>
-                        </div>
-                    @else
-                        {{-- Select-all row for this section --}}
-                        <div class="flex items-center gap-3 px-5 py-2 border-b border-black/[0.04]">
-                            <input type="checkbox"
-                                   class="select-all-section h-3.5 w-3.5 rounded border-gray-300 text-tpc-primary cursor-pointer"
-                                   data-section="{{ $section->id }}"
-                                   title="Select all in this section"
-                                   onchange="toggleSection(this)">
-                            <label class="text-[11px] text-neo-ink/40 cursor-pointer select-none"
-                                   onclick="this.previousElementSibling.click()">
-                                Select all in this section
-                            </label>
-                        </div>
-
-                        {{-- Hidden bulk-delete form for this section --}}
-                        <form id="bulk-form-{{ $section->id }}"
-                              method="POST"
-                              action="{{ route('admin.admission.sections.items.bulkDestroy', $section) }}"
-                              class="hidden">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-
-                        <ul class="divide-y divide-black/[0.04]" id="sortable-{{ $section->id }}">
-                            @foreach ($section->items as $item)
-                                <li class="flex items-start gap-3 px-5 py-3.5 hover:bg-neo-bg/50 transition group item-row"
-                                    data-id="{{ $item->id }}"
-                                    data-section="{{ $section->id }}">
-
-                                    {{-- Checkbox --}}
-                                    <input type="checkbox"
-                                           class="item-checkbox mt-1 h-3.5 w-3.5 shrink-0 rounded border-gray-300 text-red-600 cursor-pointer"
-                                           value="{{ $item->id }}"
-                                           data-section="{{ $section->id }}"
-                                           onchange="onItemCheck()">
-
-                                    {{-- Drag handle --}}
-                                    <span class="mt-1 shrink-0 cursor-grab text-neo-ink/20 group-hover:text-tpc-primary/40 transition select-none drag-handle text-base leading-none"
-                                          title="Drag to reorder">⠿</span>
-
-                                    {{-- Item badge --}}
-                                    @if ($section->type === 'steps')
-                                        <span class="shrink-0 flex h-5 w-5 mt-0.5 items-center justify-center bg-tpc-primary text-white text-[10px] font-bold rounded-md">
-                                            {{ $loop->iteration }}
-                                        </span>
-                                    @else
-                                        <span class="mt-2 shrink-0 h-1.5 w-1.5 rounded-full bg-tpc-primary/60"></span>
-                                    @endif
-
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-semibold text-neo-ink">{{ $item->title }}</p>
-                                        @if ($item->body)
-                                            <p class="text-xs text-neo-ink/55 mt-0.5">{{ $item->body }}</p>
-                                        @endif
-                                    </div>
-
-                                    <div class="flex items-center gap-1 shrink-0 ml-auto opacity-0 group-hover:opacity-100 transition">
-                                        <a href="{{ route('admin.admission.sections.items.edit', [$section, $item]) }}"
-                                           class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-tpc-primary hover:bg-neo-bg transition">
-                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
-                                            </svg>
-                                            Edit
-                                        </a>
-                                        <form method="POST"
-                                              action="{{ route('admin.admission.sections.items.destroy', [$section, $item]) }}"
-                                              onsubmit="return confirm('Delete this item?');">
-                                            @csrf @method('DELETE')
-                                            <button class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-neo-bg transition">
-                                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                                                </svg>
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        <div class="flex items-center gap-1.5 px-5 py-2 border-t border-black/[0.04]">
-                            <svg class="h-3 w-3 text-neo-ink/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"/>
-                            </svg>
-                            <p class="text-[11px] text-neo-ink/30">Drag rows to reorder · saves automatically</p>
+                    @if ($section->note)
+                        <div class="border-b border-ui-line bg-amber-50/60 px-5 py-2.5 text-sm text-amber-900">
+                            <span class="font-semibold">Note:</span> {{ $section->note }}
                         </div>
                     @endif
-                @endif
-            </div>
-        @endforeach
+
+                    @if ($section->type !== 'note')
+                        @if ($section->items->isEmpty())
+                            <x-admin.empty-state icon="document-text" title="No items yet" description="Items appear in this section on the public page.">
+                                <x-admin.button :href="route('admin.admission.sections.items.create', $section)" icon="plus">Add the first item</x-admin.button>
+                            </x-admin.empty-state>
+                        @else
+                            {{-- One bulk form per section (posted via fetch from the selection bar) --}}
+                            <form id="bulk-form-{{ $section->id }}" method="POST" action="{{ route('admin.admission.sections.items.bulkDestroy', $section) }}" class="hidden">
+                                @csrf @method('DELETE')
+                            </form>
+
+                            <div class="flex items-center gap-3 border-b border-ui-line bg-ui-bg px-5 py-2">
+                                <input type="checkbox" id="sel-all-{{ $section->id }}" class="ui-check"
+                                       :checked="allChecked({{ $section->id }})" :indeterminate.prop="someChecked({{ $section->id }})"
+                                       @change="toggleSection({{ $section->id }}, $event.target.checked)">
+                                <label for="sel-all-{{ $section->id }}" class="cursor-pointer text-xs font-medium text-ui-muted">Select all in this section</label>
+                            </div>
+
+                            <ul id="sortable-{{ $section->id }}" class="divide-y divide-ui-line">
+                                @foreach ($section->items as $item)
+                                    <li data-id="{{ $item->id }}" data-item-id="{{ $item->id }}" data-item-section="{{ $section->id }}" class="flex items-center gap-3 bg-white px-5 py-3">
+                                        <input type="checkbox" class="ui-check" value="{{ $item->id }}" aria-label="Select {{ $item->title }}"
+                                               :checked="isChecked({{ $section->id }}, '{{ $item->id }}')"
+                                               @change="toggle({{ $section->id }}, '{{ $item->id }}', $event.target.checked)">
+                                        <span class="drag-handle cursor-grab touch-none rounded p-1 text-gray-400 hover:bg-ui-bg-2 hover:text-gray-600 active:cursor-grabbing" role="img" aria-label="Drag to reorder" title="Drag to reorder">
+                                            <x-admin.icon name="grip" class="h-4 w-4" />
+                                        </span>
+                                        @if ($section->type === 'steps')
+                                            <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand text-xs font-semibold text-white">{{ $loop->iteration }}</span>
+                                        @else
+                                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true"></span>
+                                        @endif
+                                        <div class="min-w-0 flex-1">
+                                            <p class="truncate text-sm font-medium text-ui-ink">{{ $item->title }}</p>
+                                            @if ($item->body)<p class="truncate text-xs text-ui-muted">{{ $item->body }}</p>@endif
+                                        </div>
+                                        <div class="flex shrink-0 items-center gap-1">
+                                            <x-admin.button :href="route('admin.admission.sections.items.edit', [$section, $item])" variant="ghost" size="sm" class="ui-btn-icon" icon="pencil" aria-label="Edit {{ $item->title }}" title="Edit" />
+                                            <form method="POST" action="{{ route('admin.admission.sections.items.destroy', [$section, $item]) }}"
+                                                  data-confirm="“{{ $item->title }}” will be permanently removed." data-confirm-title="Delete this item?" data-confirm-label="Delete item">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="ui-btn ui-btn-ghost-danger ui-btn-icon ui-btn-sm" aria-label="Delete {{ $item->title }}" title="Delete">
+                                                    <x-admin.icon name="trash" class="h-4 w-4" />
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <p class="border-t border-ui-line px-5 py-2.5 text-xs text-ui-muted">Drag rows to reorder · saves automatically</p>
+                        @endif
+                    @endif
+                </x-admin.card>
+            @endforeach
+        </div>
     </div>
 
     <script>
-    // ── Bulk selection state ──────────────────────────────────────────────
-    // Tracks: { sectionId: Set<itemId> }
-    var bulkSelected = {};
-
-    function onItemCheck() {
-        // Rebuild bulkSelected from all checked checkboxes
-        bulkSelected = {};
-        document.querySelectorAll('.item-checkbox:checked').forEach(function (cb) {
-            var sid = cb.dataset.section;
-            if (!bulkSelected[sid]) bulkSelected[sid] = [];
-            bulkSelected[sid].push(cb.value);
-        });
-
-        // Sync each section's select-all checkbox state
-        document.querySelectorAll('.select-all-section').forEach(function (sa) {
-            var sid = sa.dataset.section;
-            var all  = document.querySelectorAll('.item-checkbox[data-section="' + sid + '"]');
-            var chk  = document.querySelectorAll('.item-checkbox[data-section="' + sid + '"]:checked');
-            sa.indeterminate = chk.length > 0 && chk.length < all.length;
-            sa.checked       = chk.length === all.length && all.length > 0;
-        });
-
-        updateBulkBar();
-    }
-
-    function toggleSection(selectAllCb) {
-        var sid     = selectAllCb.dataset.section;
-        var checked = selectAllCb.checked;
-        document.querySelectorAll('.item-checkbox[data-section="' + sid + '"]').forEach(function (cb) {
-            cb.checked = checked;
-        });
-        onItemCheck();
-    }
-
-    function updateBulkBar() {
-        var total = 0;
-        Object.values(bulkSelected).forEach(function (ids) { total += ids.length; });
-
-        var bar = document.getElementById('bulk-bar');
-        document.getElementById('bulk-count').textContent = total;
-
-        if (total > 0) {
-            bar.classList.remove('hidden');
-            bar.classList.add('flex');
-        } else {
-            bar.classList.add('hidden');
-            bar.classList.remove('flex');
-        }
-    }
-
-    function clearAllSelections() {
-        document.querySelectorAll('.item-checkbox, .select-all-section').forEach(function (cb) {
-            cb.checked = cb.indeterminate = false;
-        });
-        bulkSelected = {};
-        updateBulkBar();
-    }
-
-    function submitBulkDelete() {
-        var total = 0;
-        Object.values(bulkSelected).forEach(function (ids) { total += ids.length; });
-        if (total === 0) return;
-
-        if (!confirm('Delete ' + total + ' selected item(s)? This cannot be undone.')) return;
-
-        // We may have selections across multiple sections.
-        // Submit one form per affected section sequentially via fetch, then reload.
-        var sections = Object.keys(bulkSelected);
-        var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-        var requests = sections.map(function (sid) {
-            var form = document.getElementById('bulk-form-' + sid);
-            if (!form) return Promise.resolve();
-
-            var body = new FormData();
-            body.append('_token', csrfToken);
-            body.append('_method', 'DELETE');
-            bulkSelected[sid].forEach(function (id) { body.append('ids[]', id); });
-
-            return fetch(form.action, { method: 'POST', body: body });
-        });
-
-        Promise.all(requests).then(function () {
-            window.location.reload();
-        });
-    }
-
-    // ── Sortable (unchanged) ──────────────────────────────────────────────
-    window.initAdmissionSortable = function () {
-        if (typeof Sortable === 'undefined') return;
-
-        document.querySelectorAll('[id^="sortable-"]').forEach(function (list) {
-            if (list._sortable) return;
-
-            var sectionId = list.id.replace('sortable-', '');
-            list._sortable = Sortable.create(list, {
-                handle: '.drag-handle',
-                animation: 150,
-                onEnd: function () {
-                    var order = Array.from(list.querySelectorAll('[data-id]')).map(function (el) {
-                        return el.dataset.id;
-                    });
-                    fetch('/tpc_admin/admission/sections/' + sectionId + '/reorder', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        },
-                        body: JSON.stringify({ order: order }),
-                    });
-                },
+        // app.js calls window.initAdmissionSortable() after PJAX swaps; this also runs on every render.
+        window.initAdmissionSortable = function () {
+            document.querySelectorAll('[id^="sortable-"]').forEach(function (list) {
+                window.tpcSortable(list.id, '/tpc_admin/admission/sections/' + list.id.replace('sortable-', '') + '/reorder');
             });
-        });
-    };
-
-    window.initAdmissionSortable();
+        };
+        window.initAdmissionSortable();
     </script>
-
 @endsection

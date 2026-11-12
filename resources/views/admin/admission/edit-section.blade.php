@@ -1,86 +1,35 @@
 @extends('admin.layout', ['title' => 'Edit Section'])
 
 @section('content')
+    <x-admin.page-header title="Edit section" :subtitle="$section->label"
+        :breadcrumbs="['Admission' => route('admin.admission.index'), 'Edit section' => null]" />
 
-    {{-- ── Page header ── --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <div>
-            <a href="{{ route('admin.admission.index') }}"
-               class="inline-flex items-center gap-1.5 text-xs font-semibold text-tpc-primary hover:text-tpc-secondary transition mb-2">
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                </svg>
-                Admission
-            </a>
-            <h1 class="text-lg font-semibold text-neo-ink">Edit Section</h1>
-        </div>
-    </div>
+    <form method="POST" action="{{ route('admin.admission.sections.update', $section) }}">
+        @csrf @method('PATCH')
 
-    <div class="max-w-lg">
-        {{-- Section meta context --}}
-        <div class="mb-5 flex items-center gap-2.5 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-3">
-            <svg class="h-4 w-4 text-tpc-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
-            </svg>
-            <p class="text-xs text-neo-ink/60">
-                Key: <span class="font-mono font-semibold text-tpc-primary">{{ $section->key }}</span>
-                &middot; Type: <span class="font-semibold text-neo-ink/80">{{ $section->type }}</span>
-            </p>
-        </div>
+        <x-admin.card title="Section settings" :description="'Key: ' . $section->key . ' · Type: ' . $section->type" class="">
+            <div class="space-y-5">
+                <x-admin.field label="Heading label" name="label" required>
+                    <input id="label" type="text" name="label" value="{{ old('label', $section->label) }}" required placeholder="e.g. For Freshmen" class="ui-input @error('label') is-invalid @enderror">
+                </x-admin.field>
 
-        <form method="POST" action="{{ route('admin.admission.sections.update', $section) }}"
-              class="rounded-2xl bg-neo-surface shadow-neo p-5 sm:p-6 space-y-5">
-            @csrf @method('PATCH')
+                <x-admin.field label="Note / tip" name="note" hint="Optional. Shown as a callout below the section items — leave blank to hide it.">
+                    <textarea id="note" name="note" rows="3" placeholder="Leave blank to hide the callout box." class="ui-textarea @error('note') is-invalid @enderror">{{ old('note', $section->note) }}</textarea>
+                </x-admin.field>
 
-            {{-- Label --}}
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-neo-ink/60 mb-1.5">Heading Label</label>
-                <input type="text" name="label" value="{{ old('label', $section->label) }}" required
-                       placeholder="e.g. For Freshmen"
-                       class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition" />
-                @error('label') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            {{-- Note / Tip --}}
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-widest text-neo-ink/60 mb-1.5">
-                    Note / Tip
-                    <span class="normal-case font-normal text-neo-ink/40">(optional)</span>
-                </label>
-                <textarea name="note" rows="3"
-                          placeholder="Leave blank to hide the callout box."
-                          class="w-full rounded-xl bg-neo-bg shadow-neo-inset-sm border-0 px-3 py-2.5 text-sm text-neo-ink placeholder-neo-ink/30 focus:outline-none focus:ring-2 focus:ring-tpc-primary/30 transition resize-none">{{ old('note', $section->note) }}</textarea>
-                <p class="mt-1.5 text-xs text-neo-ink/40">Shown as a callout below the section items.</p>
-                @error('note') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-
-            {{-- Visibility toggle --}}
-            <div class="flex items-center gap-3 rounded-xl bg-neo-bg shadow-neo-inset-sm px-4 py-3">
-                <input type="checkbox" name="is_visible" id="is_visible" value="1"
-                       {{ old('is_visible', $section->is_visible) ? 'checked' : '' }}
-                       class="h-4 w-4 rounded border-tpc-primary/30 text-tpc-primary focus:ring-tpc-primary/30 cursor-pointer" />
-                <label for="is_visible" class="flex-1 cursor-pointer select-none">
-                    <span class="text-sm font-semibold text-neo-ink">Visible on public page</span>
-                    <p class="text-xs text-neo-ink/50 mt-0.5">When unchecked, this section is hidden from visitors.</p>
+                <label class="flex cursor-pointer items-start gap-3">
+                    <input id="is_visible" type="checkbox" name="is_visible" value="1" class="ui-switch mt-0.5" role="switch" @checked(old('is_visible', $section->is_visible))>
+                    <span>
+                        <span class="block text-sm font-medium text-ui-ink">Visible on public page</span>
+                        <span class="block text-xs text-ui-muted">When off, this section is hidden from visitors.</span>
+                    </span>
                 </label>
             </div>
+        </x-admin.card>
 
-            <div class="pt-2 border-t border-black/[0.06] flex flex-wrap gap-3">
-                <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-xl bg-tpc-primary px-5 py-2.5 text-sm font-semibold text-white
-                               shadow-neo-sm transition hover:shadow-neo-hover active:shadow-neo-inset-sm focus:outline-none focus:ring-2 focus:ring-tpc-primary/30">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    Save Changes
-                </button>
-                <a href="{{ route('admin.admission.index') }}"
-                   class="inline-flex items-center rounded-xl bg-neo-surface shadow-neo-sm px-5 py-2.5 text-sm font-semibold text-tpc-primary
-                          transition hover:shadow-neo-hover active:shadow-neo-inset-sm">
-                    Cancel
-                </a>
-            </div>
-        </form>
-    </div>
-
+        <div class="ui-actionbar">
+            <x-admin.button :href="route('admin.admission.index')" variant="secondary">Cancel</x-admin.button>
+            <x-admin.button type="submit">Save changes</x-admin.button>
+        </div>
+    </form>
 @endsection

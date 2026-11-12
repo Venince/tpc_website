@@ -1,0 +1,255 @@
+/* ==========================================================================
+   TPC ADMIN DESIGN SYSTEM  ·  white + green
+   --------------------------------------------------------------------------
+   Loaded only by resources/views/admin/layout.blade.php.
+   Uses Tailwind's @apply (no @layer), so the public site is untouched.
+
+   Tokens (see tailwind.config.js):
+     brand        #008000   primary actions, active nav
+     brand-dark   #006400   hover / emphasis
+     brand-light  #90EE90   sparing highlights (never body text on white)
+     ui-bg        #F8FAF8   page background
+     ui-bg-2      #F1F5F1   secondary surfaces
+     ui-ink       #1F2937   primary text
+     ui-muted     #6B7280   secondary text
+     ui-line      #E5E7EB   borders
+
+   Scale: radius 8px (controls) / 12px (cards) · spacing 4px grid
+   ========================================================================== */
+
+.ui-app {
+    @apply font-ui text-ui-ink bg-ui-bg antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.ui-btn {
+    @apply inline-flex items-center justify-center gap-2 h-10 px-4 rounded-lg border border-transparent
+           text-sm font-medium leading-none whitespace-nowrap select-none cursor-pointer
+           transition-colors duration-150
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:pointer-events-none;
+}
+.ui-btn-primary   { @apply bg-brand text-white hover:bg-brand-dark active:bg-brand-dark; }
+.ui-btn-secondary { @apply bg-white text-ui-ink border-ui-line shadow-ui-xs hover:bg-ui-bg-2 hover:border-gray-300; }
+.ui-btn-ghost     { @apply bg-transparent text-ui-muted hover:bg-ui-bg-2 hover:text-ui-ink; }
+.ui-btn-danger    { @apply bg-white text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300 focus-visible:ring-red-600; }
+.ui-btn-danger-solid { @apply bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600; }
+.ui-btn-sm        { @apply h-8 px-3 text-xs gap-1.5; }
+.ui-btn-icon      { @apply h-9 w-9 px-0; }
+.ui-btn-icon.ui-btn-sm { @apply h-8 w-8 px-0; }
+.ui-btn[aria-busy="true"] { @apply opacity-70 pointer-events-none; }
+
+/* ── Form controls ───────────────────────────────────────────────────────── */
+.ui-label       { @apply block mb-1.5 text-sm font-medium text-ui-ink; }
+.ui-required::after { content: ' *'; @apply text-red-600; }
+.ui-help        { @apply mt-1.5 text-xs text-ui-muted; }
+.ui-error       { @apply mt-1.5 text-xs font-medium text-red-600; }
+
+.ui-input,
+.ui-select,
+.ui-textarea {
+    @apply block w-full rounded-lg border border-gray-300 bg-white px-3 text-sm text-ui-ink shadow-ui-xs
+           placeholder:text-gray-500 transition-colors duration-150
+           focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none
+           disabled:bg-ui-bg-2 disabled:text-ui-muted disabled:cursor-not-allowed;
+}
+.ui-input,
+.ui-select   { @apply h-10 py-0; }
+.ui-textarea { @apply py-2 min-h-[6rem] leading-relaxed; }
+.ui-input.is-invalid,
+.ui-select.is-invalid,
+.ui-textarea.is-invalid,
+.ui-input[aria-invalid="true"],
+.ui-select[aria-invalid="true"],
+.ui-textarea[aria-invalid="true"] { @apply border-red-500 focus:border-red-500 focus:ring-red-500/20; }
+
+.ui-check {
+    @apply h-4 w-4 rounded border-gray-300 text-brand shadow-ui-xs cursor-pointer
+           focus:ring-2 focus:ring-brand/30 focus:ring-offset-0;
+}
+.ui-file {
+    @apply block w-full text-sm text-ui-muted cursor-pointer
+           file:mr-3 file:h-9 file:px-3 file:rounded-lg file:border file:border-ui-line file:bg-white
+           file:text-sm file:font-medium file:text-ui-ink file:cursor-pointer hover:file:bg-ui-bg-2;
+}
+
+/* Toggle switch (use on <input type="checkbox" class="ui-switch" role="switch">) */
+.ui-switch {
+    @apply relative h-6 w-11 shrink-0 cursor-pointer appearance-none rounded-full border-0 bg-gray-300
+           transition-colors duration-150 checked:bg-brand
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2;
+    background-image: none !important;
+}
+.ui-switch::after {
+    content: '';
+    @apply absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-ui-sm transition-transform duration-150;
+}
+.ui-switch:checked::after { @apply translate-x-5; }
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.ui-card         { @apply bg-white border border-ui-line rounded-xl shadow-ui-xs; }
+.ui-card-header  { @apply flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-ui-line; }
+.ui-card-title   { @apply text-sm font-semibold text-ui-ink; }
+.ui-card-desc    { @apply mt-0.5 text-xs text-ui-muted; }
+.ui-card-body    { @apply p-5; }
+.ui-card-footer  { @apply flex flex-wrap items-center justify-end gap-3 px-5 py-4 border-t border-ui-line bg-ui-bg rounded-b-xl; }
+
+/* ── Data tables ─────────────────────────────────────────────────────────── */
+.ui-table-wrap { @apply overflow-x-auto; }
+.ui-table      { @apply w-full min-w-full text-sm text-left; }
+.ui-table thead th {
+    @apply px-4 py-3 text-xs font-medium text-ui-muted bg-ui-bg
+           border-b border-ui-line whitespace-nowrap;
+}
+.ui-table tbody td        { @apply px-4 py-3 align-middle text-ui-ink border-b border-ui-line; }
+.ui-table tbody tr        { @apply transition-colors duration-100 hover:bg-ui-bg; }
+.ui-table tbody tr:last-child td { @apply border-b-0; }
+.ui-table .ui-col-actions { @apply text-right whitespace-nowrap; }
+
+/* ── Badges ──────────────────────────────────────────────────────────────── */
+.ui-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset whitespace-nowrap;
+}
+.ui-badge-success { @apply bg-brand-50 text-brand-dark ring-brand-200; }
+.ui-badge-neutral { @apply bg-gray-50 text-gray-600 ring-gray-200; }
+.ui-badge-warning { @apply bg-amber-50 text-amber-800 ring-amber-200; }
+.ui-badge-danger  { @apply bg-red-50 text-red-700 ring-red-200; }
+.ui-badge-dot     { @apply h-1.5 w-1.5 rounded-full bg-current; }
+
+/* ── Alerts ──────────────────────────────────────────────────────────────── */
+.ui-alert         { @apply flex items-start gap-3 rounded-lg border px-4 py-3 text-sm; }
+.ui-alert-success { @apply border-brand-200 bg-brand-50 text-brand-dark; }
+.ui-alert-error   { @apply border-red-200 bg-red-50 text-red-800; }
+.ui-alert-warning { @apply border-amber-200 bg-amber-50 text-amber-900; }
+
+/* ── Navigation (sidebar) ────────────────────────────────────────────────── */
+.ui-nav-label {
+    @apply px-3 pb-1.5 pt-1 text-xs font-medium text-ui-muted;
+}
+.ui-nav-item {
+    @apply relative flex items-center gap-3 h-10 px-3 rounded-lg text-sm font-medium text-gray-600
+           transition-colors duration-150 hover:bg-ui-bg-2 hover:text-ui-ink
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1;
+}
+.ui-nav-item[aria-current="page"] { @apply bg-brand-50 text-brand-dark; }
+.ui-nav-item[aria-current="page"]::before {
+    content: '';
+    @apply absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-brand;
+}
+.ui-nav-item .ui-nav-icon { @apply h-5 w-5 shrink-0 text-gray-500 transition-colors; }
+.ui-nav-item:hover .ui-nav-icon { @apply text-ui-ink; }
+.ui-nav-item[aria-current="page"] .ui-nav-icon { @apply text-brand; }
+
+/* ── Menus / dropdown rows ───────────────────────────────────────────────── */
+.ui-menu-item {
+    @apply flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-ui-ink text-left
+           transition-colors hover:bg-ui-bg-2 focus-visible:outline-none focus-visible:bg-ui-bg-2;
+}
+.ui-menu-item-danger { @apply text-red-700 hover:bg-red-50 focus-visible:bg-red-50; }
+
+/* ── Skeleton / loading ──────────────────────────────────────────────────── */
+.ui-skeleton { @apply animate-pulse rounded-md bg-gray-200/70; }
+.ui-spinner {
+    @apply inline-block h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin;
+}
+
+/* ── Thumbnails / media ──────────────────────────────────────────────────── */
+.ui-thumb {
+    @apply h-10 w-10 shrink-0 rounded-lg border border-ui-line bg-ui-bg-2 object-cover;
+}
+.ui-dropzone {
+    @apply flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-gray-300 bg-ui-bg
+           px-4 py-6 text-center text-sm text-ui-muted transition-colors
+           hover:border-brand hover:bg-brand-50;
+}
+
+/* ── Scrollbars ──────────────────────────────────────────────────────────── */
+.ui-scroll { scrollbar-width: thin; scrollbar-color: #D1D5DB transparent; }
+.ui-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.ui-scroll::-webkit-scrollbar-track { background: transparent; }
+.ui-scroll::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+.ui-scroll::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+/* ── Rich text content (Quill output previews) ───────────────────────────── */
+.ui-prose { @apply text-sm leading-relaxed text-ui-ink; }
+.ui-prose p { @apply my-2; }
+
+/* ── Misc ────────────────────────────────────────────────────────────────── */
+[x-cloak] { display: none !important; }
+.ui-divider { @apply h-px w-full bg-ui-line; }
+.ui-kbd { @apply rounded border border-ui-line bg-white px-1.5 py-0.5 text-[11px] font-medium text-ui-muted; }
+
+/* Sticky form action bar (Save / Cancel) */
+.ui-actionbar {
+    @apply sticky bottom-0 z-20 -mx-4 mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-ui-line
+           bg-white/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-xl sm:border;
+}
+
+/* Respect reduced-motion preferences across the admin */
+@media (prefers-reduced-motion: reduce) {
+    .ui-app *,
+    .ui-app *::before,
+    .ui-app *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ── Helpers that must beat component defaults (admin.css loads after app.css) ── */
+.ui-btn-block { width: 100%; }
+.ui-input-auto, .ui-select-auto { width: auto; }
+.ui-btn[aria-busy="true"]::before {
+    content: '';
+    @apply h-3.5 w-3.5 rounded-full border-2 border-current border-t-transparent animate-spin;
+}
+
+/* ── Collapsed sidebar (md and up). Mobile drawer is always expanded. ────── */
+.ui-nav-dot { display: none; }
+.ui-nav-group-rule { display: none; }
+@media (min-width: 768px) {
+    .ui-sidebar-collapsed .ui-nav-item        { justify-content: center; padding-left: 0; padding-right: 0; }
+    .ui-sidebar-collapsed .ui-nav-text,
+    .ui-sidebar-collapsed .ui-nav-badge       { display: none; }
+    .ui-sidebar-collapsed .ui-nav-dot         { display: block; }
+    .ui-sidebar-collapsed .ui-nav-group-label { display: none; }
+    .ui-sidebar-collapsed .ui-nav-group-rule  { display: block; height: 1px; margin: 0 0.5rem 0.5rem; background: #E5E7EB; }
+}
+
+/* ── Rich text editor (Quill 1.3.7 snow theme, restyled) ─────────────────── */
+.ui-rte { @apply rounded-lg border border-gray-300 bg-white shadow-ui-xs transition-colors; }
+.ui-rte:focus-within { @apply border-brand ring-2 ring-brand/20; }
+.ui-rte .ql-toolbar.ql-snow { border: 0; border-bottom: 1px solid #E5E7EB; background: #F8FAF8; border-radius: 0.5rem 0.5rem 0 0; font-family: inherit; }
+.ui-rte .ql-container.ql-snow { border: 0; font-family: inherit; font-size: 14px; color: #1F2937; }
+.ui-rte .ql-editor { min-height: var(--rte-min, 180px); padding: 12px 16px; line-height: 1.6; }
+.ui-rte .ql-editor.ql-blank::before { font-style: normal; color: #9CA3AF; }
+.ui-rte .ql-snow .ql-stroke { stroke: #6B7280; }
+.ui-rte .ql-snow .ql-fill { fill: #6B7280; }
+.ui-rte .ql-snow .ql-picker { color: #6B7280; }
+.ui-rte .ql-snow.ql-toolbar button:hover .ql-stroke,
+.ui-rte .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.ui-rte .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke { stroke: #008000; }
+.ui-rte .ql-snow.ql-toolbar button:hover .ql-fill,
+.ui-rte .ql-snow.ql-toolbar button.ql-active .ql-fill { fill: #008000; }
+.ui-rte .ql-snow.ql-toolbar button.ql-active,
+.ui-rte .ql-snow.ql-toolbar button:hover,
+.ui-rte .ql-snow.ql-toolbar .ql-picker-label.ql-active { color: #008000; }
+
+/* ── Touch targets: 44px minimum on coarse pointers (phones/tablets) ─────── */
+@media (pointer: coarse) {
+    .ui-btn, .ui-btn-sm, .ui-btn-icon, .ui-btn-icon.ui-btn-sm { min-height: 44px; }
+    .ui-btn-icon, .ui-btn-icon.ui-btn-sm { min-width: 44px; }
+    .ui-input, .ui-select { min-height: 44px; }
+    .ui-nav-item, .ui-menu-item { min-height: 44px; }
+    .ui-check { width: 1.25rem; height: 1.25rem; }
+}
+
+/* ── Added: red ghost button (utilities lose to .ui-btn-ghost, so it needs its own variant) ── */
+.ui-btn-ghost-danger { @apply bg-transparent text-red-600 hover:bg-red-50 hover:text-red-700 focus-visible:ring-red-600; }
+
+/* ── Added: phones – stack the sticky Save/Cancel bar so buttons are full width ── */
+@media (max-width: 639px) {
+    .ui-actionbar { flex-direction: column-reverse; align-items: stretch; }
+    .ui-actionbar > .ui-btn { width: 100%; }
+}
