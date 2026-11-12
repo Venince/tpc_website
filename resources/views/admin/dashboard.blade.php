@@ -13,7 +13,7 @@
     @endphp
 
     <x-admin.page-header title="Dashboard" :subtitle="$greeting . ', ' . $firstName . '. Here is what is happening on the TPC website.'">
-        <x-admin.button :href="route('admin.news-posts.create')" icon="plus">New news post</x-admin.button>
+        {{-- <x-admin.button :href="route('admin.news-posts.create')" icon="plus">New news post</x-admin.button> --}}
     </x-admin.page-header>
 
     {{-- ── Key figures ─────────────────────────────────────────────────────── --}}
