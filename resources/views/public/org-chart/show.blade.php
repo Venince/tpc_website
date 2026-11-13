@@ -119,7 +119,7 @@
     navigation (anything pushed outside #tpc-content is ignored by PJAX).
 --}}
 <style>
-/* Formal, neutral chart. Colour is used only for the top of the hierarchy and for focus/search states. */
+/* Formal, neutral chart. Every card looks the same; colour appears only for focus and search states. */
 .oc{
     --oc-line:#9CA3AF; --oc-lw:1px; --oc-g:24px;
     --oc-ink:#111827; --oc-muted:#4B5563; --oc-faint:#6B7280;
@@ -158,14 +158,11 @@
     background:#fff;border:1px solid var(--oc-border);border-radius:6px;
     padding:12px 14px;margin-bottom:8px;
 }
-.oc-card[data-depth="0"]{background:var(--oc-brand);border-color:var(--oc-brand);color:#fff}
 .oc-photo{display:block;flex-shrink:0;width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:top center;background:#E5E7EB}
 .oc-text{min-width:0;flex:1}
 .oc-name{margin:0;font-size:.9375rem;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
 .oc-title{margin:2px 0 0;font-size:.8125rem;line-height:1.4;color:var(--oc-muted);overflow-wrap:anywhere}
 .oc-dept{display:block;margin-top:2px;font-size:.75rem;line-height:1.4;color:var(--oc-faint);overflow-wrap:anywhere}
-.oc-card[data-depth="0"] .oc-title{color:#E6F0E6}
-.oc-card[data-depth="0"] .oc-dept{color:#CFE3CF}
 
 .oc-card{flex-wrap:wrap}
 .oc-toggle{
@@ -220,9 +217,7 @@
     .oc-roots>.oc-node{padding-top:0}
 
     .oc-card{z-index:1;flex-direction:column;justify-content:flex-start;gap:0;width:216px;margin:0;padding:16px 14px 22px;text-align:center}
-    .oc-card[data-depth="0"]{width:240px;padding-top:18px}
     .oc-photo{width:52px;height:52px;margin:0 auto 10px}
-    .oc-card[data-depth="0"] .oc-photo{width:60px;height:60px}
     .oc-text{flex:none;width:100%}
     .oc-card{flex-wrap:nowrap}
     .oc-toggle{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);z-index:3;flex:none;width:auto;display:inline-flex;justify-content:center;height:28px;min-height:0;margin:0;padding:0 9px;font-size:.75rem}
