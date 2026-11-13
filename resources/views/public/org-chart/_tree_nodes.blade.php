@@ -49,8 +49,8 @@
                                 data-count="{{ $below }}" data-name="{{ $node->name }}"
                                 aria-expanded="{{ $collapsed ? 'false' : 'true' }}"
                                 aria-label="{{ $collapsed ? 'Show' : 'Hide' }} {{ $below }} {{ $below === 1 ? 'person' : 'people' }} below {{ $node->name }}">
-                            <span>{{ $below }}</span>
-                            <svg viewBox="0 0 20 20" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
+                            <span class="oc-toggle-label"><span class="oc-when-collapsed">Show </span><span class="oc-when-open">Hide </span><span class="oc-count">{{ $below }}</span><span class="oc-count-label"> {{ $below === 1 ? 'person' : 'people' }}</span></span>
+                            <svg viewBox="0 0 20 20" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
                         </button>
                     @endif
                 </div>
