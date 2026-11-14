@@ -173,12 +173,12 @@
 .oc-trunk,.oc-rowline{display:none}
 
 .oc-card{
-    position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+    position:relative;display:flex;flex-direction:column;flex-wrap:nowrap;align-items:center;gap:0;
     background:#fff;border:1px solid var(--oc-border);border-radius:6px;
-    padding:12px 14px;margin-bottom:8px;
+    padding:14px;margin-bottom:8px;text-align:center;text-align-last:center;
 }
-.oc-photo{display:block;flex-shrink:0;width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:top center;background:#E5E7EB}
-.oc-text{min-width:0;flex:1}
+.oc-photo{display:block;flex-shrink:0;width:52px;height:52px;margin:0 auto 10px;border-radius:50%;object-fit:cover;object-position:top center;background:#E5E7EB}
+.oc-text{min-width:0;flex:none;width:100%}
 .oc-name{margin:0;font-size:.9375rem;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
 .oc-title{margin:2px 0 0;font-size:.8125rem;line-height:1.4;color:var(--oc-muted);overflow-wrap:anywhere}
 .oc-dept{display:block;margin-top:2px;font-size:.75rem;line-height:1.4;color:var(--oc-faint);overflow-wrap:anywhere}
@@ -237,7 +237,6 @@
 
 .oc.is-chart .oc-card{z-index:1;flex-wrap:nowrap;flex-direction:column;justify-content:flex-start;gap:0;width:216px;margin:0;padding:16px 14px 22px;text-align:center}
 .oc.is-chart .oc-photo{width:52px;height:52px;margin:0 auto 10px}
-.oc.is-chart .oc-text{flex:none;width:100%}
 .oc.is-chart .oc-toggle{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);z-index:3;flex:none;width:auto;display:inline-flex;justify-content:center;height:28px;min-height:0;margin:0;padding:0 9px;font-size:.75rem}
 .oc.is-chart .oc-when-collapsed,.oc.is-chart .oc-when-open,.oc.is-chart .oc-count-label{display:none!important}
 
@@ -269,9 +268,8 @@
 .oc.is-chart .oc-team{display:grid;grid-template-columns:repeat(var(--oc-cols,2),208px);gap:8px;padding:10px;background:#F3F4F6;border-radius:6px}
 .oc.is-chart .oc-team>.oc-node{display:block;padding:0}
 .oc.is-chart .oc-team>.oc-node::before,.oc.is-chart .oc-team>.oc-node::after{display:none}
-.oc.is-chart .oc-team .oc-card{width:208px;flex-direction:row;align-items:center;gap:10px;padding:10px 12px;text-align:left}
-.oc.is-chart .oc-team .oc-photo{width:36px;height:36px;margin:0}
-.oc.is-chart .oc-team .oc-text{flex:1;min-width:0;width:auto}
+.oc.is-chart .oc-team .oc-card{width:208px;padding:14px 12px 16px}
+.oc.is-chart .oc-team .oc-photo{width:44px;height:44px;margin:0 auto 8px}
 
 @media print{
     .oc-toolbar,.oc-hint{display:none}
