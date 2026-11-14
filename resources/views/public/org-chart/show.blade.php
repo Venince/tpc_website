@@ -66,8 +66,8 @@
             </div>
         @else
             <div class="oc" data-oc>
-                {{-- Runs before the chart paints so the saved/default view never flashes (List on phones & tablets, Chart on desktop). --}}
-                <script>(function(){try{var r=document.currentScript.parentNode,s=localStorage.getItem('tpcOrgView'),v=(s==='list'||s==='chart')?s:(matchMedia('(min-width:1024px)').matches?'chart':'list');if(v==='chart')r.classList.add('is-chart');}catch(e){}})();</script>
+                {{-- Runs before the chart paints so the saved/default view never flashes (default: Chart on every screen size). --}}
+                <script>(function(){try{var r=document.currentScript.parentNode,s=localStorage.getItem('tpcOrgView'),v=(s==='list'||s==='chart')?s:'chart';if(v==='chart')r.classList.add('is-chart');}catch(e){}})();</script>
 
                 {{-- Toolbar --}}
                 <div class="oc-toolbar" role="region" aria-label="Chart controls">
@@ -285,8 +285,7 @@
 (function () {
     var MIN = 0.3, FIT_MIN = 0.55, MAX = 1.6, STEP = 0.1;
     var KEY = 'tpcOrgView';
-    var DESKTOP_DEFAULT = 'chart';   // phones & tablets always default to the list
-    var MOBILE_DEFAULT  = 'list';
+    var DEFAULT_VIEW = 'chart';      // 'chart' or 'list' — used until the visitor picks a view
 
     function stored() {
         try { var v = localStorage.getItem(KEY); return (v === 'list' || v === 'chart') ? v : null; } catch (e) { return null; }
@@ -306,7 +305,7 @@
         var viewBtns = root.querySelectorAll('[data-oc-view]');
         var mq       = window.matchMedia('(min-width: 1024px)');
 
-        var view  = stored() || (mq.matches ? DESKTOP_DEFAULT : MOBILE_DEFAULT);
+        var view  = stored() || DEFAULT_VIEW;
         var scale = 1, fit = true;
         function isChart() { return view === 'chart'; }
 
@@ -500,10 +499,7 @@
 
         /* ── Layout triggers ── */
         window._ocApply = apply;
-        // Crossing the desktop breakpoint switches to that size's default, unless the visitor picked a view.
-        if (mq.addEventListener) mq.addEventListener('change', function () {
-            if (!stored()) setView(mq.matches ? DESKTOP_DEFAULT : MOBILE_DEFAULT, false); else { fit = true; apply(); }
-        });
+        if (mq.addEventListener) mq.addEventListener('change', function () { fit = true; apply(); });
         setView(view, false);
         requestAnimationFrame(apply);
         window.addEventListener('load', apply);
