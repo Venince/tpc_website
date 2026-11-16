@@ -65,8 +65,14 @@
         <a data-tpc-link class="{{ $link($academicsActive) }}" href="{{ route('academics') }}" @if($academicsActive) aria-current="page" @endif>Academics</a>
 
         @if ($navServices->isNotEmpty())
-            <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" @keydown.escape.window="open = false">
-                <button type="button" @click="open = !open"
+            <div class="relative"
+                 x-data="{ open: false, hoverable: window.matchMedia('(hover: hover) and (pointer: fine)').matches }"
+                 @mouseenter="if (hoverable) open = true" @mouseleave="if (hoverable) open = false"
+                 @keydown.escape.window="open = false" @click.outside="open = false"
+                 @focusout="if (!$el.contains($event.relatedTarget)) open = false">
+                {{-- Hover devices: hover opens it and a click keeps it open (it used to toggle it shut right
+                     after the hover opened it). Touch devices: tap toggles. --}}
+                <button type="button" @click="open = hoverable ? true : !open"
                         class="tpc-navlink inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold transition {{ $servicesActive ? 'tpc-active' : '' }}"
                         :aria-expanded="open.toString()">
                     Services
@@ -113,8 +119,8 @@
              @keydown.escape.window="query = ''; results = []; activeIndex = -1;">
 
             {{-- Pill: expands on focus/query --}}
-            <div class="flex items-center gap-2 h-9 px-3 rounded-full border transition-all duration-300 ease-out cursor-text"
-                :class="query.length > 0 || document.activeElement === $refs.input
+            <div class="flex items-center gap-2 h-9 px-3 rounded-full border transition-[width,background-color,border-color,box-shadow] duration-300 ease-out cursor-text"
+                :class="query.length > 0 || focused
                     ? 'w-56 border-tpc-primary/60 bg-white ring-2 ring-tpc-primary/12 shadow-sm'
                     : 'w-44 border-tpc-primary/40 bg-tpc-primary/8 hover:border-tpc-primary/50 hover:bg-tpc-primary/12'"
                 @click="$refs.input.focus()">
@@ -133,6 +139,7 @@
                        placeholder="Search…"
                        x-model="query"
                        @input="search()"
+                       @focus="focused = true" @blur="focused = false"
                        @keydown.arrow-down.prevent="moveDown()"
                        @keydown.arrow-up.prevent="moveUp()"
                        @keydown.enter.prevent="selectActive()"
@@ -346,6 +353,7 @@
 
                             <div x-show="results.length > 0"
                                  x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                                  class="mt-1.5 max-h-52 overflow-y-auto rounded-xl border border-gray-200/80 bg-white shadow-sm">
                                 <template x-for="(item, i) in results" :key="i">
                                     <button type="button" @click="go(item)" @mouseenter="activeIndex = i"
@@ -455,6 +463,7 @@
         function tpcSearch() {
             return {
                 expanded: false,
+                focused: false,
                 query: '',
                 results: [],
                 activeIndex: -1,
@@ -539,7 +548,7 @@
             if (el) {
                 var headerHeight = document.querySelector('header') ? document.querySelector('header').offsetHeight : 80;
                 var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-                window.scrollTo({ top: top, behavior: 'smooth' });
+                window.scrollTo({ top: top, behavior: window.tpcScrollBehavior ? window.tpcScrollBehavior() : 'smooth' });
             }
         }
 
@@ -557,16 +566,18 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const homeLinks = document.querySelectorAll('[id="nav-home"], [id="mob-home"]');
+        // Mobile "Home" only: the desktop #nav-home is handled by initHomeNav() in app.js.
+        // The old check also treated ANY page with a #hash (e.g. /contact#send-message) as "on home",
+        // so Home scrolled to the top there instead of navigating.
+        const homeLinks = document.querySelectorAll('#mob-home');
         homeLinks.forEach(function (link) {
             link.addEventListener('click', function (e) {
                 const isOnHome = window.location.pathname === '/'
-                    || window.location.pathname === '/home'
-                    || window.location.hash !== '';
+                    || window.location.pathname === '/home';
                 if (isOnHome) {
                     e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    history.replaceState(null, '', window.location.pathname);
+                    window.scrollTo({ top: 0, behavior: window.tpcScrollBehavior ? window.tpcScrollBehavior() : 'smooth' });
+                    history.replaceState(history.state, '', window.location.pathname);
                 }
             });
         });

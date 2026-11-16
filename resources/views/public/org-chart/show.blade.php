@@ -195,6 +195,9 @@
 .oc-node.is-collapsed>.oc-card .oc-when-open,
 .oc-node:not(.is-collapsed)>.oc-card .oc-when-collapsed{display:none}
 .oc-node.is-collapsed>.oc-branch{display:none}
+/* Expanding re-displays the branch, which restarts this animation: a short fade instead of a hard pop */
+@keyframes ocBranchIn{from{opacity:0}}
+.oc-node:not(.is-collapsed)>.oc-branch{animation:ocBranchIn .2s ease-out}
 
 /* Search: plain highlight, everything else recedes */
 .oc-tree.has-search .oc-card{opacity:.4}
@@ -276,7 +279,7 @@
     .oc-canvas{transform:none!important}
     .oc.is-chart .oc-viewport{overflow:visible;max-height:none}
 }
-@media (prefers-reduced-motion:reduce){ .oc-toggle svg{transition:none} }
+@media (prefers-reduced-motion:reduce){ .oc-toggle svg{transition:none} .oc-node:not(.is-collapsed)>.oc-branch{animation:none} }
 </style>
 
 <script>
@@ -439,8 +442,16 @@
             var btn = e.target.closest('.oc-toggle');
             if (!btn) return;
             var node = btn.closest('.oc-node');
+            // Keep the clicked button where it is on screen. apply() re-fits the chart and re-centres the
+            // viewport, which used to throw the card you just clicked out of view.
+            var before = btn.getBoundingClientRect();
             setCollapsed(node, !node.classList.contains('is-collapsed'));
             apply();
+            if (isChart()) {
+                var after = btn.getBoundingClientRect();
+                viewport.scrollLeft += after.left - before.left;
+                viewport.scrollTop  += after.top  - before.top;
+            }
         });
 
         root.querySelector('[data-oc-expand]').addEventListener('click', function () {
@@ -486,10 +497,10 @@
                 viewport.scrollTo({
                     left: viewport.scrollLeft + (r.left - v.left) - (v.width - r.width) / 2,
                     top:  viewport.scrollTop  + (r.top  - v.top)  - (v.height - r.height) / 2,
-                    behavior: 'smooth'
+                    behavior: (window.tpcScrollBehavior ? window.tpcScrollBehavior() : 'smooth')
                 });
             } else {
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.scrollIntoView({ behavior: (window.tpcScrollBehavior ? window.tpcScrollBehavior() : 'smooth'), block: 'center' });
             }
         }
 

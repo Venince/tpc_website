@@ -77,7 +77,7 @@
             <div class="grid gap-6 sm:gap-8 lg:grid-cols-3 w-full min-w-0 lg:items-start">
 
                 {{-- LEFT MAIN --}}
-                <div class="lg:col-span-2 space-y-8 sm:space-y-10 min-w-0 w-full overflow-hidden">
+                <div class="lg:col-span-2 space-y-8 sm:space-y-10 min-w-0 w-full overflow-hidden sm:overflow-visible">
 
                     {{-- PROGRAM LEADERSHIP --}}
                     @if ($deans->isNotEmpty() || $head->isNotEmpty() || $coordinators->isNotEmpty())
@@ -191,10 +191,12 @@
                                                     open: false,
                                                     current: 0,
                                                     images: {{ json_encode(array_map(fn($p) => asset('storage/' . $p), $galleryImages)) }},
-                                                    openAt(i) { this.current = i; this.open = true; document.body.style.overflow='hidden'; },
-                                                    close()   { this.open = false; document.body.style.overflow=''; },
-                                                    prev()    { this.current = (this.current - 1 + this.images.length) % this.images.length; },
-                                                    next()    { this.current = (this.current + 1) % this.images.length; }
+                                                    _k: 'prog-ach-' + Math.random().toString(36).slice(2),
+                                                    warm()    { if (window.tpcPreload && this.images.length > 1) [1, -1].forEach((d) => window.tpcPreload(this.images[(this.current + d + this.images.length) % this.images.length])); },
+                                                    openAt(i) { this.current = i; this.open = true; window.tpcScrollLock && window.tpcScrollLock.lock(this._k); this.warm(); },
+                                                    close()   { this.open = false; window.tpcScrollLock && window.tpcScrollLock.unlock(this._k); },
+                                                    prev()    { this.current = (this.current - 1 + this.images.length) % this.images.length; this.warm(); },
+                                                    next()    { this.current = (this.current + 1) % this.images.length; this.warm(); }
                                                  }"
                                                  @keydown.escape.window="close()"
                                             >

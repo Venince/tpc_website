@@ -221,15 +221,28 @@
                                     this.truncated = el.scrollHeight - el.clientHeight > 1;
                                 },
 
+                                // html-level scroll lock (see tpcScrollLock in app.js): locking <body> un-sticks the
+                                // header and does not stop the page behind from scrolling.
+                                _k: 'news-viewer-' + Math.random().toString(36).slice(2),
+                                warm() {
+                                    // pre-load the neighbours so Prev/Next never shows a blank frame
+                                    if (!window.tpcPreload || this.photos.length < 2) return;
+                                    [1, -1].forEach((d) => window.tpcPreload(this.photos[(this.current + d + this.photos.length) % this.photos.length].src));
+                                },
                                 openAt(i) {
                                     this.current = i;
                                     this.open = true;
                                     this.syncLike();
-                                    document.body.style.overflow = 'hidden';
+                                    window.tpcScrollLock && window.tpcScrollLock.lock(this._k);
+                                    this.warm();
                                 },
-                                close() { this.open = false; document.body.style.overflow = ''; },
-                                prev()  { this.current = (this.current - 1 + this.photos.length) % this.photos.length; },
-                                next()  { this.current = (this.current + 1) % this.photos.length; },
+                                close() {
+                                    if (!this.open) return;
+                                    this.open = false;
+                                    window.tpcScrollLock && window.tpcScrollLock.unlock(this._k);
+                                },
+                                prev()  { this.current = (this.current - 1 + this.photos.length) % this.photos.length; this.warm(); },
+                                next()  { this.current = (this.current + 1) % this.photos.length; this.warm(); },
                                 swipe(e) {
                                     if (this.touchX === null) return;
                                     const dx = e.changedTouches[0].clientX - this.touchX;
@@ -256,7 +269,7 @@
                                 }
                             }"
                             x-init="$nextTick(() => measure()); if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => measure());
-                                    @if($isFocus) $nextTick(() => $el.scrollIntoView({ behavior: 'smooth', block: 'start' })); @endif"
+                                    @if($isFocus) $nextTick(() => $el.scrollIntoView({ behavior: (window.tpcScrollBehavior ? window.tpcScrollBehavior() : 'smooth'), block: 'start' })); @endif"
                             @resize.window.debounce.150ms="measure()"
                             @popstate.window="if (open) close()"
                             @keydown.escape.window="if (open && !window.__nfShareOpen) close()"
@@ -535,7 +548,6 @@
                         url: '',
                         copied: false,
                         hint: '',
-                        prevOverflow: '',
                         canNative: typeof navigator !== 'undefined' && !!navigator.share,
 
                         openShare(d) {
@@ -543,8 +555,7 @@
                             this.url = d.url;
                             this.copied = false;
                             this.hint = '';
-                            this.prevOverflow = document.body.style.overflow;
-                            document.body.style.overflow = 'hidden';
+                            window.tpcScrollLock && window.tpcScrollLock.lock('news-share');
                             window.__nfShareOpen = true;
                             this.open = true;
                         },
@@ -552,7 +563,7 @@
                             if (!this.open) return;
                             this.open = false;
                             window.__nfShareOpen = false;
-                            document.body.style.overflow = this.prevOverflow;
+                            window.tpcScrollLock && window.tpcScrollLock.unlock('news-share');
                         },
                         enc(s) { return encodeURIComponent(s); },
 

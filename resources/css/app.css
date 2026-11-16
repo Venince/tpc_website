@@ -43,18 +43,21 @@
   left: 0;
   bottom: 0px;
   height: 2px;
-  width: 0%;
+  width: 100%;
   background: rgb(0, 128, 0);
-  transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* transform (not width) so the underline animates on the compositor, no layout work */
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 280ms var(--tpc-ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .tpc-navlink:hover::after {
-  width: 100%;
+  transform: scaleX(1);
 }
 .tpc-navlink.tpc-active {
   color: rgb(0, 100, 0);
 }
 .tpc-navlink.tpc-active::after {
-  width: 100%;
+  transform: scaleX(1);
 }
 
 /* ------- Mobile menu: links fade/slide in one after another -------
@@ -89,17 +92,26 @@
   }
 }
 
-/* ------- Page layout ------- */
+/* ------- Motion tokens (single source of truth for the public site) ------- */
 :root {
-  --tpc-page-dur: 600ms;
-  --tpc-page-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --tpc-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --tpc-ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --tpc-ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --tpc-dur-fast: 150ms;
+  --tpc-dur-base: 220ms;
+  --tpc-dur-slow: 450ms;
+  /* page transition: quick fade-out, slightly longer fade-in */
+  --tpc-page-leave: 180ms;
+  --tpc-page-enter: 450ms;
+  --tpc-page-dur: 600ms;   /* home slide-up */
+  --tpc-page-ease: var(--tpc-ease-expo);
 }
 
+/* ------- Page layout ------- */
 html {
   overflow-x: clip;
   scrollbar-gutter: stable;
 }
-
 body {
   max-width: 100%;
   width: 100%;
@@ -111,29 +123,36 @@ html.tpc-home-init #tpc-content {
   transform: translateY(36px);
 }
 
+/*
+ * #tpc-content must have NO transform / will-change at rest:
+ *  - a transform makes it the containing block for every position:fixed
+ *    descendant (that is why FABs/modals had to be injected into <body>)
+ *  - will-change kept the whole page on its own GPU layer permanently
+ * `isolation: isolate` keeps the stacking-context behaviour the old transform gave us
+ * without changing how fixed elements are positioned.
+ */
 #tpc-content {
   overflow-x: clip;
-  transform: translateY(0);
-  transition: opacity var(--tpc-page-dur) var(--tpc-page-ease),
+  isolation: isolate;
+  transition: opacity var(--tpc-page-enter) var(--tpc-page-ease),
               transform var(--tpc-page-dur) var(--tpc-page-ease);
-  will-change: opacity, transform;
 }
-
+/* Leaving: fade out only (the swap waits for this exact duration) */
 #tpc-content.tpc-leave {
   opacity: 0;
-  transform: translateY(0);
+  transition: opacity var(--tpc-page-leave) cubic-bezier(0.4, 0, 1, 1);
 }
-
-#tpc-content.tpc-enter {
-  opacity: 0;
-  transform: translateY(0);
-}
-
-/* Home page: slide up from bottom on enter */
+/* Entering: start state is applied WITHOUT a transition, then released next frame */
+#tpc-content.tpc-enter,
 #tpc-content.tpc-enter-home {
   opacity: 0;
+  transition: none;
+}
+#tpc-content.tpc-enter-home {
   transform: translateY(36px);
 }
+/* Focus is moved here after a PJAX swap (keyboard / screen reader users) */
+#tpc-content:focus { outline: none; }
 
 @media (prefers-reduced-motion: reduce) {
   #tpc-content {
@@ -144,8 +163,27 @@ html.tpc-home-init #tpc-content {
   #tpc-content.tpc-enter,
   #tpc-content.tpc-enter-home {
     opacity: 1 !important;
-    transform: translateY(0) !important;
+    transform: none !important;
   }
+}
+
+/* ------- Scroll reveal (home page) -------
+ * Hidden state is applied by JS synchronously, before first paint, so nothing flashes.
+ * Defined before the card rules so card :hover transforms still win on ties.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .tpc-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .tpc-reveal.is-in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 750ms var(--tpc-ease-expo), transform 750ms var(--tpc-ease-expo);
+  }
+}
+@media print {
+  .tpc-reveal { opacity: 1 !important; transform: none !important; }
 }
 
 /* About highlight pulse */
@@ -558,86 +596,61 @@ html.tpc-admin-init #tpc-admin-main {
 }
 
 /* ============================================================
-   Academics – Program Cards  (org-chart-style hover)
+   Interactive cards (Academics program cards, program people,
+   program achievements) — ONE definition so they always behave alike.
+   Hover lift only on devices that really hover: on touch screens
+   :hover sticks after a tap and left cards stuck in the lifted state.
    ============================================================ */
-
-.program-card {
+.program-card,
+.person-card,
+.achievement-card {
     transition:
-        transform 0.22s cubic-bezier(.34, 1.4, .64, 1),
-        box-shadow 0.22s ease,
-        border-color 0.2s ease;
+        transform var(--tpc-dur-base) var(--tpc-ease-spring),
+        box-shadow var(--tpc-dur-base) ease,
+        border-color var(--tpc-dur-base) ease;
 }
-
-.program-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 16px 36px rgba(26, 86, 50, .13), 0 3px 10px rgba(0, 0, 0, .06);
-    border-color: rgba(26, 86, 50, .25);
+.program-logo-wrap,
+.person-card .person-photo,
+.achievement-card .achievement-img {
+    transition: transform var(--tpc-dur-base) ease;
 }
-
-.program-card:hover .program-card-bar {
-    background-color: #4ade80; /* tpc-accent equivalent */
+.achievement-card .achievement-img {
+    overflow: hidden;
 }
-
-.program-logo-wrap {
-    transition: transform 0.22s ease;
+@media (hover: hover) and (pointer: fine) {
+    .program-card:hover,
+    .person-card:hover,
+    .achievement-card:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 16px 36px rgba(26, 86, 50, .13), 0 3px 10px rgba(0, 0, 0, .06);
+        border-color: rgba(26, 86, 50, .25);
+    }
+    .program-card:hover .program-card-bar {
+        background-color: #4ade80; /* tpc-accent equivalent */
+    }
+    .program-card:hover .program-logo-wrap,
+    .person-card:hover .person-photo {
+        transform: scale(1.06);
+    }
+    .achievement-card:hover .achievement-img {
+        transform: scale(1.03);
+    }
 }
-
-.program-card:hover .program-logo-wrap {
-    transform: scale(1.06);
-}
-
-/* Mobile: match org-chart mobile — no lift, just a subtle shadow */
-@media (max-width: 639px) {
-    .program-card:hover {
+/* Narrow windows: no lift, just a subtle shadow (matches the org-chart cards) */
+@media (hover: hover) and (pointer: fine) and (max-width: 639px) {
+    .program-card:hover,
+    .person-card:hover,
+    .achievement-card:hover {
         transform: none;
         box-shadow: 0 2px 8px rgba(26, 86, 50, .1);
         border-color: rgba(26, 86, 50, .2);
     }
-
-    .program-card:hover .program-logo-wrap {
+    .program-card:hover .program-logo-wrap,
+    .person-card:hover .person-photo,
+    .achievement-card:hover .achievement-img {
         transform: none;
     }
 }
-
-/* ── Program page – Leadership & Instructor cards ── */
-.person-card {
-    transition:
-        transform 0.22s cubic-bezier(.34, 1.4, .64, 1),
-        box-shadow 0.22s ease,
-        border-color 0.2s ease;
-}
-.person-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 16px 36px rgba(26, 86, 50, .13), 0 3px 10px rgba(0, 0, 0, .06);
-    border-color: rgba(26, 86, 50, .25);
-}
-.person-card .person-photo {
-    transition: transform 0.22s ease;
-}
-.person-card:hover .person-photo {
-    transform: scale(1.06);
-}
-
-/* ── Program page – Achievement cards ── */
-.achievement-card {
-    transition:
-        transform 0.22s cubic-bezier(.34, 1.4, .64, 1),
-        box-shadow 0.22s ease,
-        border-color 0.2s ease;
-}
-.achievement-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 16px 36px rgba(26, 86, 50, .13), 0 3px 10px rgba(0, 0, 0, .06);
-    border-color: rgba(26, 86, 50, .25);
-}
-.achievement-card .achievement-img {
-    transition: transform 0.22s ease;
-    overflow: hidden;
-}
-.achievement-card:hover .achievement-img {
-    transform: scale(1.03);
-}
-
 @media (max-width: 639px) {
     .person-card,
     .achievement-card,
@@ -647,13 +660,7 @@ html.tpc-admin-init #tpc-admin-main {
         contain: layout paint;
         will-change: auto;
     }
-    .person-card:hover,
-    .achievement-card:hover {
-        transform: none;
-        box-shadow: 0 2px 8px rgba(26, 86, 50, .1);
-    }
 }
-
 .prose p[class*="ql-indent-"] { margin-left: 0; }
 .prose .ql-indent-1 { padding-left: 3em; }
 .prose .ql-indent-2 { padding-left: 6em; }
@@ -663,3 +670,20 @@ html.tpc-admin-init #tpc-admin-main {
 .prose .ql-indent-6 { padding-left: 18em; }
 .prose .ql-indent-7 { padding-left: 21em; }
 .prose .ql-indent-8 { padding-left: 24em; }
+
+/* ------- Reduced motion: public site (header rule above covers the nav only) -------
+ * Scoped to body.tpc-public (layouts/site.blade.php) so it also reaches teleported
+ * lightboxes / modals that live directly under <body>, and never touches the admin panel.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .tpc-public *,
+  .tpc-public *::before,
+  .tpc-public *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

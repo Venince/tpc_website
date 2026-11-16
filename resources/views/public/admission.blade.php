@@ -200,18 +200,28 @@
     ══════════════════════════════════════════════════════ --}}
     <script>
     (function () {
+        /* Idempotent: this script runs again on every PJAX visit. If the previous copy was not cleaned up yet
+           (admission -> admission), a second FAB/modal with the SAME ids was injected and getSelected() then
+           also read the hidden copy's checkboxes, so sections could not be deselected. */
+        ['dl-fab','dl-modal-overlay','dl-spinner','admission-print-root','dl-fab-styles'].forEach(function (id) {
+            document.querySelectorAll('#' + id).forEach(function (el) { el.remove(); });
+        });
+        if (window._dlEscHandler) document.removeEventListener('keydown', window._dlEscHandler);
+        if (window.tpcScrollLock) window.tpcScrollLock.unlock('admission-modal');
 
         /* ── Styles ──────────────────────────────────────── */
         var styleEl = document.createElement('style');
         styleEl.id = 'dl-fab-styles';
         styleEl.textContent = [
-            '#dl-fab{position:fixed;bottom:1.75rem;left:1.75rem;z-index:9999;display:flex;align-items:center;gap:.5rem;padding:.65rem 1.1rem;background:#166534;color:#fff;border-radius:9999px;font-size:.78rem;font-weight:700;letter-spacing:.04em;box-shadow:0 4px 20px rgba(22,101,52,.35),0 1px 4px rgba(0,0,0,.15);border:none;cursor:pointer;text-transform:uppercase;transition:transform .15s,box-shadow .15s,background .15s;}',
+            '#dl-fab{position:fixed;bottom:1.75rem;left:1.75rem;z-index:9999;display:flex;align-items:center;gap:.5rem;padding:.65rem 1.1rem;background:#166534;color:#fff;border-radius:9999px;font-size:.78rem;font-weight:700;letter-spacing:.04em;box-shadow:0 4px 20px rgba(22,101,52,.35),0 1px 4px rgba(0,0,0,.15);border:none;cursor:pointer;text-transform:uppercase;transition:transform .15s,box-shadow .15s,background .15s,opacity .18s;animation:dlFabIn .35s cubic-bezier(.16,1,.3,1) .2s backwards;}',
+            '#dl-fab.dl-leaving{opacity:0;transform:translateY(8px);pointer-events:none;}',
+            '@keyframes dlFabIn{from{opacity:0;transform:translateY(10px);}}',
             '#dl-fab:hover{background:#14532d;box-shadow:0 6px 28px rgba(22,101,52,.45);transform:translateY(-1px);}',
             '#dl-fab svg{flex-shrink:0;}',
             '.dl-fab-label{white-space:nowrap;}',
             '@media(max-width:639px){#dl-fab{padding:.75rem;border-radius:50%;bottom:1.25rem;left:1.25rem;}.dl-fab-label{display:none;}}',
-            '#dl-modal-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}',
-            '#dl-modal-overlay.open{opacity:1;pointer-events:all;}',
+            '#dl-modal-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,visibility 0s linear .2s;}',
+            '#dl-modal-overlay.open{opacity:1;visibility:visible;pointer-events:all;transition-delay:0s;}',
             '#dl-modal{background:#fff;border-radius:1.25rem;width:min(26rem,calc(100vw - 2rem));box-shadow:0 24px 64px rgba(0,0,0,.18);overflow:hidden;transform:translateY(12px) scale(.97);transition:transform .22s cubic-bezier(.16,1,.3,1);}',
             '#dl-modal-overlay.open #dl-modal{transform:translateY(0) scale(1);}',
             '.dl-modal-header{background:linear-gradient(135deg,#166534 0%,#15803d 100%);padding:1.25rem 1.5rem 1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}',
@@ -389,32 +399,25 @@
                 var el = document.getElementById(id);
                 if (el) el.parentNode.removeChild(el);
             });
-            /* Remove style from head */
-            var s = document.getElementById('dl-fab-styles');
-            if (s) s.parentNode.removeChild(s);
+            if (window.tpcScrollLock) window.tpcScrollLock.unlock('admission-modal');
             document.removeEventListener('keydown', escHandler);
         }
-
-        /* Listen for the moment #tpc-content gets swapped by PJAX.
-           We detect this by watching for our FAB's parent (body) to
-           no longer contain our anchor element. */
-        var anchorEl = document.getElementById('requirements') || document.getElementById('process');
-        if (anchorEl && typeof MutationObserver !== 'undefined') {
-            var observer = new MutationObserver(function() {
-                if (!document.getElementById('dl-fab')) { observer.disconnect(); return; }
-                /* If the admission content anchor is gone, we've navigated away */
-                if (!document.getElementById('requirements') && !document.getElementById('process')) {
-                    dlCleanup();
-                    observer.disconnect();
-                }
-            });
-            observer.observe(document.getElementById('tpc-content') || document.body, { childList: true, subtree: false });
-        }
-
+        /* Driven by the page-transition events from app.js. The old MutationObserver looked for
+           #requirements / #process, so when an admin had hidden both sections it never fired and the
+           FAB stayed on every other page. The FAB now fades out with the page and is removed at the swap. */
+        document.addEventListener('tpc:page-leave', function () {
+            var fab = document.getElementById('dl-fab');
+            if (fab) fab.classList.add('dl-leaving');
+        }, { once: true });
+        document.addEventListener('tpc:page-swap', dlCleanup, { once: true });
+        document.addEventListener('tpc:page-restore', function () {   /* back/forward cache */
+            var fab = document.getElementById('dl-fab');
+            if (fab) fab.classList.remove('dl-leaving');
+        });
         /* ── Escape key handler ───────────────────────────── */
         function escHandler(e) { if (e.key === 'Escape') closeDlModal(); }
+        window._dlEscHandler = escHandler;
         document.addEventListener('keydown', escHandler);
-
     })();
 
     /* ── Data ──────────────────────────────────────────── */
@@ -461,12 +464,14 @@
     /* ── Modal open/close ──────────────────────────────── */
     function openDlModal() {
         document.getElementById('dl-modal-overlay').classList.add('open');
-        document.body.style.overflow = 'hidden';
+        if (window.tpcScrollLock) window.tpcScrollLock.lock('admission-modal');
     }
     function closeDlModal() {
-        document.getElementById('dl-modal-overlay').classList.remove('open');
-        document.body.style.overflow = '';
-        document.getElementById('dl-note-none').classList.remove('visible');
+        var ov = document.getElementById('dl-modal-overlay');
+        if (ov) ov.classList.remove('open');
+        if (window.tpcScrollLock) window.tpcScrollLock.unlock('admission-modal');
+        var note = document.getElementById('dl-note-none');
+        if (note) note.classList.remove('visible');
     }
     function closeDlModalOutside(e) {
         if (e.target === document.getElementById('dl-modal-overlay')) closeDlModal();
@@ -694,7 +699,7 @@
             setTimeout(function() {
                 btn.style.transform = ''; btn.style.opacity = '';
                 btn.style.backgroundColor = ''; btn.style.borderColor = ''; btn.style.color = '';
-                if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+                if (target) target.scrollIntoView({ behavior: window.tpcScrollBehavior ? window.tpcScrollBehavior() : 'smooth', block:'start' });
             }, 200);
         });
     });

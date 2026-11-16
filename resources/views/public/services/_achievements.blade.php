@@ -57,10 +57,12 @@
                         current: 0,
                         touchX: null,
                         images: @js($urls),
-                        openAt(i) { this.current = i; this.open = true; document.body.style.overflow = 'hidden'; },
-                        close()   { this.open = false; document.body.style.overflow = ''; },
-                        prev()    { this.current = (this.current - 1 + this.images.length) % this.images.length; },
-                        next()    { this.current = (this.current + 1) % this.images.length; },
+                        _k: 'svc-ach-' + Math.random().toString(36).slice(2),
+                        warm()    { if (window.tpcPreload && this.images.length > 1) [1, -1].forEach((d) => window.tpcPreload(this.images[(this.current + d + this.images.length) % this.images.length])); },
+                        openAt(i) { this.current = i; this.open = true; window.tpcScrollLock && window.tpcScrollLock.lock(this._k); this.warm(); },
+                        close()   { this.open = false; window.tpcScrollLock && window.tpcScrollLock.unlock(this._k); },
+                        prev()    { this.current = (this.current - 1 + this.images.length) % this.images.length; this.warm(); },
+                        next()    { this.current = (this.current + 1) % this.images.length; this.warm(); },
                         swipe(e)  {
                             if (this.touchX === null) return;
                             const dx = e.changedTouches[0].clientX - this.touchX;
@@ -71,9 +73,9 @@
                     }"
                     x-init="$watch('current', (v) => {
                         const el = document.getElementById('ach-{{ $achievement->id }}-thumb-' + v);
-                        if (el) el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+                        if (el) el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: (window.tpcScrollBehavior ? window.tpcScrollBehavior() : 'smooth') });
                     })"
-                    x-show="showAll || {{ $loop->index }} < {{ $initialVisible }}"
+                    x-show="showAll || {{ $loop->index }} < {{ $initialVisible }}" x-collapse
                     @keydown.escape.window="if (open) close()"
                     @keydown.arrow-left.window="if (open) prev()"
                     @keydown.arrow-right.window="if (open) next()">

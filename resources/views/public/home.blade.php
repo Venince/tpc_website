@@ -129,6 +129,12 @@
             .about-slide[data-pos="-2"] { transform: translateX(-100%) scale(0.6) rotateY(28deg); opacity: 0.25; z-index: 5; }
             .about-slide[data-pos="2"]  { transform: translateX(100%) scale(0.6) rotateY(-28deg); opacity: 0.25; z-index: 5; }
             .about-slide[data-pos="hidden"] { transform: translateX(0) scale(0.5); opacity: 0; z-index: 0; pointer-events: none; }
+            /* 3D-rotated + rounded + overflow:hidden slides shimmer without this */
+            .about-slide { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+            /* Before the script positions them the slides would sit stacked in the middle */
+            .about-slide:not([data-pos]) { opacity: 0; }
+            /* First placement must not animate (slides used to "fly out" from the centre on load) */
+            #about-track.is-booting .about-slide { transition: none !important; }
             .about-dot { background-color: #d1d5db; width: 0.5rem; }
             .about-dot.is-active { background-color: #166534; width: 1.5rem; }
             #about-track { perspective: 1200px; }
@@ -141,65 +147,116 @@
 
         <script>
         function initAboutCarousel() {
-            const slides = Array.from(document.querySelectorAll('.about-slide'));
-            const dots   = Array.from(document.querySelectorAll('.about-dot'));
-            const total  = slides.length;
+            var track = document.getElementById('about-track');
+            if (!track) return;
+            // Idempotent. app.js calls window.initAboutCarousel() again after every load / PJAX swap, which
+            // used to bind every listener twice (two independent `current` counters fighting over the DOM).
+            if (track._tpcCarousel) return;
+            var ctrl = new AbortController();
+            track._tpcCarousel = ctrl;
+            var signal = ctrl.signal;
+
+            var carousel = document.getElementById('about-carousel');
+            var slides = Array.from(track.querySelectorAll('.about-slide'));
+            var dots   = Array.from(document.querySelectorAll('#about-dots .about-dot'));
+            var total  = slides.length;
             if (total === 0) return;
 
-            if (window._aboutCarouselTimer) {
-                clearInterval(window._aboutCarouselTimer);
-                window._aboutCarouselTimer = null;
-            }
-
-            let current = 0;
+            var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+            var current = 0, hovering = false, inView = true;
 
             function posFor(slideIdx, active) {
-                let diff = slideIdx - active;
+                var diff = slideIdx - active;
                 if (diff > Math.floor(total / 2))  diff -= total;
                 if (diff < -Math.floor(total / 2)) diff += total;
                 if (diff < -2 || diff > 2) return 'hidden';
                 return String(diff);
             }
-
             function render() {
-                slides.forEach((el, i) => { el.dataset.pos = posFor(i, current); });
-                dots.forEach((d, i) => { d.classList.toggle('is-active', i === current); });
+                slides.forEach(function (el, i) {
+                    var next = posFor(i, current);
+                    var prev = el.dataset.pos;
+                    // A slide wrapping from one far edge to the other (-2 <-> 2) used to glide across the whole
+                    // carousel; make that one hop instant instead.
+                    var wraps = prev !== undefined && prev !== 'hidden' && next !== 'hidden' &&
+                                Math.abs(Number(next) - Number(prev)) > 2;
+                    if (wraps) el.style.transition = 'none';
+                    el.dataset.pos = next;
+                    if (wraps) { void el.offsetWidth; el.style.transition = ''; }
+                });
+                dots.forEach(function (d, i) { d.classList.toggle('is-active', i === current); });
             }
-
             function goTo(idx) { current = ((idx % total) + total) % total; render(); }
             function next() { goTo(current + 1); }
             function prev() { goTo(current - 1); }
 
+            // Autoplay: single timer, paused while hovered/focused, off-screen, in a background tab,
+            // or when the visitor asked for reduced motion.
             function startAutoplay() {
                 if (window._aboutCarouselTimer) clearInterval(window._aboutCarouselTimer);
-                window._aboutCarouselTimer = setInterval(next, 4000);
+                window._aboutCarouselTimer = setInterval(function () {
+                    if (hovering || !inView || document.hidden || reduce.matches) return;
+                    next();
+                }, 4000);
+            }
+            if (carousel) {
+                carousel.addEventListener('mouseenter', function () { hovering = true; }, { signal: signal });
+                carousel.addEventListener('mouseleave', function () { hovering = false; }, { signal: signal });
+                carousel.addEventListener('focusin',    function () { hovering = true; }, { signal: signal });
+                carousel.addEventListener('focusout',   function () { hovering = false; }, { signal: signal });
+            }
+            var io = null;
+            if ('IntersectionObserver' in window && carousel) {
+                io = new IntersectionObserver(function (entries) {
+                    inView = entries[entries.length - 1].isIntersecting;
+                });
+                io.observe(carousel);
             }
 
-            document.getElementById('about-next')?.addEventListener('click', () => { next(); startAutoplay(); });
-            document.getElementById('about-prev')?.addEventListener('click', () => { prev(); startAutoplay(); });
-            dots.forEach(d => { d.addEventListener('click', () => { goTo(+d.dataset.index); startAutoplay(); }); });
-            slides.forEach((el, i) => {
-                el.addEventListener('click', () => {
+            var nextBtn = document.getElementById('about-next');
+            var prevBtn = document.getElementById('about-prev');
+            if (nextBtn) nextBtn.addEventListener('click', function () { next(); startAutoplay(); }, { signal: signal });
+            if (prevBtn) prevBtn.addEventListener('click', function () { prev(); startAutoplay(); }, { signal: signal });
+            dots.forEach(function (d) {
+                d.addEventListener('click', function () { goTo(+d.dataset.index); startAutoplay(); }, { signal: signal });
+            });
+            slides.forEach(function (el, i) {
+                el.addEventListener('click', function () {
                     if (el.dataset.pos !== '0') {
                         goTo(i); startAutoplay();
+                    } else if (window.pjaxNavigate) {
+                        window.pjaxNavigate(el.dataset.url);   // was window.location.href = ... (hard reload, no transition)
                     } else {
                         window.location.href = el.dataset.url;
                     }
-                });
+                }, { signal: signal });
             });
 
-            let touchStartX = 0;
-            const track = document.getElementById('about-track');
-            track?.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-            track?.addEventListener('touchend', e => {
-                const dx = e.changedTouches[0].clientX - touchStartX;
-                if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); startAutoplay(); }
-            }, { passive: true });
+            var touchX = 0, touchY = 0;
+            track.addEventListener('touchstart', function (e) {
+                touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
+            }, { passive: true, signal: signal });
+            track.addEventListener('touchend', function (e) {
+                var dx = e.changedTouches[0].clientX - touchX;
+                var dy = e.changedTouches[0].clientY - touchY;
+                // horizontal swipes only: a vertical page scroll must not flip the slide
+                if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { dx < 0 ? next() : prev(); startAutoplay(); }
+            }, { passive: true, signal: signal });
 
+            // First placement without transitions, then enable them on the next frame
+            track.classList.add('is-booting');
             render();
+            void track.offsetWidth;
+            requestAnimationFrame(function () { track.classList.remove('is-booting'); });
             startAutoplay();
-        }
 
+            document.addEventListener('tpc:page-swap', function () {
+                ctrl.abort();
+                if (io) io.disconnect();
+                if (window._aboutCarouselTimer) { clearInterval(window._aboutCarouselTimer); window._aboutCarouselTimer = null; }
+                track._tpcCarousel = null;
+            }, { once: true });
+        }
         window.initAboutCarousel = initAboutCarousel;
         initAboutCarousel();
         </script>
@@ -491,75 +548,64 @@
         </div>
     </section>
 
-@endsection
+    <script>
+    (function () {
+        'use strict';
+        // Lives inside the page content on purpose: PJAX only swaps #tpc-content, so a script pushed to
+        // the layout's scripts stack (outside it) never ran when you navigated TO the home page — the
+        // reveal only worked after a hard reload.
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!('IntersectionObserver' in window)) return;
 
-@push('scripts')
-<script>
-(function () {
-    'use strict';
+        // [selector, base delay ms, stagger ms between siblings revealed together]
+        var groups = [
+            { sel: '#vision, #mission',                            delay: 0,  stagger: 150 },
+            { sel: '#latest-news > div:first-child',               delay: 0,  stagger: 0   },
+            { sel: '.news-featured-card',                          delay: 60, stagger: 0   },
+            { sel: '.news-card',                                   delay: 0,  stagger: 100 },
+            { sel: '#academic-programs .flex.items-center.gap-4',  delay: 0,  stagger: 0   },
+            { sel: '.program-card',                                delay: 0,  stagger: 100 },
+            { sel: '#academic-programs .mt-6 > div',               delay: 60, stagger: 0   }
+        ];
+        var INITIAL_DELAY = 220;   // first batch waits for the page-entrance fade to get going
+        var STAGGER_STEPS = 5;     // never make anything wait for more than 5 siblings
+        var firstBatch = true;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    // Elements to animate — each entry: [selector, base-delay-ms, stagger-ms]
-    var groups = [
-        { sel: '#vision, #mission',                            delay: 0,   stagger: 150 },
-        { sel: '#latest-news > div:first-child',               delay: 0,   stagger: 0   },
-        { sel: '.news-featured-card',                          delay: 60,  stagger: 0   },
-        { sel: '.news-card',                                   delay: 0,   stagger: 100 },
-        { sel: '#academic-programs .flex.items-center.gap-4',  delay: 0,   stagger: 0   },
-        { sel: '.program-card',                                delay: 0,   stagger: 100 },
-        { sel: '#academic-programs .mt-6 > div',               delay: 60,  stagger: 0   },
-    ];
-
-    var DURATION  = '0.75s';
-    var EASING    = 'cubic-bezier(0.16, 1, 0.3, 1)'; // expo-out: fast start, very smooth landing
-    var TRANSLATE = '18px';                            // subtle — not too dramatic
-
-    var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-            var el = entry.target;
-            io.unobserve(el);
-            setTimeout(function () {
-                el.style.transition = 'opacity ' + DURATION + ' ' + EASING + ', transform ' + DURATION + ' ' + EASING;
-                el.style.opacity    = '1';
-                el.style.transform  = 'translateY(0)';
-                // Remove inline styles after animation so hover effects work normally
+        var io = new IntersectionObserver(function (entries) {
+            var hits = entries.filter(function (e) { return e.isIntersecting; });
+            if (!hits.length) return;
+            hits.sort(function (a, b) {
+                return a.target.compareDocumentPosition(b.target) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+            });
+            var base = firstBatch ? INITIAL_DELAY : 0;
+            firstBatch = false;
+            var seen = {};   // stagger counts per group — relative to what is revealed NOW, not to the whole page
+            hits.forEach(function (entry) {
+                var el = entry.target, g = groups[el._tpcGroup];
+                io.unobserve(el);
+                var n = seen[el._tpcGroup] = (seen[el._tpcGroup] === undefined ? 0 : seen[el._tpcGroup] + 1);
+                var delay = base + g.delay + g.stagger * Math.min(n, STAGGER_STEPS);
+                el.style.transitionDelay = delay + 'ms';
+                el.classList.add('is-in');
+                // Drop the helper classes afterwards so the cards' own hover transitions take over again
                 setTimeout(function () {
-                    el.style.transition = '';
-                    el.style.opacity    = '';
-                    el.style.transform  = '';
-                }, 900);
-            }, el._tpcDelay || 0);
-        });
-    }, { threshold: 0.06, rootMargin: '0px 0px -20px 0px' });
+                    el.classList.remove('tpc-reveal', 'is-in');
+                    el.style.transitionDelay = '';
+                }, delay + 900);
+            });
+        }, { threshold: 0.06, rootMargin: '0px 0px -20px 0px' });
 
-    function register(el, delay) {
-        if (!el || el._tpcReveal) return;
-        el._tpcReveal = true;
-        el._tpcDelay  = delay;
-        el.style.opacity   = '0';
-        el.style.transform = 'translateY(' + TRANSLATE + ')';
-        // No will-change here — let the browser decide, avoids compositing overhead
-        io.observe(el);
-    }
-
-    function boot() {
-        groups.forEach(function (group) {
-            Array.from(document.querySelectorAll(group.sel)).forEach(function (el, i) {
-                register(el, group.delay + group.stagger * i);
+        // Hide synchronously (before first paint) -> no flash for elements that are already on screen.
+        groups.forEach(function (group, gi) {
+            Array.prototype.forEach.call(document.querySelectorAll(group.sel), function (el) {
+                if (el._tpcGroup !== undefined) return;
+                el._tpcGroup = gi;
+                el.classList.add('tpc-reveal');
+                io.observe(el);
             });
         });
-    }
 
-    // Delay boot so it doesn't clash with the page-load slide-in animation
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 450); });
-    } else {
-        setTimeout(boot, 450);
-    }
-
-    window.tpcHomeScrollReveal = boot;
-})();
-</script>
-@endpush
+        document.addEventListener('tpc:page-swap', function () { io.disconnect(); }, { once: true });
+    })();
+    </script>
+@endsection
