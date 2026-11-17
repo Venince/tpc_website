@@ -99,10 +99,14 @@
                                 @endif
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-sm font-medium text-ui-ink">{{ $achievement->title }}</p>
-                                    @if ($achievement->year || $photoCount > 0)
-                                        <p class="text-xs text-ui-muted">
-                                            {{ $achievement->year }}@if ($achievement->year && $photoCount > 0) · @endif@if ($photoCount > 0){{ $photoCount }} {{ Str::plural('photo', $photoCount) }}@endif
-                                        </p>
+                                    @php
+                                        $meta = collect([
+                                            $achievement->year,
+                                            $photoCount > 0 ? $photoCount . ' ' . Str::plural('photo', $photoCount) : null,
+                                        ])->filter()->implode(' · ');
+                                    @endphp
+                                    @if ($meta !== '')
+                                        <p class="text-xs text-ui-muted">{{ $meta }}</p>
                                     @endif
                                 </div>
                                 <div class="flex shrink-0 items-center gap-1">
