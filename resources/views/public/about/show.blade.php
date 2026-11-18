@@ -5,178 +5,165 @@
 
 @section('content')
 
-    {{-- ══════════════════════════════════════
-         PAGE HEADER
-    ══════════════════════════════════════ --}}
+    @php
+        // Same set and order as the home carousel (active, by sort_order), used for previous / next / thumbnails.
+        $slides = \App\Models\AboutSlide::active()->get();
+        $total = $slides->count();
+        $idx = $slides->search(fn($s) => $s->id === $slide->id);
+        $prev = $idx !== false && $total > 1 ? $slides[($idx - 1 + $total) % $total] : null;
+        $next = $idx !== false && $total > 1 ? $slides[($idx + 1) % $total] : null;
+        $imgUrl = asset('storage/' . $slide->image_path);
+        $chev = 'h-4 w-4 shrink-0';
+    @endphp
+
+    {{-- Page header: same structure as Academics / Admission / Organizational Chart --}}
     <section class="relative overflow-hidden bg-tpc-secondary">
         <div aria-hidden="true" class="pointer-events-none absolute inset-0"
-             style="background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
-                                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)"></div>
+            style="background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
+                                radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)">
+        </div>
         <div aria-hidden="true" class="pointer-events-none absolute inset-0 opacity-[0.04]"
-             style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+            style="background-image: linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
                                       linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px);
-                    background-size: 40px 40px;"></div>
+                    background-size: 40px 40px;">
+        </div>
 
         <div class="relative mx-auto max-w-4xl px-4 pt-10 pb-16 sm:pt-14 sm:pb-20">
             <div class="flex flex-col items-center text-center">
-
-                {{-- Label --}}
-                <span class="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-white/20 mb-4">
-                    <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
-                    About the College
-                </span>
-
-                {{-- Title --}}
-                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight max-w-3xl">
+                <h1 class="max-w-3xl text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
                     {{ $slide->title ?: 'About Talibon Polytechnic College' }}
                 </h1>
 
-                @if($slide->caption)
-                    <p class="mt-3 max-w-lg text-sm text-white/60 leading-relaxed line-clamp-3 sm:line-clamp-none">
-                        {{ $slide->caption }}
-                    </p>
-                @endif
-
-                {{-- Breadcrumb --}}
-                <nav class="mt-5 flex items-center justify-center gap-1.5 text-xs font-medium text-white/50 flex-wrap" aria-label="Breadcrumb">
+                <nav class="mt-5 flex flex-wrap items-center justify-center gap-1.5 text-xs font-medium text-white/70"
+                    aria-label="Breadcrumb">
                     <a href="{{ route('home') }}" class="hover:text-white transition">Home</a>
-                    <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                     <a href="{{ route('home') }}#about" class="hover:text-white transition">About</a>
-                    @if($slide->title)
-                        <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    @if ($slide->title)
+                        <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
-                        <span class="text-white/30 truncate max-w-[160px] sm:max-w-xs">{{ $slide->title }}</span>
+                        <span class="max-w-[160px] truncate text-white sm:max-w-xs"
+                            aria-current="page">{{ $slide->title }}</span>
                     @endif
                 </nav>
-
             </div>
         </div>
 
-        {{-- Wave divider --}}
         <div class="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
-                <path d="M0 48 C480 0 960 0 1440 48 L1440 48 L0 48 Z" fill="#f9fafb"/>
+            <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+                class="w-full h-8 sm:h-12">
+                <path d="M0 48 C480 0 960 0 1440 48 L1440 48 L0 48 Z" fill="#f9fafb" />
             </svg>
         </div>
     </section>
 
-    {{-- ══════════════════════════════════════
-         SLIDE BODY
-    ══════════════════════════════════════ --}}
     <section class="bg-gray-50">
-        <div class="max-w-4xl mx-auto px-4 py-6 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:py-12 grid gap-8 lg:gap-12 lg:grid-cols-12">
 
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            {{-- Slide viewer --}}
+            <div class="min-w-0 lg:col-span-8">
 
-                {{-- Accent top bar --}}
-                <div class="h-1 bg-gradient-to-r from-tpc-primary via-tpc-primary to-tpc-accent"></div>
+                <a href="{{ $imgUrl }}" target="_blank" rel="noopener"
+                    class="block border border-gray-200 bg-white p-2 sm:p-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-tpc-primary">
+                    <img src="{{ $imgUrl }}" alt="{{ $slide->title ?: 'Talibon Polytechnic College' }}"
+                        class="mx-auto w-full max-h-[80vh] object-contain">
+                </a>
 
-                {{-- Featured image --}}
-                <div class="relative bg-gray-50 border-b border-gray-100">
-                    <div class="flex items-center justify-center p-3 sm:p-6">
-                        <a href="{{ asset('storage/' . $slide->image_path) }}"
-                           target="_blank" rel="noopener"
-                           class="group relative block w-full">
-                            <img src="{{ asset('storage/' . $slide->image_path) }}"
-                                 alt="{{ $slide->title ?: 'About TPC' }}"
-                                 class="w-full object-contain rounded-xl hover:opacity-95 transition"
-                                 loading="lazy" />
-                            <span class="absolute inset-0 rounded-xl flex items-end justify-end p-2 sm:p-3 opacity-0 group-hover:opacity-100 transition">
-                                <span class="inline-flex items-center gap-1 bg-black/60 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-lg backdrop-blur-sm">
-                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                    </svg>
-                                    View full size
-                                </span>
-                            </span>
+                {{-- Previous / position / next --}}
+                <div class="mt-3 flex items-center justify-between gap-3 text-sm">
+                    @if ($prev)
+                        <a href="{{ route('about.show', $prev) }}" rel="prev"
+                            class="inline-flex h-10 items-center gap-1.5 rounded border border-gray-300 px-3 font-semibold text-gray-700 hover:border-tpc-primary hover:text-tpc-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-tpc-primary">
+                            <svg class="{{ $chev }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Previous
                         </a>
-                    </div>
+                        <span class="text-gray-500 tabular-nums">{{ $idx + 1 }} of {{ $total }}</span>
+                        <a href="{{ route('about.show', $next) }}" rel="next"
+                            class="inline-flex h-10 items-center gap-1.5 rounded border border-gray-300 px-3 font-semibold text-gray-700 hover:border-tpc-primary hover:text-tpc-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-tpc-primary">
+                            Next
+                            <svg class="{{ $chev }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    @else
+                        <a href="{{ $imgUrl }}" target="_blank" rel="noopener"
+                            class="font-semibold text-tpc-primary underline-offset-4 hover:underline hover:text-tpc-secondary">View
+                            full size</a>
+                    @endif
                 </div>
 
-                {{-- Caption / content area --}}
-                <div class="p-4 sm:p-7 lg:p-10">
+                {{-- Thumbnails --}}
+                @if ($total > 1)
+                    <ul class="mt-4 flex gap-2 overflow-x-auto pb-1" aria-label="All slides">
+                        @foreach ($slides as $i => $s)
+                            @php $current = $s->id === $slide->id; @endphp
+                            <li class="shrink-0">
+                                <a href="{{ route('about.show', $s) }}"
+                                    @if ($current) aria-current="true" @endif
+                                    aria-label="{{ $s->title ?: 'Slide ' . ($i + 1) }}"
+                                    class="block h-16 w-24 overflow-hidden bg-gray-100 border-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tpc-primary {{ $current ? 'border-tpc-primary' : 'border-transparent opacity-70 hover:opacity-100' }}">
+                                    <img src="{{ asset('storage/' . $s->image_path) }}" alt=""
+                                        class="h-full w-full object-cover" loading="lazy">
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
 
-                    @if($slide->caption)
-                        <div class="relative border-l-4 border-tpc-primary bg-tpc-primary/5 px-4 sm:px-6 py-4 sm:py-5 mb-6 sm:mb-8 rounded-r-xl">
-                            <svg class="absolute -top-1 -left-1 h-4 w-4 sm:h-5 sm:w-5 text-tpc-primary/30" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-                            </svg>
-                            <p class="text-xs sm:text-sm font-semibold text-gray-700 leading-relaxed italic">{{ $slide->caption }}</p>
+            {{-- Details --}}
+            <aside class="lg:col-span-4">
+                <div class="lg:sticky lg:top-24">
+                    @if ($slide->caption)
+                        <div class="border-l-4 border-tpc-primary pl-4">
+                            <p class="text-left text-base leading-relaxed text-gray-700">{{ $slide->caption }}</p>
                         </div>
                     @endif
 
-                    {{-- Meta footer --}}
-                    <div class="mt-2 pt-4 sm:pt-6 border-t border-gray-100 flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-gray-400">
-                        <span class="inline-flex items-center gap-1.5">
-                            <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
-                            </svg>
-                            <span class="hidden xs:inline">Talibon Polytechnic College</span>
-                            <span class="xs:hidden">TPC</span>
-                        </span>
-                        <span class="hidden xs:inline">·</span>
-                        <span class="ml-auto inline-block bg-tpc-primary/10 text-tpc-primary text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-                            About
-                        </span>
+                    <div class="{{ $slide->caption ? 'mt-8 border-t border-gray-200 pt-6' : '' }}">
+                        <h2 class="text-lg font-semibold text-gray-900">Learn more about TPC</h2>
+                        <ul class="mt-3 divide-y divide-gray-200 border-y border-gray-200 text-sm font-semibold">
+                            @foreach ([['Academic programs', route('academics')], ['Organizational chart', route('org-chart')], ['Contact the college office', route('contact')]] as [$label, $href])
+                                <li>
+                                    <a href="{{ $href }}"
+                                        class="flex items-center justify-between gap-3 py-3 text-gray-800 hover:text-tpc-primary">
+                                        {{ $label }}
+                                        <svg class="{{ $chev }} text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
-
-                    <div class="my-5 sm:my-8 border-t border-gray-100"></div>
-
-                    {{-- Footer CTA --}}
-                    <div class="relative bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-                        <div class="h-1 bg-gradient-to-r from-tpc-primary to-tpc-accent"></div>
-                        <div class="p-4 sm:p-6 sm:flex sm:items-center sm:justify-between gap-6">
-                            <div>
-                                <p class="text-xs font-bold text-tpc-primary uppercase tracking-widest mb-1">Want to know more?</p>
-                                <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                    Explore our academic programs or get in touch with the college office.
-                                </p>
-                            </div>
-                            <div class="mt-4 sm:mt-0 flex gap-2 sm:gap-3 shrink-0">
-                                <a href="{{ route('academics') }}"
-                                   class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full border-2 border-tpc-primary bg-tpc-primary px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-white
-                                          hover:bg-tpc-secondary hover:border-tpc-secondary transition">
-                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                                    </svg>
-                                    View Programs
-                                </a>
-                                <a href="{{ route('contact') }}"
-                                   class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1 rounded-full border-2 border-tpc-primary px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-tpc-primary
-                                          hover:bg-tpc-primary hover:text-white transition">
-                                    Contact Us
-                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-            </div>
+            </aside>
+        </div>
 
-            {{-- Back navigation --}}
-            <div class="mt-5 sm:mt-8 flex items-center justify-between">
+        {{-- Back navigation --}}
+        <div class="max-w-7xl mx-auto px-4 pb-10 sm:pb-14">
+            <div
+                class="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-5 text-sm font-semibold">
                 <a href="{{ route('home') }}#about"
-                   class="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-tpc-primary hover:text-tpc-secondary transition group">
-                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                    class="inline-flex items-center gap-1.5 text-tpc-primary hover:text-tpc-secondary">
+                    <svg class="{{ $chev }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                     </svg>
                     Back to About
                 </a>
-                <a href="{{ route('home') }}"
-                   class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-tpc-primary transition uppercase tracking-wide">
-                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                    </svg>
-                    Back to Home
-                </a>
+                <a href="{{ route('home') }}" class="text-gray-500 hover:text-tpc-primary">Back to Home</a>
             </div>
-
         </div>
     </section>
 
